@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // OpenConnectionDB ...
@@ -22,9 +23,10 @@ func OpenConnectionDB() *DB {
 // open connection pgsql
 func connectToPgSQL() (*sqlx.DB, error) {
 	// get information connection info
-	dbInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", getENV("DB_PG_HOST"), getENV("DB_PG_PORT"), getENV("DB_PG_USER"), getENV("DB_PG_NAME"), getENV("DB_PG_PASS"))
+	dbInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", getENV("DB_PG_HOST"), getENV("DB_PG_PORT"), getENV("DB_PG_USER"), getENV("DB_PG_PASS"), getENV("DB_PG_NAME"))
 
 	// connect db
+	fmt.Println(dbInfo)
 	db, err := sqlx.Connect("postgres", dbInfo)
 	if err != nil {
 		return nil, err
