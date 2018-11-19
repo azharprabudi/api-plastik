@@ -17,6 +17,6 @@ type ItemCategoryModelRead struct {
 
 // ItemCategoryCreate ...
 type ItemCategoryCreate struct {
-	Name      string    `db:"itemName"`
+	Name      string    `db:"itemCategoryName"`
 	CreatedAt time.Time `db:"createdAt"`
 }
