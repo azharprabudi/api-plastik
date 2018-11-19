@@ -23,8 +23,8 @@ func RunMigration(db *db.DB) {
 // running migration pgsql
 func migrationPgSQL(sql *sqlx.DB) error {
 	c := helpers.StartTransaction(sql)
-	err := helpers.RunTransaction(c, func(tx sqlx.Tx) error {
-		checkVersionPgSQL(&tx)
+	err := helpers.RunTransaction(c, func(tx *sqlx.Tx) error {
+		checkVersionPgSQL(tx)
 		return nil
 	})
 	if err != nil {
