@@ -20,7 +20,7 @@ type SupplierModelRead struct {
 type SupplierModelCreate struct {
 	SupplierID
 	Name      string    `db:"supplierName"`
-	Phone     string    `db:"supplierPhone"`
-	Address   int       `db:"supplierAddress"`
+	Phone     *string   `db:"supplierPhone"`   // nullable
+	Address   *int      `db:"supplierAddress"` // nullable
 	CreatedAt time.Time `db:"createdAt"`
 }
