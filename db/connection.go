@@ -23,7 +23,7 @@ func OpenConnectionDB() *DB {
 // open connection pgsql
 func connectToPgSQL() (*sqlx.DB, error) {
 	// get information connection info
-	dbInfo := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable", getENV("DB_PG_HOST"), getENV("DB_PG_PORT"), getENV("DB_PG_USER"), getENV("DB_PG_NAME"))
+	dbInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", getENV("DB_PG_HOST"), getENV("DB_PG_PORT"), getENV("DB_PG_USER"), getENV("DB_PG_PASS"), getENV("DB_PG_NAME"))
 
 	// connect db
 	db, err := sqlx.Connect("postgres", dbInfo)

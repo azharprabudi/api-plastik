@@ -23,8 +23,8 @@ func StartTransaction(db *sqlx.DB) context.Context {
 
 // RunTransaction ...
 func RunTransaction(context context.Context, function func(*sqlx.Tx) error) error {
-	tx := context.Value(KeyDB).(sqlx.Tx)
-	err := function(&tx)
+	tx := context.Value(KeyDB).(*sqlx.Tx)
+	err := function(tx)
 	if err != nil {
 		tx.Rollback()
 		return err
