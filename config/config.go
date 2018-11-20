@@ -40,4 +40,13 @@ var (
 			},
 		},
 	}
+
+	/*
+
+		client secret
+
+	*/
+
+	// CLIENTSECRET ...
+	CLIENTSECRET = "plastik"
 )
