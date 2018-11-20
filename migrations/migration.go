@@ -1,10 +1,12 @@
 package migrations
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/api-plastik/db"
 	helpers "github.com/api-plastik/helpers/db"
+	dbModel "github.com/api-plastik/helpers/db/model"
 	execsql "github.com/api-plastik/migrations/exec-sql"
 	"github.com/api-plastik/migrations/model"
 	"github.com/jmoiron/sqlx"
@@ -17,49 +19,51 @@ var execPgSQL = []string{
 // RunMigration ...
 func RunMigration(db *db.DB) {
 	/* migration postgresql */
-	err := migrationPgSQL(db.PgSQL)
+	err := migratePgSQL(db.PgSQL)
 	if err != nil {
 		panic(err)
 	}
 }
 
 // running migration pgsql
-func migrationPgSQL(sql *sqlx.DB) error {
-	c := helpers.StartTransaction(sql)
-	err := helpers.RunTransaction(c, func(tx *sqlx.Tx) error {
-		// initialize version table
-		initVersionTablePgSQL(tx)
+func migratePgSQL(sql *sqlx.DB) error {
+	c := helpers.CreateTrx(sql)
+	err := helpers.RunTrx(c, func(tx *sqlx.Tx) error {
+		initVerTblPgSQL(tx)
 
-		// get older version table
-		oldVer, err := getOldVersionPgSQL(tx)
+		// get current version table
+		currVer := getCurrVer()
+
+		// get old version
+		oldVer, err := getOldVer(sql)
 		if err != nil {
 			return err
 		}
-		// get current version table
-		currVer := currVersionPgSQL()
 
+		// check version
 		if oldVer != currVer {
 			// running the query
-			err = doMigrationSQL(tx, oldVer, currVer)
+			err = doMigrateSQL(tx, oldVer, currVer)
 			if err != nil {
 				return err
 			}
 
 			// update curr version
-			err = updateVersion(tx, currVer)
+			err = updateVer(tx, currVer)
 			if err != nil {
 				return err
 			}
 		}
 		return nil
 	})
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func initVersionTablePgSQL(tx *sqlx.Tx) {
+func initVerTblPgSQL(tx *sqlx.Tx) {
 	/* create table version pg */
 	sql := `
 	CREATE TABLE "meta"(
@@ -74,27 +78,41 @@ func initVersionTablePgSQL(tx *sqlx.Tx) {
 	tx.Exec(sql)
 }
 
+// get current version
+func getCurrVer() int {
+	return len(execPgSQL)
+}
+
 // get older version sql
-func getOldVersionPgSQL(tx *sqlx.Tx) (int, error) {
-
+func getOldVer(db *sqlx.DB) (int, error) {
+	// initialize variable
 	meta := new(model.Meta)
-	rowQuery := tx.QueryRowx("select * from meta where key=$1", "db-version")
+	where := &dbModel.Condition{
+		Key:      "key",
+		Operator: "=",
+		Value:    "db-version",
+		NextCond: "",
+	}
 
-	// get results
-	err := rowQuery.StructScan(meta)
+	// execute query builder
+	query := helpers.QueryWhere("meta", []*dbModel.Condition{where})
+	err := db.QueryRowx(query).StructScan(meta)
 	if err != nil {
 		return 0, err
 	}
 
-	versionToInt, err := strconv.Atoi(meta.Value)
+	// parse to int
+	ver, err := strconv.Atoi(meta.Value)
 	if err != nil {
 		return 0, err
 	}
-	return versionToInt, nil
+
+	// return ver, nil
+	return ver, nil
 }
 
 // function to running list of migration
-func doMigrationSQL(tx *sqlx.Tx, startVer int, untilVer int) error {
+func doMigrateSQL(tx *sqlx.Tx, startVer int, untilVer int) error {
 	var err error
 	for i := startVer; i < untilVer; i++ {
 		_, err = tx.Exec(execPgSQL[i])
@@ -106,15 +124,29 @@ func doMigrationSQL(tx *sqlx.Tx, startVer int, untilVer int) error {
 }
 
 // update new version db migrations
-func updateVersion(tx *sqlx.Tx, currVer int) error {
-	_, err := tx.Exec("update meta set value=$1 where key='db-version'", currVer)
+func updateVer(tx *sqlx.Tx, currVer int) error {
+	// parse vers to str
+	verStr := strconv.Itoa(currVer)
+	meta := model.Meta{
+		Key:   "value",
+		Value: verStr,
+	}
+
+	condition := &dbModel.Condition{
+		Key:      "key",
+		Operator: "=",
+		Value:    "db-version",
+		NextCond: "",
+	}
+	query := helpers.UpdateWhere("meta", meta, []*dbModel.Condition{condition})
+
+	fmt.Println(query)
+
+	// execute the query
+	_, err := tx.Exec(query)
+
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-// get current version from array at the top of file
-func currVersionPgSQL() int {
-	return len(execPgSQL)
 }
