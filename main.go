@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/api-plastik/cmd"
 	"github.com/api-plastik/config"
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/migrations"
@@ -18,6 +19,5 @@ func main() {
 	r := route.InitRoute(db)
 
 	/* running server */
-	port := ":3000"
-	config.StartServer(port, r)
+	cmd.StartServer(config.Port, r)
 }

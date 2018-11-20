@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/api-plastik/config"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -11,22 +12,33 @@ import (
 // OpenConnectionDB ...
 func OpenConnectionDB() *DB {
 	db := new(DB)
-	pgSQL, err := connectToPgSQL()
-	if err != nil {
-		panic(err)
+	for _, driver := range config.DriverDB {
+		if conf, isExists := config.DBSource[driver]; isExists {
+			if conf["type"]["value"] == "sql" {
+				sql, err := connectDBTypeSQL(driver, conf["dbSource"]["value"], conf["env"])
+				// check error message
+				if err != nil {
+					panic(err)
+				}
+
+				// assign value db
+				if driver == "postgres" {
+					db.PgSQL = sql
+				}
+
+			}
+		}
 	}
-	// add pgsql to db connection list
-	db.PgSQL = pgSQL
 	return db
 }
 
-// open connection pgsql
-func connectToPgSQL() (*sqlx.DB, error) {
+// open connection sql
+func connectDBTypeSQL(driver string, dbSource string, env map[string]string) (*sqlx.DB, error) {
 	// get information connection info
-	dbInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", getENV("DB_PG_HOST"), getENV("DB_PG_PORT"), getENV("DB_PG_USER"), getENV("DB_PG_PASS"), getENV("DB_PG_NAME"))
+	dbInfo := fmt.Sprintf(dbSource, getENV(env["HOST"]), getENV(env["PORT"]), getENV(env["USER"]), getENV(env["PASS"]), getENV(env["NAME"]))
 
 	// connect db
-	db, err := sqlx.Connect("postgres", dbInfo)
+	db, err := sqlx.Connect(driver, dbInfo)
 	if err != nil {
 		return nil, err
 	}
