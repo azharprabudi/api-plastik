@@ -9,21 +9,16 @@ import (
 
 // InitRoute ...
 func InitRoute(db *db.DB) *chi.Mux {
-	// initialize route abstract
-	route := new(Route)
-
 	// create router from chi
 	r := chi.NewRouter()
-
-	// assign value to route struct
-	route.r = r
-	route.db = db
 
 	// apply middleware to all
 	r.Use(middleware.AllowContentType("application/json"))
 
 	// assign routes
-	NewRoutesV1(route)
+	r.Route("/api", func(r chi.Router) {
+		NewRoutesV1(&r, db)
+	})
 
-	return route.r
+	return r
 }

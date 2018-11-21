@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/api-plastik/db"
 	itemPresentation "github.com/api-plastik/presentations/item"
 	itemCategoryPresentation "github.com/api-plastik/presentations/item-category"
 	sellerPresentation "github.com/api-plastik/presentations/seller"
@@ -10,15 +11,15 @@ import (
 )
 
 // NewRoutesV1 ...
-func NewRoutesV1(route *Route) {
+func NewRoutesV1(newR *chi.Router, db *db.DB) {
 	// initialize presentations
-	item := itemPresentation.NewItemPresentation(route.db)
-	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(route.db)
-	supplier := supplierPresentation.NewPresentationSupplier(route.db)
-	seller := sellerPresentation.NewPresentationSeller(route.db)
+	item := itemPresentation.NewItemPresentation(db)
+	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)
+	supplier := supplierPresentation.NewPresentationSupplier(db)
+	seller := sellerPresentation.NewPresentationSeller(db)
 
 	// route
-	route.r.Route("/v1", func(r chi.Router) {
+	(*newR).Route("/v1", func(r chi.Router) {
 		/* item */
 		r.Get("/item", item.Find)
 		r.Get("/item/:id", item.FindByID)
