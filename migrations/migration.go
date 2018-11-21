@@ -28,13 +28,13 @@ func RunMigration(db *db.DB) {
 func migratePgSQL(sql *sqlx.DB) error {
 	c := helpers.CreateTrx(sql)
 	err := helpers.RunTrx(c, func(tx *sqlx.Tx) error {
-		initVerTblPgSQL(tx)
+		isAlreadyCreated := initVerTblPgSQL(tx)
 
 		// get current version table
 		currVer := getCurrVer()
 
 		// get old version
-		oldVer, err := getOldVer(tx)
+		oldVer, err := getOldVer(sql, tx, isAlreadyCreated)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ func migratePgSQL(sql *sqlx.DB) error {
 	return nil
 }
 
-func initVerTblPgSQL(tx *sqlx.Tx) {
+func initVerTblPgSQL(tx *sqlx.Tx) bool {
 	/* create table version pg */
 	sql := `
 	CREATE TABLE "meta"(
@@ -74,7 +74,11 @@ func initVerTblPgSQL(tx *sqlx.Tx) {
 		VALUES ('db-version', '0')
 		ON CONFLICT DO NOTHING;
 	`
-	tx.Exec(sql)
+	_, err := tx.Exec(sql)
+	if err != nil {
+		return true
+	}
+	return false
 }
 
 // get current version
@@ -83,8 +87,9 @@ func getCurrVer() int {
 }
 
 // get older version sql
-func getOldVer(tx *sqlx.Tx) (int, error) {
+func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 	// initialize variable
+	var err error
 	meta := new(model.Meta)
 	where := &dbModel.Condition{
 		Key:      "key",
@@ -95,7 +100,14 @@ func getOldVer(tx *sqlx.Tx) (int, error) {
 
 	// execute query builder
 	query := helpers.QueryWhere("meta", []*dbModel.Condition{where})
-	err := tx.QueryRowx(query).StructScan(meta)
+
+	// check the previous table already exists or new to created
+	if isAlreadyCreated == true {
+		err = sql.QueryRowx(query).StructScan(meta)
+	} else {
+		err = tx.QueryRowx(query).StructScan(meta)
+	}
+
 	if err != nil {
 		return 0, err
 	}
@@ -138,7 +150,6 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 		NextCond: "",
 	}
 	query := helpers.UpdateWhere("meta", meta, []*dbModel.Condition{condition})
-
 	// execute the query
 	_, err := tx.Exec(query)
 
