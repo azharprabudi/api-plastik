@@ -1,12 +1,9 @@
 package presentations
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/dto"
-	helpers "github.com/api-plastik/helpers/json"
 	"github.com/api-plastik/internal/item/service"
 	"github.com/api-plastik/presentations"
 )
@@ -23,11 +20,7 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 
 // Create ...
 func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
-	itemCatIncReq := new(dto.ItemCategoryIncReq)
-	err := helpers.JSONDecode(r.Body, itemCatIncReq)
-	if err != nil {
-		log.Println("error")
-	}
+
 }
 
 // Update ...
