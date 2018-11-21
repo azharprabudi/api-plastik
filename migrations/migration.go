@@ -1,7 +1,6 @@
 package migrations
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/api-plastik/db"
@@ -35,7 +34,7 @@ func migratePgSQL(sql *sqlx.DB) error {
 		currVer := getCurrVer()
 
 		// get old version
-		oldVer, err := getOldVer(sql)
+		oldVer, err := getOldVer(tx)
 		if err != nil {
 			return err
 		}
@@ -84,7 +83,7 @@ func getCurrVer() int {
 }
 
 // get older version sql
-func getOldVer(db *sqlx.DB) (int, error) {
+func getOldVer(tx *sqlx.Tx) (int, error) {
 	// initialize variable
 	meta := new(model.Meta)
 	where := &dbModel.Condition{
@@ -96,7 +95,7 @@ func getOldVer(db *sqlx.DB) (int, error) {
 
 	// execute query builder
 	query := helpers.QueryWhere("meta", []*dbModel.Condition{where})
-	err := db.QueryRowx(query).StructScan(meta)
+	err := tx.QueryRowx(query).StructScan(meta)
 	if err != nil {
 		return 0, err
 	}
@@ -128,7 +127,7 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 	// parse vers to str
 	verStr := strconv.Itoa(currVer)
 	meta := model.Meta{
-		Key:   "value",
+		Key:   "db-version",
 		Value: verStr,
 	}
 
@@ -139,8 +138,6 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 		NextCond: "",
 	}
 	query := helpers.UpdateWhere("meta", meta, []*dbModel.Condition{condition})
-
-	fmt.Println(query)
 
 	// execute the query
 	_, err := tx.Exec(query)
