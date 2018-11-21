@@ -42,10 +42,7 @@ func migratePgSQL(sql *sqlx.DB) error {
 		// check version
 		if oldVer != currVer {
 			// running the query
-			err = doMigrateSQL(tx, oldVer, currVer)
-			if err != nil {
-				return err
-			}
+			doMigrateSQL(tx, oldVer, currVer)
 
 			// update curr version
 			err = updateVer(tx, currVer)
@@ -108,6 +105,7 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 		err = tx.QueryRowx(query).StructScan(meta)
 	}
 
+	// check error
 	if err != nil {
 		return 0, err
 	}
@@ -123,15 +121,10 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 }
 
 // function to running list of migration
-func doMigrateSQL(tx *sqlx.Tx, startVer int, untilVer int) error {
-	var err error
+func doMigrateSQL(tx *sqlx.Tx, startVer int, untilVer int) {
 	for i := startVer; i < untilVer; i++ {
-		_, err = tx.Exec(execPgSQL[i])
-		if err != nil {
-			break
-		}
+		tx.Exec(execPgSQL[i])
 	}
-	return err
 }
 
 // update new version db migrations
@@ -149,7 +142,9 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 		Value:    "db-version",
 		NextCond: "",
 	}
+
 	query := helpers.UpdateWhere("meta", meta, []*dbModel.Condition{condition})
+
 	// execute the query
 	_, err := tx.Exec(query)
 
