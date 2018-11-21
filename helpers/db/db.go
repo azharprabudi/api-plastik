@@ -98,7 +98,7 @@ func Update(tableName string, data interface{}, conditions []*model.Condition) s
 func UpdateWhere(tableName string, data interface{}, conditions []*model.Condition) string {
 	upd := createQueriesUpdate(data)
 	withs := createQueriesWhere(conditions)
-	query := fmt.Sprintf("UPDATE %s %s %s", tableName, upd, withs)
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s", tableName, upd, withs)
 	return query
 }
 

@@ -85,6 +85,10 @@ func createQueriesUpdate(data interface{}) string {
 
 	v := reflect.ValueOf(data)
 	for i := 0; i < v.NumField(); i++ {
+		separComma := ","
+		if isLastIteration(i, v.NumField()) == true {
+			separComma = ""
+		}
 		// get column
 		column := v.Type().Field(i).Tag.Get("db")
 
@@ -94,9 +98,9 @@ func createQueriesUpdate(data interface{}) string {
 
 		// check value by data type
 		if isString(dTypeVal) == true {
-			sets = fmt.Sprintf("%s%s='%s' ", sets, column, value)
+			sets = fmt.Sprintf("%s%s='%s'%s", sets, column, value, separComma)
 		} else {
-			sets = fmt.Sprintf("%s%s=%v ", sets, column, value)
+			sets = fmt.Sprintf("%s%s=%v%s", sets, column, value, separComma)
 
 		}
 	}
