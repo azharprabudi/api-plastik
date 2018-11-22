@@ -47,6 +47,14 @@ func isBool(dType reflect.Kind) bool {
 	return false
 }
 
+// check reflect kind is struct or not
+func isStruct(dType reflect.Kind) bool {
+	if dType == reflect.Struct {
+		return true
+	}
+	return false
+}
+
 func createQueriesInsert(data interface{}) (string, string) {
 	var cols string
 	var values string
@@ -62,14 +70,14 @@ func createQueriesInsert(data interface{}) (string, string) {
 
 		// set column
 		columnName := v.Type().Field(i).Tag.Get("db")
-		cols = fmt.Sprintf("%s\"%s%s \"", cols, columnName, separComma)
+		cols = fmt.Sprintf("%s\"%s\"%s ", cols, columnName, separComma)
 
 		// set value
 		value := v.Field(i)
 		dTypeVal := value.Kind()
 
 		// check value by data type
-		if isString(dTypeVal) == true {
+		if isString(dTypeVal) == true || isStruct(dTypeVal) {
 			values = fmt.Sprintf("%s'%s'%s ", values, value, separComma)
 		} else {
 			values = fmt.Sprintf("%s%s%s ", values, value, separComma)
@@ -97,7 +105,7 @@ func createQueriesUpdate(data interface{}) string {
 		dTypeVal := value.Kind()
 
 		// check value by data type
-		if isString(dTypeVal) == true {
+		if isString(dTypeVal) == true || isStruct(dTypeVal) {
 			sets = fmt.Sprintf("%s%s='%s'%s", sets, column, value, separComma)
 		} else {
 			sets = fmt.Sprintf("%s%s=%v%s", sets, column, value, separComma)
@@ -115,7 +123,7 @@ func createQueriesWhere(conditions []*model.Condition) string {
 			nextCondition = ""
 		}
 
-		if isString(reflect.TypeOf(condition.Value).Kind()) == true {
+		if isString(reflect.TypeOf(condition.Value).Kind()) == true || isStruct(reflect.TypeOf(condition.Value).Kind()) {
 			where = fmt.Sprintf("%s \"%s\"%s'%v' %s", where, condition.Key, condition.Operator, condition.Value, nextCondition)
 		} else {
 			where = fmt.Sprintf("%s \"%s\"%s%v %s", where, condition.Key, condition.Operator, condition.Value, nextCondition)
