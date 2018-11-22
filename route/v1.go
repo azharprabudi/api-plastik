@@ -28,11 +28,11 @@ func NewRoutesV1(newR *chi.Router, db *db.DB) {
 		r.Delete("/item", item.Delete)
 
 		/* itemCategory */
-		r.Get("/item-category", itemCategory.Find)
-		r.Get("/item-category/:id", itemCategory.FindByID)
-		r.Post("/item-category", itemCategory.Create)
-		r.Patch("/item-category", itemCategory.Update)
-		r.Delete("/item-category", itemCategory.Delete)
+		r.Get("/itemcategory", itemCategory.Find)
+		r.Get("/itemcategory/:id", itemCategory.FindByID)
+		r.Post("/itemcategory", itemCategory.Create)
+		r.Patch("/itemcategory", itemCategory.Update)
+		r.Delete("/itemcategory", itemCategory.Delete)
 
 		/* item */
 		r.Get("/supplier", supplier.Find)
