@@ -2,9 +2,8 @@ package route
 
 import (
 	"github.com/api-plastik/db"
+	"github.com/api-plastik/middlewares"
 	"github.com/go-chi/chi"
-
-	"github.com/go-chi/chi/middleware"
 )
 
 // InitRoute ...
@@ -13,7 +12,8 @@ func InitRoute(db *db.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	// apply middleware to all
-	r.Use(middleware.AllowContentType("application/json"))
+	r.Use(middlewares.SetContentType)
+	r.Use(middlewares.CheckClientSecret)
 
 	// assign routes
 	r.Route("/api", func(r chi.Router) {
