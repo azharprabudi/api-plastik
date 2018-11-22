@@ -7,3 +7,6 @@ var AuthError = "AuthError"
 
 // ValidationError ...
 var ValidationError = "ValidationError"
+
+// InternalServerError ...
+var InternalServerError = "InternalServerError"
