@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-// JSONDecode ...
-func JSONDecode(r io.Reader, model interface{}) error {
+// GetRequest ...
+func GetRequest(r io.Reader, model interface{}) error {
 	err := json.NewDecoder(r).Decode(model)
 	return err
 }

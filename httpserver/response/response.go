@@ -2,11 +2,12 @@ package response
 
 import (
 	"encoding/json"
-	"io"
+	"net/http"
 )
 
-// JSONEncode ...
-func JSONEncode(w io.WriteCloser, model interface{}) error {
-	err := json.NewEncoder(w).Encode(model)
-	return err
+// SendResponse ...
+func SendResponse(w http.ResponseWriter, statusCode int, model interface{}) {
+	w.WriteHeader(statusCode)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(model)
 }
