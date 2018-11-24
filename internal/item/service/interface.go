@@ -1,6 +1,6 @@
 package service
 
-import "github.com/api-plastik/dto"
+import "github.com/api-plastik/internal/item/dto"
 
 // ItemServiceInterface ...
 type ItemServiceInterface interface {

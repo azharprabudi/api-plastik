@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/api-plastik/errors"
+	"github.com/api-plastik/httpserver/app/plastik/presentations"
+	newError "github.com/api-plastik/httpserver/error"
+	"github.com/api-plastik/httpserver/request"
 
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/dto"
-	jsonParse "github.com/api-plastik/helpers/json"
+	"github.com/api-plastik/internal/item/dto"
 	"github.com/api-plastik/internal/item/service"
-	"github.com/api-plastik/presentations"
 )
 
 // Find ...
@@ -30,7 +30,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 	itemCatIncReq := new(dto.ItemCategoryIncReq)
 
 	// parse json
-	jsonParse.JSONDecode(r.Body, itemCatIncReq)
+	request.JSONDecode(r.Body, itemCatIncReq)
 
 	// do validations
 	if itemCatIncReq.Name == "" {
@@ -40,7 +40,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		respErr, _ := json.Marshal(errors.NewErrorReponse(errors.ValidationError, "Validation is required", "", validations))
+		respErr, _ := json.Marshal(newError.NewErrorReponse(newError.ValidationError, "Validation is required", "", validations))
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(respErr)
 		return
@@ -49,7 +49,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 	err := item.itemService.CreateItemCategory(itemCatIncReq)
 	if err != nil {
 		// response error
-		respErr, _ := json.Marshal(errors.NewErrorReponse(errors.InternalServerError, err.Error(), "", nil))
+		respErr, _ := json.Marshal(newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(respErr)
 		return

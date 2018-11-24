@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/api-plastik/config"
-	"github.com/api-plastik/errors"
+	newError "github.com/api-plastik/httpserver/error"
 )
 
 // CheckClientSecret ...
@@ -18,7 +18,7 @@ func CheckClientSecret(next http.Handler) http.Handler {
 		}
 
 		// create error response
-		err, _ := json.Marshal(errors.NewErrorReponse(errors.AuthError, "Tidak ada client tersedia", "", nil))
+		err, _ := json.Marshal(newError.NewErrorReponse(newError.AuthError, "Tidak ada client tersedia", "", nil))
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(err)
 	})

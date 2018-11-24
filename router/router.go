@@ -1,8 +1,9 @@
-package route
+package router
 
 import (
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/middlewares"
+	"github.com/api-plastik/httpserver/app/plastik/middlewares"
+	"github.com/api-plastik/httpserver/app/plastik/routes"
 	"github.com/go-chi/chi"
 )
 
@@ -17,7 +18,7 @@ func InitRoute(db *db.DB) *chi.Mux {
 
 	// assign routes
 	r.Route("/api", func(r chi.Router) {
-		NewRoutesV1(&r, db)
+		routes.NewRoutesV1Plastik(&r, db)
 	})
 
 	return r

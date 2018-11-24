@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/dto"
 	"github.com/api-plastik/internal/item/command"
+	"github.com/api-plastik/internal/item/dto"
 	"github.com/api-plastik/internal/item/model"
 	"github.com/api-plastik/internal/item/query"
 )

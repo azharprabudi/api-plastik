@@ -1,17 +1,17 @@
-package route
+package routes
 
 import (
 	"github.com/api-plastik/db"
-	itemPresentation "github.com/api-plastik/presentations/item"
-	itemCategoryPresentation "github.com/api-plastik/presentations/item-category"
-	sellerPresentation "github.com/api-plastik/presentations/seller"
-	supplierPresentation "github.com/api-plastik/presentations/supplier"
+	itemPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/item"
+	itemCategoryPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/item-category"
+	sellerPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/seller"
+	supplierPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/supplier"
 
 	"github.com/go-chi/chi"
 )
 
-// NewRoutesV1 ...
-func NewRoutesV1(newR *chi.Router, db *db.DB) {
+// NewRoutesV1Plastik ...
+func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	// initialize presentations
 	item := itemPresentation.NewItemPresentation(db)
 	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)

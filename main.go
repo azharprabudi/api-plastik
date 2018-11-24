@@ -5,7 +5,7 @@ import (
 	"github.com/api-plastik/config"
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/migrations"
-	"github.com/api-plastik/route"
+	"github.com/api-plastik/router"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	migrations.RunMigration(db)
 
 	/* create routing, and running all routing */
-	r := route.InitRoute(db)
+	r := router.InitRoute(db)
 
 	/* running server */
 	cmd.StartServer(config.Port, r)

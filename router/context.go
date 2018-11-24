@@ -1,12 +1,12 @@
-package route
+package router
 
 import (
 	"github.com/api-plastik/db"
 	"github.com/go-chi/chi"
 )
 
-// Route ...
-type Route struct {
+// Router ...
+type Router struct {
 	db *db.DB
 	r  *chi.Mux
 }

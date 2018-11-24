@@ -4,8 +4,9 @@ import (
 	"strconv"
 
 	"github.com/api-plastik/db"
-	helpers "github.com/api-plastik/helpers/db"
-	dbModel "github.com/api-plastik/helpers/db/model"
+	qb "github.com/api-plastik/helper/querybuilder"
+	qbModel "github.com/api-plastik/helper/querybuilder/model"
+	trx "github.com/api-plastik/helper/transaction"
 	execsql "github.com/api-plastik/migrations/exec-sql"
 	"github.com/api-plastik/migrations/model"
 	"github.com/jmoiron/sqlx"
@@ -26,8 +27,9 @@ func RunMigration(db *db.DB) {
 
 // running migration pgsql
 func migratePgSQL(sql *sqlx.DB) error {
-	c := helpers.CreateTrx(sql)
-	err := helpers.RunTrx(c, func(tx *sqlx.Tx) error {
+	t := trx.NewTransaction()
+	c := t.CreateTrx(sql)
+	err := t.RunTrx(c, func(tx *sqlx.Tx) error {
 		isAlreadyCreated := initVerTblPgSQL(tx)
 
 		// get current version table
@@ -88,7 +90,7 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 	// initialize variable
 	var err error
 	meta := new(model.Meta)
-	where := &dbModel.Condition{
+	where := &qbModel.Condition{
 		Key:      "key",
 		Operator: "=",
 		Value:    "db-version",
@@ -96,7 +98,8 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 	}
 
 	// execute query builder
-	query := helpers.QueryWhere("meta", []*dbModel.Condition{where})
+	q := qb.NewQueryBuilder()
+	query := q.QueryWhere("meta", []*qbModel.Condition{where})
 
 	// check the previous table already exists or new to created
 	if isAlreadyCreated == true {
@@ -136,14 +139,16 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 		Value: verStr,
 	}
 
-	condition := &dbModel.Condition{
+	condition := &qbModel.Condition{
 		Key:      "key",
 		Operator: "=",
 		Value:    "db-version",
 		NextCond: "",
 	}
 
-	query := helpers.UpdateWhere("meta", meta, []*dbModel.Condition{condition})
+	// execute query
+	q := qb.NewQueryBuilder()
+	query := q.Update("meta", meta, []*qbModel.Condition{condition})
 
 	// execute the query
 	_, err := tx.Exec(query)

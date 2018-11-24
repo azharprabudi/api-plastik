@@ -1,10 +1,10 @@
-package helpers
+package queries
 
 import (
 	"fmt"
 	"reflect"
 
-	"github.com/api-plastik/helpers/db/model"
+	"github.com/api-plastik/helper/querybuilder/model"
 )
 
 // this function below, to decide is the last loop or not
@@ -55,7 +55,8 @@ func isStruct(dType reflect.Kind) bool {
 	return false
 }
 
-func createQueriesInsert(data interface{}) (string, string) {
+// CreateQueriesInsert ...
+func CreateQueriesInsert(data interface{}) (string, string) {
 	var cols string
 	var values string
 
@@ -88,7 +89,8 @@ func createQueriesInsert(data interface{}) (string, string) {
 
 }
 
-func createQueriesUpdate(data interface{}) string {
+// CreateQueriesUpdate ...
+func CreateQueriesUpdate(data interface{}) string {
 	var sets string
 
 	v := reflect.ValueOf(data)
@@ -115,7 +117,8 @@ func createQueriesUpdate(data interface{}) string {
 	return sets
 }
 
-func createQueriesWhere(conditions []*model.Condition) string {
+// CreateQueriesWhere ...
+func CreateQueriesWhere(conditions []*model.Condition) string {
 	var where string
 	for index, condition := range conditions {
 		nextCondition := condition.NextCond
@@ -132,7 +135,8 @@ func createQueriesWhere(conditions []*model.Condition) string {
 	return where
 }
 
-func createQueriesWith(joins []*model.Join) string {
+// CreateQueriesWith ...
+func CreateQueriesWith(joins []*model.Join) string {
 	var with string
 	for _, join := range joins {
 		with = fmt.Sprintf(" %s %v %s %s ON %s=%s", with, join.TableFrom, join.Type, join.TableWith, join.ColumnTableFrom, join.ColumnTableWith)
