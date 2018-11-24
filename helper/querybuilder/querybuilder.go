@@ -55,8 +55,8 @@ func (qb *QueryBuilder) QueryWhereWith(tableName string, joins []*model.Join, co
 
 // Create ...
 func (qb *QueryBuilder) Create(tableName string, data interface{}) string {
-	cols, values := queries.CreateQueriesInsert(data)
-	query := fmt.Sprintf("INSERT INTO \"%s\" (%s) VALUES (%s)", tableName, cols, values)
+	cols, injection := queries.CreateQueriesInsert(data)
+	query := fmt.Sprintf("INSERT INTO \"%s\" (%s) VALUES (%s)", tableName, cols, injection)
 	return query
 }
 

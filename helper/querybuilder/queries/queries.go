@@ -58,7 +58,7 @@ func isStruct(dType reflect.Kind) bool {
 // CreateQueriesInsert ...
 func CreateQueriesInsert(data interface{}) (string, string) {
 	var cols string
-	var values string
+	var injection string
 
 	v := reflect.ValueOf(data)
 	for i := 0; i < v.NumField(); i++ {
@@ -73,20 +73,10 @@ func CreateQueriesInsert(data interface{}) (string, string) {
 		columnName := v.Type().Field(i).Tag.Get("db")
 		cols = fmt.Sprintf("%s\"%s\"%s ", cols, columnName, separComma)
 
-		// set value
-		value := v.Field(i)
-		dTypeVal := value.Kind()
-
-		// check value by data type
-		if isString(dTypeVal) == true || isStruct(dTypeVal) {
-			values = fmt.Sprintf("%s'%s'%s ", values, value, separComma)
-		} else {
-			values = fmt.Sprintf("%s%s%s ", values, value, separComma)
-
-		}
+		// set injection
+		injection = fmt.Sprintf("%s$%d%s ", injection, i+1, separComma)
 	}
-	return cols, values
-
+	return cols, injection
 }
 
 // CreateQueriesUpdate ...
@@ -102,17 +92,9 @@ func CreateQueriesUpdate(data interface{}) string {
 		// get column
 		column := v.Type().Field(i).Tag.Get("db")
 
-		// get value
-		value := v.Field(i)
-		dTypeVal := value.Kind()
+		// set
+		sets = fmt.Sprintf("%s%s=$%d%s", sets, column, i+1, separComma)
 
-		// check value by data type
-		if isString(dTypeVal) == true || isStruct(dTypeVal) {
-			sets = fmt.Sprintf("%s%s='%s'%s", sets, column, value, separComma)
-		} else {
-			sets = fmt.Sprintf("%s%s=%v%s", sets, column, value, separComma)
-
-		}
 	}
 	return sets
 }

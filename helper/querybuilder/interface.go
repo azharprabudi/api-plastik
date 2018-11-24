@@ -10,5 +10,6 @@ type QueryBuilderInterface interface {
 	QueryWhereWith(string, []*model.Join, []*model.Condition) string
 	Create(string, interface{}) string
 	Update(string, interface{}, []*model.Condition) string
+	UpdateWhere(string, interface{}, []*model.Condition) string
 	Delete(string, []*model.Condition) string
 }
