@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/helper/querybuilder"
 	"github.com/api-plastik/internal/item/model"
@@ -10,10 +8,8 @@ import (
 
 // CreateCategory ...
 func (itemCommand *ItemCommand) CreateCategory(itemCat *model.ItemCategoryCreate) error {
-	q := qb.NewQueryBuilder()
-	query := q.Create("itemCategory", *itemCat)
-	fmt.Println(query)
-	_, err := itemCommand.db.PgSQL.Exec(query)
+	query := itemCommand.q.Create("itemCategory", *itemCat)
+	_, err := itemCommand.db.PgSQL.Exec(query, itemCat.Name, itemCat.CreatedAt)
 	if err != nil {
 		return err
 	}
@@ -22,7 +18,9 @@ func (itemCommand *ItemCommand) CreateCategory(itemCat *model.ItemCategoryCreate
 
 // NewItemCommand ...
 func NewItemCommand(db *db.DB) ItemCommandInterface {
+	q := qb.NewQueryBuilder()
 	return &ItemCommand{
+		q:  q,
 		db: db,
 	}
 }
