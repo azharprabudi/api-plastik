@@ -148,10 +148,10 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 
 	// execute query
 	q := qb.NewQueryBuilder()
-	query := q.Update("meta", meta, []*qbModel.Condition{condition})
+	query := q.UpdateWhere("meta", meta, []*qbModel.Condition{condition})
 
 	// execute the query
-	_, err := tx.Exec(query)
+	_, err := tx.Exec(query, meta.Key, meta.Value)
 
 	if err != nil {
 		return err
