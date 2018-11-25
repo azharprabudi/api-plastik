@@ -25,6 +25,18 @@ func (itemService *ItemService) GetItemCategory() ([]*dto.ItemCategoryIncRes, er
 	return categoriesDTO, nil
 }
 
+// GetItemCategoryByID ...
+func (itemService *ItemService) GetItemCategoryByID(categoryID int) (*dto.ItemCategoryIncRes, error) {
+	categoryModel, err := itemService.query.GetCategoryByID(categoryID)
+	if err != nil {
+		return nil, err
+	}
+
+	// transform data from model
+	categoryDTO := itemService.transform.TransformGetCategoryByID(categoryModel)
+	return categoryDTO, nil
+}
+
 // CreateItemCategory ...
 func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryIncReq) error {
 	itemCategoryCreate := &model.ItemCategoryCreate{

@@ -8,4 +8,5 @@ import (
 // ItemTransformInterface ...
 type ItemTransformInterface interface {
 	TransformGetCategory([]*model.ItemCategoryModelRead) []*dto.ItemCategoryIncRes
+	TransformGetCategoryByID(*model.ItemCategoryModelRead) *dto.ItemCategoryIncRes
 }

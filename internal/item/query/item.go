@@ -3,6 +3,7 @@ package query
 import (
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/helper/querybuilder"
+	qbModel "github.com/api-plastik/helper/querybuilder/model"
 	"github.com/api-plastik/internal/item/model"
 )
 
@@ -29,6 +30,29 @@ func (iq *ItemQuery) GetCategory() ([]*model.ItemCategoryModelRead, error) {
 	}
 
 	return results, nil
+}
+
+// GetCategoryByID ...
+func (iq *ItemQuery) GetCategoryByID(categoryID int) (*model.ItemCategoryModelRead, error) {
+	// init variable
+	result := new(model.ItemCategoryModelRead)
+
+	// create conditional
+	where := &qbModel.Condition{
+		Key:      "itemCategoryId",
+		NextCond: "",
+		Operator: "=",
+		Value:    categoryID,
+	}
+
+	// get query and execute
+	query := iq.qb.QueryWhere("itemCategory", []*qbModel.Condition{where})
+	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // NewItemQuery ...

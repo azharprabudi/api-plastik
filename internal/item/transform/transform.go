@@ -22,6 +22,15 @@ func (it *ItemTransform) TransformGetCategory(itemCategoryModelRead []*model.Ite
 	return itemCategoryIncRes
 }
 
+// TransformGetCategoryByID ...
+func (it *ItemTransform) TransformGetCategoryByID(itemCategoryModelRead *model.ItemCategoryModelRead) *dto.ItemCategoryIncRes {
+	return &dto.ItemCategoryIncRes{
+		ID:        itemCategoryModelRead.ItemCategoryID.ItemCategoryID,
+		Name:      itemCategoryModelRead.Name,
+		CreatedAt: itemCategoryModelRead.CreatedAt,
+	}
+}
+
 // NewItemTransform ...
 func NewItemTransform() ItemTransformInterface {
 	return ItemTransformSingleton

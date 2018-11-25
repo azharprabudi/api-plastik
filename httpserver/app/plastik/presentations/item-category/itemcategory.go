@@ -2,6 +2,9 @@ package presentations
 
 import (
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi"
 
 	"github.com/api-plastik/httpserver/app/plastik/presentations"
 	newError "github.com/api-plastik/httpserver/error"
@@ -25,7 +28,22 @@ func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
 
 // FindByID ...
 func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
+	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
+	result, err := item.itemService.GetItemCategoryByID(categoryID)
+	if err != nil {
+		// response error
+		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	response.SendResponse(w, http.StatusCreated, result)
+	return
 }
 
 // Create ...
