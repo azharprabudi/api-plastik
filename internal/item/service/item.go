@@ -3,12 +3,27 @@ package service
 import (
 	"time"
 
+	"github.com/api-plastik/internal/item/transform"
+
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/internal/item/command"
 	"github.com/api-plastik/internal/item/dto"
 	"github.com/api-plastik/internal/item/model"
 	"github.com/api-plastik/internal/item/query"
 )
+
+// GetItemCategory ...
+func (itemService *ItemService) GetItemCategory() ([]*dto.ItemCategoryIncRes, error) {
+	// add data to db
+	categoriesModel, err := itemService.query.GetCategory()
+	if err != nil {
+		return nil, err
+	}
+
+	// transform data from model
+	categoriesDTO := itemService.transform.TransformGetCategory(categoriesModel)
+	return categoriesDTO, nil
+}
 
 // CreateItemCategory ...
 func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryIncReq) error {
@@ -28,7 +43,8 @@ func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategor
 // NewItemService ...
 func NewItemService(db *db.DB) ItemServiceInterface {
 	return &ItemService{
-		query:   query.NewItemQuery(db),
-		command: command.NewItemCommand(db),
+		query:     query.NewItemQuery(db),
+		command:   command.NewItemCommand(db),
+		transform: transform.NewItemTransform(),
 	}
 }

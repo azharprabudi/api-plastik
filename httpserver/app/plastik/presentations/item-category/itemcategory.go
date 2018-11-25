@@ -15,7 +15,12 @@ import (
 
 // Find ...
 func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
-
+	results, err := item.itemService.GetItemCategory()
+	if err != nil {
+		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+	response.SendResponse(w, http.StatusCreated, results)
 }
 
 // FindByID ...
@@ -50,8 +55,8 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		response.SendResponse(w, http.StatusBadRequest, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	w.Write(nil)
+
+	response.SendResponse(w, http.StatusCreated, nil)
 	return
 }
 
