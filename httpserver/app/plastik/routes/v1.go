@@ -24,28 +24,28 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Get("/item", item.Find)
 		r.Get("/item/{id}", item.FindByID)
 		r.Post("/item", item.Create)
-		r.Patch("/item", item.Update)
-		r.Delete("/item", item.Delete)
+		r.Patch("/item/{id}", item.Update)
+		r.Delete("/item/{id}", item.Delete)
 
 		/* itemCategory */
 		r.Get("/itemcategory", itemCategory.Find)
 		r.Get("/itemcategory/{id}", itemCategory.FindByID)
 		r.Post("/itemcategory", itemCategory.Create)
-		r.Patch("/itemcategory", itemCategory.Update)
-		r.Delete("/itemcategory", itemCategory.Delete)
+		r.Patch("/itemcategory/{id}", itemCategory.Update)
+		r.Delete("/itemcategory/{id}", itemCategory.Delete)
 
 		/* item */
 		r.Get("/supplier", supplier.Find)
 		r.Get("/supplier/{id}", supplier.FindByID)
 		r.Post("/supplier", supplier.Create)
-		r.Patch("/supplier", supplier.Update)
-		r.Delete("/supplier", supplier.Delete)
+		r.Patch("/supplier/{id}", supplier.Update)
+		r.Delete("/supplier/{id}", supplier.Delete)
 
 		/* seller */
 		r.Get("/seller", seller.Find)
 		r.Get("/seller/{id}", seller.FindByID)
 		r.Post("/seller", seller.Create)
-		r.Patch("/seller", seller.Update)
-		r.Delete("/seller", seller.Delete)
+		r.Patch("/seller/{id}", seller.Update)
+		r.Delete("/seller/{id}", seller.Delete)
 	})
 }
