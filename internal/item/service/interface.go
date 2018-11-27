@@ -4,9 +4,9 @@ import "github.com/api-plastik/internal/item/dto"
 
 // ItemServiceInterface ...
 type ItemServiceInterface interface {
-	CreateItemCategory(*dto.ItemCategoryIncReq) error
-	UpdateItemCategory(int, *dto.ItemCategoryIncReq) error
+	CreateItemCategory(*dto.ItemCategoryReq) error
+	UpdateItemCategory(int, *dto.ItemCategoryReq) error
 	DeleteItemCategory(int) error
-	GetItemCategory() ([]*dto.ItemCategoryIncRes, error)
-	GetItemCategoryByID(int) (*dto.ItemCategoryIncRes, error)
+	GetItemCategory() ([]*dto.ItemCategoryRes, error)
+	GetItemCategoryByID(int) *dto.ItemCategoryRes
 }

@@ -35,13 +35,7 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := item.itemService.GetItemCategoryByID(categoryID)
-	if err != nil {
-		// response error
-		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
-		return
-	}
-
+	result := item.itemService.GetItemCategoryByID(categoryID)
 	response.SendResponse(w, http.StatusOK, result)
 	return
 }
@@ -50,7 +44,7 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	itemCatIncReq := new(dto.ItemCategoryIncReq)
+	itemCatIncReq := new(dto.ItemCategoryReq)
 
 	// parse json
 	request.GetRequest(r.Body, itemCatIncReq)
@@ -89,7 +83,7 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var validations = []string{}
-	itemCatIncReq := new(dto.ItemCategoryIncReq)
+	itemCatIncReq := new(dto.ItemCategoryReq)
 
 	// parse json
 	request.GetRequest(r.Body, itemCatIncReq)

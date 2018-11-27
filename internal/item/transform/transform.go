@@ -8,7 +8,7 @@ import (
 )
 
 // TransformCreateCategory ...
-func (it *ItemTransform) TransformCreateCategory(itemCategoryModelDTO *dto.ItemCategoryIncReq) *model.ItemCategoryCreate {
+func (it *ItemTransform) TransformCreateCategory(itemCategoryModelDTO *dto.ItemCategoryReq) *model.ItemCategoryCreate {
 	itemCategoryCreate := &model.ItemCategoryCreate{
 		Name:      itemCategoryModelDTO.Name,
 		CreatedAt: time.Now().UTC(),
@@ -17,7 +17,7 @@ func (it *ItemTransform) TransformCreateCategory(itemCategoryModelDTO *dto.ItemC
 }
 
 // TransformUpdateCategory ...
-func (it *ItemTransform) TransformUpdateCategory(itemCategoryModelDTO *dto.ItemCategoryIncReq) *model.ItemCategoryUpdate {
+func (it *ItemTransform) TransformUpdateCategory(itemCategoryModelDTO *dto.ItemCategoryReq) *model.ItemCategoryUpdate {
 	itemCategoryUpdate := &model.ItemCategoryUpdate{
 		Name: itemCategoryModelDTO.Name,
 	}
@@ -25,13 +25,13 @@ func (it *ItemTransform) TransformUpdateCategory(itemCategoryModelDTO *dto.ItemC
 }
 
 // TransformGetCategory ...
-func (it *ItemTransform) TransformGetCategory(itemCategoryModelRead []*model.ItemCategoryModelRead) []*dto.ItemCategoryIncRes {
+func (it *ItemTransform) TransformGetCategory(itemCategoryModelRead []*model.ItemCategoryModelRead) []*dto.ItemCategoryRes {
 	// init variable
-	var itemCategoryIncRes = []*dto.ItemCategoryIncRes{}
+	var itemCategoryIncRes = []*dto.ItemCategoryRes{}
 
 	// transform data as dto expected
 	for _, item := range itemCategoryModelRead {
-		itemCategoryIncRes = append(itemCategoryIncRes, &dto.ItemCategoryIncRes{
+		itemCategoryIncRes = append(itemCategoryIncRes, &dto.ItemCategoryRes{
 			ID:        item.ItemCategoryID.ItemCategoryID,
 			Name:      item.Name,
 			CreatedAt: item.CreatedAt,
@@ -42,8 +42,8 @@ func (it *ItemTransform) TransformGetCategory(itemCategoryModelRead []*model.Ite
 }
 
 // TransformGetCategoryByID ...
-func (it *ItemTransform) TransformGetCategoryByID(itemCategoryModelRead *model.ItemCategoryModelRead) *dto.ItemCategoryIncRes {
-	return &dto.ItemCategoryIncRes{
+func (it *ItemTransform) TransformGetCategoryByID(itemCategoryModelRead *model.ItemCategoryModelRead) *dto.ItemCategoryRes {
+	return &dto.ItemCategoryRes{
 		ID:        itemCategoryModelRead.ItemCategoryID.ItemCategoryID,
 		Name:      itemCategoryModelRead.Name,
 		CreatedAt: itemCategoryModelRead.CreatedAt,

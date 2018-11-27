@@ -10,7 +10,7 @@ import (
 )
 
 // GetItemCategory ...
-func (itemService *ItemService) GetItemCategory() ([]*dto.ItemCategoryIncRes, error) {
+func (itemService *ItemService) GetItemCategory() ([]*dto.ItemCategoryRes, error) {
 	// add data to db
 	categoriesModel, err := itemService.query.GetCategory()
 	if err != nil {
@@ -23,19 +23,19 @@ func (itemService *ItemService) GetItemCategory() ([]*dto.ItemCategoryIncRes, er
 }
 
 // GetItemCategoryByID ...
-func (itemService *ItemService) GetItemCategoryByID(categoryID int) (*dto.ItemCategoryIncRes, error) {
-	categoryModel, err := itemService.query.GetCategoryByID(categoryID)
-	if err != nil {
-		return nil, err
+func (itemService *ItemService) GetItemCategoryByID(categoryID int) *dto.ItemCategoryRes {
+	categoryModel := itemService.query.GetCategoryByID(categoryID)
+	if categoryModel == nil {
+		return nil
 	}
 
 	// transform data from model
 	categoryDTO := itemService.transform.TransformGetCategoryByID(categoryModel)
-	return categoryDTO, nil
+	return categoryDTO
 }
 
 // CreateItemCategory ...
-func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryIncReq) error {
+func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryReq) error {
 	// transform dto to model
 	itemCategoryCreate := itemService.transform.TransformCreateCategory(itemCategory)
 
@@ -48,7 +48,7 @@ func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategor
 }
 
 // UpdateItemCategory ...
-func (itemService *ItemService) UpdateItemCategory(categoryID int, itemCategory *dto.ItemCategoryIncReq) error {
+func (itemService *ItemService) UpdateItemCategory(categoryID int, itemCategory *dto.ItemCategoryReq) error {
 	// transform dto to model
 	itemCategoryUpdate := itemService.transform.TransformUpdateCategory(itemCategory)
 

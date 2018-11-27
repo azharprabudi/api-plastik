@@ -7,8 +7,8 @@ import (
 
 // ItemTransformInterface ...
 type ItemTransformInterface interface {
-	TransformCreateCategory(*dto.ItemCategoryIncReq) *model.ItemCategoryCreate
-	TransformUpdateCategory(*dto.ItemCategoryIncReq) *model.ItemCategoryUpdate
-	TransformGetCategory([]*model.ItemCategoryModelRead) []*dto.ItemCategoryIncRes
-	TransformGetCategoryByID(*model.ItemCategoryModelRead) *dto.ItemCategoryIncRes
+	TransformCreateCategory(*dto.ItemCategoryReq) *model.ItemCategoryCreate
+	TransformUpdateCategory(*dto.ItemCategoryReq) *model.ItemCategoryUpdate
+	TransformGetCategory([]*model.ItemCategoryModelRead) []*dto.ItemCategoryRes
+	TransformGetCategoryByID(*model.ItemCategoryModelRead) *dto.ItemCategoryRes
 }
