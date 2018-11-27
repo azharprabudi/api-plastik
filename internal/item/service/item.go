@@ -1,14 +1,11 @@
 package service
 
 import (
-	"time"
-
 	"github.com/api-plastik/internal/item/transform"
 
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/internal/item/command"
 	"github.com/api-plastik/internal/item/dto"
-	"github.com/api-plastik/internal/item/model"
 	"github.com/api-plastik/internal/item/query"
 )
 
@@ -39,13 +36,34 @@ func (itemService *ItemService) GetItemCategoryByID(categoryID int) (*dto.ItemCa
 
 // CreateItemCategory ...
 func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryIncReq) error {
-	itemCategoryCreate := &model.ItemCategoryCreate{
-		Name:      itemCategory.Name,
-		CreatedAt: time.Now().UTC(),
-	}
+	// transform dto to model
+	itemCategoryCreate := itemService.transform.TransformCreateCategory(itemCategory)
 
 	// add data to db
 	err := itemService.command.CreateCategory(itemCategoryCreate)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UpdateItemCategory ...
+func (itemService *ItemService) UpdateItemCategory(categoryID int, itemCategory *dto.ItemCategoryIncReq) error {
+	// transform dto to model
+	itemCategoryUpdate := itemService.transform.TransformUpdateCategory(itemCategory)
+
+	// update to db
+	err := itemService.command.UpdateCategory(categoryID, itemCategoryUpdate)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteItemCategory ...
+func (itemService *ItemService) DeleteItemCategory(categoryID int) error {
+	// delete data from db
+	err := itemService.command.DeleteCategory(categoryID)
 	if err != nil {
 		return err
 	}

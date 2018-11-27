@@ -13,7 +13,7 @@ func (iq *ItemQuery) GetCategory() ([]*model.ItemCategoryModelRead, error) {
 	var results = []*model.ItemCategoryModelRead{}
 
 	// get query
-	query := iq.qb.Query("itemCategory", 0, 0)
+	query := iq.qb.Query("item_categories", 0, 0)
 	rows, err := iq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
@@ -39,14 +39,14 @@ func (iq *ItemQuery) GetCategoryByID(categoryID int) (*model.ItemCategoryModelRe
 
 	// create conditional
 	where := &qbModel.Condition{
-		Key:      "itemCategoryId",
+		Key:      "id",
 		NextCond: "",
 		Operator: "=",
 		Value:    categoryID,
 	}
 
 	// get query and execute
-	query := iq.qb.QueryWhere("itemCategory", []*qbModel.Condition{where})
+	query := iq.qb.QueryWhere("item_categories", []*qbModel.Condition{where})
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 
 	if err != nil {

@@ -5,4 +5,6 @@ import "github.com/api-plastik/internal/item/model"
 // ItemCommandInterface ...
 type ItemCommandInterface interface {
 	CreateCategory(*model.ItemCategoryCreate) error
+	UpdateCategory(int, *model.ItemCategoryUpdate) error
+	DeleteCategory(int) error
 }

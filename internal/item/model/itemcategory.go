@@ -20,3 +20,8 @@ type ItemCategoryCreate struct {
 	Name      string    `db:"name"`
 	CreatedAt time.Time `db:"created_at"`
 }
+
+// ItemCategoryUpdate ...
+type ItemCategoryUpdate struct {
+	Name string `db:"name"`
+}

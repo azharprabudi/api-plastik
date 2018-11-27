@@ -80,12 +80,62 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 // Update ...
 func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
+	// get id from url parameter
+	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
+	var validations = []string{}
+	itemCatIncReq := new(dto.ItemCategoryIncReq)
+
+	// parse json
+	request.GetRequest(r.Body, itemCatIncReq)
+
+	// do validations
+	if itemCatIncReq.Name == "" {
+		validations = append(validations, "name field is required")
+	}
+
+	// if validation exists there is error
+	if len(validations) > 0 {
+		// response error
+		response.SendResponse(w, http.StatusBadRequest, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		return
+	}
+
+	err = item.itemService.UpdateItemCategory(categoryID, itemCatIncReq)
+	if err != nil {
+		// response error
+		response.SendResponse(w, http.StatusBadRequest, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	response.SendResponse(w, http.StatusOK, nil)
+	return
 }
 
 // Delete ...
 func (item *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
+	// get id from url parameter
+	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
+	err = item.itemService.DeleteItemCategory(categoryID)
+	if err != nil {
+		// response error
+		response.SendResponse(w, http.StatusBadRequest, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	response.SendResponse(w, http.StatusOK, nil)
+	return
 }
 
 // NewPresentationItemCategory ...

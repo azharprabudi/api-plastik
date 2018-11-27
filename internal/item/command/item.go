@@ -3,13 +3,56 @@ package command
 import (
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/helper/querybuilder"
+	qbModel "github.com/api-plastik/helper/querybuilder/model"
 	"github.com/api-plastik/internal/item/model"
 )
 
 // CreateCategory ...
 func (itemCommand *ItemCommand) CreateCategory(itemCat *model.ItemCategoryCreate) error {
-	query := itemCommand.q.Create("itemCategory", *itemCat)
+	query := itemCommand.q.Create("item_categories", *itemCat)
 	_, err := itemCommand.db.PgSQL.Exec(query, itemCat.Name, itemCat.CreatedAt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UpdateCategory ...
+func (itemCommand *ItemCommand) UpdateCategory(id int, itemCat *model.ItemCategoryUpdate) error {
+	// create condition
+	where := &qbModel.Condition{
+		Key:      "id",
+		Value:    id,
+		Operator: "=",
+		NextCond: "",
+	}
+
+	// create query
+	query := itemCommand.q.UpdateWhere("item_categories", *itemCat, []*qbModel.Condition{where})
+
+	// exec query
+	_, err := itemCommand.db.PgSQL.Exec(query, itemCat.Name)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteCategory ...
+func (itemCommand *ItemCommand) DeleteCategory(id int) error {
+	// create condition
+	where := &qbModel.Condition{
+		Key:      "id",
+		Value:    id,
+		Operator: "=",
+		NextCond: "",
+	}
+
+	// create query
+	query := itemCommand.q.Delete("item_categories", []*qbModel.Condition{where})
+
+	// exec query
+	_, err := itemCommand.db.PgSQL.Exec(query)
 	if err != nil {
 		return err
 	}
