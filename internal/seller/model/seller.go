@@ -8,7 +8,7 @@ import (
 
 // SellerID ...
 type SellerID struct {
-	SellerID uuid.UUID `db:"sellerId"`
+	SellerID uuid.UUID `db:"id"`
 }
 
 // SellerModelRead ...
@@ -19,8 +19,8 @@ type SellerModelRead struct {
 // SellerModelCreate ...
 type SellerModelCreate struct {
 	SellerID
-	Name      string    `db:"sellerName"`
-	Phone     string    `db:"sellerphone"`
-	Address   string    `db:"sellerAddress"`
-	CreatedAt time.Time `db:"createdAt"`
+	Name      string    `db:"name"`
+	Phone     string    `db:"phone"`
+	Address   string    `db:"address"`
+	CreatedAt time.Time `db:"created_at"`
 }

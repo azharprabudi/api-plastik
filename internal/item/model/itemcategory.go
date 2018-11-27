@@ -6,7 +6,7 @@ import (
 
 // ItemCategoryID ...
 type ItemCategoryID struct {
-	ItemCategoryID int `db:"itemCategoryId"`
+	ItemCategoryID int `db:"id"`
 }
 
 // ItemCategoryModelRead ...
@@ -17,6 +17,6 @@ type ItemCategoryModelRead struct {
 
 // ItemCategoryCreate ...
 type ItemCategoryCreate struct {
-	Name      string    `db:"itemCategoryName"`
-	CreatedAt time.Time `db:"createdAt"`
+	Name      string    `db:"name"`
+	CreatedAt time.Time `db:"created_at"`
 }

@@ -8,7 +8,7 @@ import (
 
 // ItemID ...
 type ItemID struct {
-	ItemID uuid.UUID `db:"itemId"`
+	ItemID uuid.UUID `db:"id"`
 }
 
 // ItemModelRead ...
@@ -19,7 +19,7 @@ type ItemModelRead struct {
 // ItemModelCreate ...
 type ItemModelCreate struct {
 	ItemID
-	Name           string    `db:"itemName"`
-	CategoryItemID int       `db:"itemCategoryId"`
-	CreatedAt      time.Time `db:"createdAt"`
+	Name           string    `db:"name"`
+	CategoryItemID int       `db:"category_id"`
+	CreatedAt      time.Time `db:"created_at"`
 }
