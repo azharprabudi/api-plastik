@@ -1,6 +1,7 @@
 package presentations
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -61,14 +62,19 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := item.itemService.CreateItemCategory(itemCatIncReq)
+	id, err := item.itemService.CreateItemCategory(itemCatIncReq)
 	if err != nil {
 		// response error
 		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusCreated, nil, nil)
+	// create headers
+	headers := map[string]string{
+		"location": fmt.Sprintf("%s/%v", r.Host, id),
+	}
+
+	response.SendResponse(w, http.StatusCreated, headers, nil)
 	return
 }
 

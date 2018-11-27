@@ -35,16 +35,16 @@ func (itemService *ItemService) GetItemCategoryByID(categoryID int) *dto.ItemCat
 }
 
 // CreateItemCategory ...
-func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryReq) error {
+func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryReq) (int64, error) {
 	// transform dto to model
 	itemCategoryCreate := itemService.transform.TransformCreateCategory(itemCategory)
 
 	// add data to db
-	err := itemService.command.CreateCategory(itemCategoryCreate)
+	id, err := itemService.command.CreateCategory(itemCategoryCreate)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 // UpdateItemCategory ...

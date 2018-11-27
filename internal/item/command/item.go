@@ -8,13 +8,17 @@ import (
 )
 
 // CreateCategory ...
-func (itemCommand *ItemCommand) CreateCategory(itemCat *model.ItemCategoryCreate) error {
+func (itemCommand *ItemCommand) CreateCategory(itemCat *model.ItemCategoryCreate) (int64, error) {
+	// temp id for returned
+	var id int64
+
 	query := itemCommand.q.Create("item_categories", *itemCat)
-	_, err := itemCommand.db.PgSQL.Exec(query, itemCat.Name, itemCat.CreatedAt)
+	err := itemCommand.db.PgSQL.QueryRowx(query, itemCat.Name, itemCat.CreatedAt).Scan(&id)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+
+	return id, nil
 }
 
 // UpdateCategory ...
