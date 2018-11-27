@@ -78,7 +78,7 @@ func (qb *QueryBuilder) UpdateWhere(tableName string, data interface{}, conditio
 // Delete ...
 func (qb *QueryBuilder) Delete(tableName string, conditions []*model.Condition) string {
 	withs := queries.CreateQueriesWhere(conditions)
-	query := fmt.Sprintf("DELETE FROM \"%s\" %s", tableName, withs)
+	query := fmt.Sprintf("DELETE FROM \"%s\" WHERE %s", tableName, withs)
 	return query
 }
 
