@@ -1,12 +1,12 @@
 package presentations
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
 
+	"github.com/api-plastik/helper/baseurl"
 	"github.com/api-plastik/httpserver/app/plastik/presentations"
 	newError "github.com/api-plastik/httpserver/error"
 	"github.com/api-plastik/httpserver/request"
@@ -71,7 +71,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": fmt.Sprintf("%s/%v", r.Host, id),
+		"location": baseurl.Get(r, id),
 	}
 
 	response.SendResponse(w, http.StatusCreated, headers, nil)
