@@ -23,7 +23,7 @@ func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
 		response.SendResponse(w, http.StatusInternalServerError, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
-	response.SendResponse(w, http.StatusCreated, results)
+	response.SendResponse(w, http.StatusOK, results)
 }
 
 // FindByID ...
@@ -42,7 +42,7 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.SendResponse(w, http.StatusCreated, result)
+	response.SendResponse(w, http.StatusOK, result)
 	return
 }
 
