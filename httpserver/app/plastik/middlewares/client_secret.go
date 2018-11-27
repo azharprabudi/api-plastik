@@ -11,7 +11,6 @@ import (
 // CheckClientSecret ...
 func CheckClientSecret(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// fmt.Println(r.Header["Client_secret"])
 		if len(r.Header["Client_secret"]) > 0 && r.Header["Client_secret"][0] == config.CLIENTSECRET {
 			next.ServeHTTP(w, r)
 			return

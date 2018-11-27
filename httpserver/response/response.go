@@ -12,7 +12,6 @@ func SendResponse(w http.ResponseWriter, statusCode int, headers map[string]stri
 	// check headers is exists or not
 	if len(headers) > 0 {
 		for headerKey, headerVal := range headers {
-			print(len(headers))
 			w.Header().Set(headerKey, headerVal)
 		}
 	}
