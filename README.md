@@ -47,6 +47,10 @@ type SellerPresentation struct {
 </li>
 
 <li>
+  <b>Dont give separator at filename</b>
+</li>
+
+<li>
   <b>Dont forget to create testing unit (later)</b>
 </li>
 </ol>
