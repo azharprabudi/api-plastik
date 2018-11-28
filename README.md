@@ -7,7 +7,7 @@
   <b>Give domain prefix at function, to create a new instance</b>
   <pre>
     <code>
-      func NewSellerService() {} 
+func NewSellerService() {} 
     </code>
   </pre>
 </li>
@@ -16,7 +16,7 @@
   <b>Give domain suffix at method inside class name</b>
   <pre>
     <code>
-      func (seller *Seller) CreateSeller()
+func (seller *Seller) CreateSeller()
     </code>
   </pre>
 </li>
@@ -25,7 +25,7 @@
   <b>Give domain prefix at variable name</b>
   <pre>
     <code>
-      sellerID := "examples"
+sellerID := "examples"
     </code>
   </pre>
 </li>
@@ -34,15 +34,14 @@
   <b>If there is one dependency to service, or another just give service name dont give a namespace</b>
   <pre>
     <code>
-      // good
-      type SellerPresentation struct {
-        service: xxxx
-      }
-      
-      // bad
-      type SellerPresentation struct {
-        sellerService: xxxx // if there is one service dont give a namespace, but if more then give it
-      }
+(GOOD)
+type SellerPresentation struct {
+  service: "xxxx"
+}
+(BAD)
+type SellerPresentation struct {
+  sellerService: "xxxx" // if there is one service dont give a namespace, but if more then give it
+}
     </code>
   </pre>
 </li>
