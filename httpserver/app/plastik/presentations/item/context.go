@@ -4,7 +4,7 @@ import (
 	"github.com/api-plastik/internal/item/service"
 )
 
-// ItemPresentation ...
-type ItemPresentation struct {
+// Item ...
+type Item struct {
 	itemService service.ItemServiceInterface
 }

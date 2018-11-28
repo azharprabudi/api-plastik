@@ -63,6 +63,59 @@ func (itemCommand *ItemCommand) DeleteCategory(id int) error {
 	return nil
 }
 
+// CreateItem ...
+func (itemCommand *ItemCommand) CreateItem(item *model.ItemCreate) error {
+	query := itemCommand.q.Create("items", *item)
+	_, err := itemCommand.db.PgSQL.Exec(query, item.ItemID, item.CategoryItemID, item.Name, item.CreatedAt)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateItem ...
+func (itemCommand *ItemCommand) UpdateItem(id string, item *model.ItemUpdate) error {
+	// create condition
+	where := &qbModel.Condition{
+		Key:      "id",
+		Value:    id,
+		Operator: "=",
+		NextCond: "",
+	}
+
+	// create query
+	query := itemCommand.q.UpdateWhere("items", *item, []*qbModel.Condition{where})
+
+	// exec query
+	_, err := itemCommand.db.PgSQL.Exec(query, item.Name, item.CategoryItemID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteItem ...
+func (itemCommand *ItemCommand) DeleteItem(id string) error {
+	// create condition
+	where := &qbModel.Condition{
+		Key:      "id",
+		Value:    id,
+		Operator: "=",
+		NextCond: "",
+	}
+
+	// create query
+	query := itemCommand.q.Delete("items", []*qbModel.Condition{where})
+
+	// exec query
+	_, err := itemCommand.db.PgSQL.Exec(query)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // NewItemCommand ...
 func NewItemCommand(db *db.DB) ItemCommandInterface {
 	q := qb.NewQueryBuilder()

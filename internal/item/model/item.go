@@ -11,15 +11,21 @@ type ItemID struct {
 	ItemID uuid.UUID `db:"id"`
 }
 
-// ItemModelRead ...
-type ItemModelRead struct {
-	ItemModelCreate
+// ItemRead ...
+type ItemRead struct {
+	ItemCreate
 }
 
-// ItemModelCreate ...
-type ItemModelCreate struct {
-	ItemID
-	Name           string    `db:"name"`
+// ItemCreate ...
+type ItemCreate struct {
+	ItemID         uuid.UUID `db:"id"`
 	CategoryItemID int       `db:"category_id"`
+	Name           string    `db:"name"`
 	CreatedAt      time.Time `db:"created_at"`
+}
+
+// ItemUpdate ...
+type ItemUpdate struct {
+	Name           string `db:"name"`
+	CategoryItemID int    `db:"category_id"`
 }

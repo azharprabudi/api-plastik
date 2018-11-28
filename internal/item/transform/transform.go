@@ -3,6 +3,8 @@ package transform
 import (
 	"time"
 
+	"github.com/satori/go.uuid"
+
 	"github.com/api-plastik/internal/item/dto"
 	"github.com/api-plastik/internal/item/model"
 )
@@ -47,6 +49,58 @@ func (it *ItemTransform) TransformGetCategoryByID(itemCategoryModelRead *model.I
 		ID:        itemCategoryModelRead.ItemCategoryID.ItemCategoryID,
 		Name:      itemCategoryModelRead.Name,
 		CreatedAt: itemCategoryModelRead.CreatedAt,
+	}
+}
+
+// TransformCreateItem ...
+func (it *ItemTransform) TransformCreateItem(itemDTO *dto.ItemReq) *model.ItemCreate {
+	itemCreate := &model.ItemCreate{
+		ItemID:         uuid.NewV4(),
+		Name:           itemDTO.Name,
+		CategoryItemID: itemDTO.CategoryID,
+		CreatedAt:      time.Now().UTC(),
+	}
+	return itemCreate
+}
+
+// TransformUpdateItem ...
+func (it *ItemTransform) TransformUpdateItem(itemDTO *dto.ItemReq) *model.ItemUpdate {
+	itemUpdate := &model.ItemUpdate{
+		Name:           itemDTO.Name,
+		CategoryItemID: itemDTO.CategoryID,
+	}
+	return itemUpdate
+}
+
+// TransformGetItem ...
+func (it *ItemTransform) TransformGetItem(itemRead []*model.ItemRead) []*dto.ItemRes {
+	// init variable
+	var itemRes = []*dto.ItemRes{}
+
+	// transform data as dto expected
+	for _, item := range itemRead {
+		itemRes = append(itemRes, &dto.ItemRes{
+			ID:        item.ItemCreate.ItemID,
+			CreatedAt: item.ItemCreate.CreatedAt,
+			ItemReq: dto.ItemReq{
+				Name:       item.ItemCreate.Name,
+				CategoryID: item.ItemCreate.CategoryItemID,
+			},
+		})
+	}
+
+	return itemRes
+}
+
+// TransformGetItemByID ...
+func (it *ItemTransform) TransformGetItemByID(itemRead *model.ItemRead) *dto.ItemRes {
+	return &dto.ItemRes{
+		ID:        itemRead.ItemCreate.ItemID,
+		CreatedAt: itemRead.ItemCreate.CreatedAt,
+		ItemReq: dto.ItemReq{
+			Name:       itemRead.ItemCreate.Name,
+			CategoryID: itemRead.ItemCreate.CategoryItemID,
+		},
 	}
 }
 
