@@ -13,7 +13,7 @@ func InitRoute(db *db.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	// apply middleware to all
-	r.Use(middlewares.SetContentType)
+	r.Use(middlewares.CheckContentType)
 	r.Use(middlewares.CheckClientSecret)
 
 	// assign routes

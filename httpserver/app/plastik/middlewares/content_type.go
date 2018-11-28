@@ -1,11 +1,24 @@
 package middlewares
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
 
-// SetContentType ...
-func SetContentType(next http.Handler) http.Handler {
+	newError "github.com/api-plastik/httpserver/error"
+)
+
+// CheckContentType ...
+func CheckContentType(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		next.ServeHTTP(w, r)
+		if len(r.Header["Content-Type"]) > 0 && r.Header["Content-Type"][0] == "application/json" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// create error response
+		err, _ := json.Marshal(newError.NewErrorReponse(newError.InternalServerError, "Need content type", "", nil))
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(err)
 	})
 }

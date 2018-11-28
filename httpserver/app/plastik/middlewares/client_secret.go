@@ -17,7 +17,8 @@ func CheckClientSecret(next http.Handler) http.Handler {
 		}
 
 		// create error response
-		err, _ := json.Marshal(newError.NewErrorReponse(newError.AuthError, "Tidak ada client tersedia", "", nil))
+		err, _ := json.Marshal(newError.NewErrorReponse(newError.AuthError, "There is no client secret exists", "", nil))
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(err)
 	})
