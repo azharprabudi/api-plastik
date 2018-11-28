@@ -11,16 +11,23 @@ type SellerID struct {
 	SellerID uuid.UUID `db:"id"`
 }
 
-// SellerModelRead ...
-type SellerModelRead struct {
-	SellerModelCreate
+// SellerRead ...
+type SellerRead struct {
+	SellerCreate
 }
 
-// SellerModelCreate ...
-type SellerModelCreate struct {
-	SellerID
+// SellerCreate ...
+type SellerCreate struct {
+	SellerID  uuid.UUID `db:"id"`
 	Name      string    `db:"name"`
 	Phone     string    `db:"phone"`
 	Address   string    `db:"address"`
 	CreatedAt time.Time `db:"created_at"`
+}
+
+// SellerUpdate ...
+type SellerUpdate struct {
+	Name    string `db:"name"`
+	Phone   string `db:"phone"`
+	Address string `db:"address"`
 }
