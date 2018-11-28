@@ -22,10 +22,10 @@ import (
 func (seller *Seller) Find(w http.ResponseWriter, r *http.Request) {
 	results, err := seller.sellerService.GetSeller()
 	if err != nil {
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
-	response.SendResponse(w, http.StatusOK, nil, results)
+	response.Send(w, http.StatusOK, nil, results)
 }
 
 // FindByID ...
@@ -37,12 +37,12 @@ func (seller *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
 	u, err := uuid.FromString(sellerID)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
 	result := seller.sellerService.GetSellerByID(u)
-	response.SendResponse(w, http.StatusOK, nil, result)
+	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
@@ -53,7 +53,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 	sellerCatIncReq := new(dto.SellerReq)
 
 	// parse json
-	request.GetRequest(r.Body, sellerCatIncReq)
+	request.Get(r.Body, sellerCatIncReq)
 
 	// do validations
 	if sellerCatIncReq.Name == "" {
@@ -67,14 +67,14 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	id, err := seller.sellerService.CreateSeller(sellerCatIncReq)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
@@ -83,7 +83,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 		"location": baseurl.Get(r, "sellercategories/", id),
 	}
 
-	response.SendResponse(w, http.StatusCreated, headers, nil)
+	response.Send(w, http.StatusCreated, headers, nil)
 	return
 }
 
@@ -96,7 +96,7 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 	u, err := uuid.FromString(sellerID)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
@@ -104,7 +104,7 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 	sellerReq := new(dto.SellerReq)
 
 	// parse json
-	request.GetRequest(r.Body, sellerReq)
+	request.Get(r.Body, sellerReq)
 
 	// do validations
 	if sellerReq.Name == "" {
@@ -114,18 +114,18 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	err = seller.sellerService.UpdateSeller(u, sellerReq)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusOK, nil, nil)
+	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
 
@@ -138,18 +138,18 @@ func (seller *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 	u, err := uuid.FromString(sellerID)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
 	err = seller.sellerService.DeleteSeller(u)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusOK, nil, nil)
+	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
 

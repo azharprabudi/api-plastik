@@ -20,10 +20,10 @@ import (
 func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
 	results, err := item.itemService.GetItem()
 	if err != nil {
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
-	response.SendResponse(w, http.StatusOK, nil, results)
+	response.Send(w, http.StatusOK, nil, results)
 }
 
 // FindByID ...
@@ -31,7 +31,7 @@ func (item *Item) FindByID(w http.ResponseWriter, r *http.Request) {
 	itemID := chi.URLParam(r, "id")
 
 	result := item.itemService.GetItemByID(itemID)
-	response.SendResponse(w, http.StatusOK, nil, result)
+	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
@@ -42,7 +42,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 	itemReq := new(dto.ItemReq)
 
 	// parse json
-	request.GetRequest(r.Body, itemReq)
+	request.Get(r.Body, itemReq)
 
 	// do validations
 	if itemReq.Name == "" {
@@ -52,14 +52,14 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	id, err := item.itemService.CreateItem(itemReq)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
@@ -68,7 +68,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 		"location": baseurl.Get(r, "item/", id),
 	}
 
-	response.SendResponse(w, http.StatusCreated, headers, nil)
+	response.Send(w, http.StatusCreated, headers, nil)
 	return
 }
 
@@ -81,7 +81,7 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 	itemReq := new(dto.ItemReq)
 
 	// parse json
-	request.GetRequest(r.Body, itemReq)
+	request.Get(r.Body, itemReq)
 
 	// do validations
 	if itemReq.Name == "" {
@@ -91,18 +91,18 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	err := item.itemService.UpdateItem(itemID, itemReq)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusOK, nil, nil)
+	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
 
@@ -114,11 +114,11 @@ func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
 	err := item.itemService.DeleteItem(itemID)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusOK, nil, nil)
+	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
 

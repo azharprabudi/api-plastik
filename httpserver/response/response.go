@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// SendResponse ...
-func SendResponse(w http.ResponseWriter, statusCode int, headers map[string]string, model interface{}) {
+// Send ...
+func Send(w http.ResponseWriter, statusCode int, headers map[string]string, model interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 
 	// check headers is exists or not

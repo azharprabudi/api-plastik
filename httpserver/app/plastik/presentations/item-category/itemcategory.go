@@ -21,10 +21,10 @@ import (
 func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
 	results, err := item.itemService.GetItemCategory()
 	if err != nil {
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
-	response.SendResponse(w, http.StatusOK, nil, results)
+	response.Send(w, http.StatusOK, nil, results)
 }
 
 // FindByID ...
@@ -32,12 +32,12 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
 	result := item.itemService.GetItemCategoryByID(categoryID)
-	response.SendResponse(w, http.StatusOK, nil, result)
+	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
@@ -48,7 +48,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 	itemCatIncReq := new(dto.ItemCategoryReq)
 
 	// parse json
-	request.GetRequest(r.Body, itemCatIncReq)
+	request.Get(r.Body, itemCatIncReq)
 
 	// do validations
 	if itemCatIncReq.Name == "" {
@@ -58,14 +58,14 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	id, err := item.itemService.CreateItemCategory(itemCatIncReq)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
@@ -74,7 +74,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		"location": baseurl.Get(r, "itemcategories/", id),
 	}
 
-	response.SendResponse(w, http.StatusCreated, headers, nil)
+	response.Send(w, http.StatusCreated, headers, nil)
 	return
 }
 
@@ -84,7 +84,7 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
@@ -92,7 +92,7 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 	itemCatIncReq := new(dto.ItemCategoryReq)
 
 	// parse json
-	request.GetRequest(r.Body, itemCatIncReq)
+	request.Get(r.Body, itemCatIncReq)
 
 	// do validations
 	if itemCatIncReq.Name == "" {
@@ -102,18 +102,18 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 	// if validation exists there is error
 	if len(validations) > 0 {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	err = item.itemService.UpdateItemCategory(categoryID, itemCatIncReq)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusOK, nil, nil)
+	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
 
@@ -123,18 +123,18 @@ func (item *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
 	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
 	err = item.itemService.DeleteItemCategory(categoryID)
 	if err != nil {
 		// response error
-		response.SendResponse(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	response.SendResponse(w, http.StatusOK, nil, nil)
+	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
 
