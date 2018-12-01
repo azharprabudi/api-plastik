@@ -31,7 +31,7 @@ CREATE TABLE "suppliers" (
 	CONSTRAINT suppliers_pk PRIMARY KEY ("id")
 );
 
-CREATE TABLE "sellerss" (
+CREATE TABLE "sellers" (
 	"id" char(36) NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"phone" varchar(15) NULL,
