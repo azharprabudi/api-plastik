@@ -50,17 +50,17 @@ func (seller *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
 func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	sellerCatIncReq := new(dto.SellerReq)
+	sellerReq := new(dto.SellerReq)
 
 	// parse json
-	request.Get(r.Body, sellerCatIncReq)
+	request.Get(r.Body, sellerReq)
 
 	// do validations
-	if sellerCatIncReq.Name == "" {
+	if sellerReq.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if sellerCatIncReq.Phone == "" {
+	if sellerReq.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
@@ -71,7 +71,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := seller.service.CreateSeller(sellerCatIncReq)
+	id, err := seller.service.CreateSeller(sellerReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))

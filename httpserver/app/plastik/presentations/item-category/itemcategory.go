@@ -45,13 +45,13 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	itemCatIncReq := new(dto.ItemCategoryReq)
+	itemCatReq := new(dto.ItemCategoryReq)
 
 	// parse json
-	request.Get(r.Body, itemCatIncReq)
+	request.Get(r.Body, itemCatReq)
 
 	// do validations
-	if itemCatIncReq.Name == "" {
+	if itemCatReq.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
@@ -62,7 +62,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.service.CreateItemCategory(itemCatIncReq)
+	id, err := item.service.CreateItemCategory(itemCatReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -89,13 +89,13 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var validations = []string{}
-	itemCatIncReq := new(dto.ItemCategoryReq)
+	itemCatReq := new(dto.ItemCategoryReq)
 
 	// parse json
-	request.Get(r.Body, itemCatIncReq)
+	request.Get(r.Body, itemCatReq)
 
 	// do validations
-	if itemCatIncReq.Name == "" {
+	if itemCatReq.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
@@ -106,7 +106,7 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = item.service.UpdateItemCategory(categoryID, itemCatIncReq)
+	err = item.service.UpdateItemCategory(categoryID, itemCatReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
