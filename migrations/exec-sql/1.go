@@ -54,7 +54,7 @@ CREATE TABLE "expenses" (
 );
 
 ALTER TABLE expenses
-   ADD CONSTRAINT fk_item_categories
+   ADD CONSTRAINT fk_expense_type
    FOREIGN KEY ("expense_type_id") 
    REFERENCES "expense_types"("id");
 
