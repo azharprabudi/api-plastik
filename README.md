@@ -13,15 +13,6 @@ func NewSellerService() {}
 </li>
 
 <li>
-  <b>Give domain suffix at method inside class name</b>
-  <pre>
-    <code>
-func (seller *Seller) CreateSeller()
-    </code>
-  </pre>
-</li>
-
-<li>
   <b>Give domain prefix at variable name</b>
   <pre>
     <code>
@@ -31,7 +22,7 @@ sellerID := "examples"
 </li>
 
 <li>
-  <b>If there is one dependency to service, or another just give service name dont give a namespace</b>
+  <b>If there is one dependency to service, or another just give service name dont give a namespace. (but for domain, just give a service name)</b>
   <pre>
     <code>
 (GOOD)
