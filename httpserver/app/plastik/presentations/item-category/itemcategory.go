@@ -19,7 +19,7 @@ import (
 
 // Find ...
 func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := item.itemService.GetItemCategory()
+	results, err := item.service.GetItemCategory()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -36,7 +36,7 @@ func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := item.itemService.GetItemCategoryByID(categoryID)
+	result := item.service.GetItemCategoryByID(categoryID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
@@ -62,7 +62,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.itemService.CreateItemCategory(itemCatIncReq)
+	id, err := item.service.CreateItemCategory(itemCatIncReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -106,7 +106,7 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = item.itemService.UpdateItemCategory(categoryID, itemCatIncReq)
+	err = item.service.UpdateItemCategory(categoryID, itemCatIncReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -127,7 +127,7 @@ func (item *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = item.itemService.DeleteItemCategory(categoryID)
+	err = item.service.DeleteItemCategory(categoryID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -141,6 +141,6 @@ func (item *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
 // NewPresentationItemCategory ...
 func NewPresentationItemCategory(db *db.DB) presentations.BaseAbstract {
 	return &ItemCategory{
-		itemService: service.NewItemService(db),
+		service: service.NewItemService(db),
 	}
 }

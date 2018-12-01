@@ -18,7 +18,7 @@ import (
 
 // Find ...
 func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := item.itemService.GetItem()
+	results, err := item.service.GetItem()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -30,7 +30,7 @@ func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
 func (item *Item) FindByID(w http.ResponseWriter, r *http.Request) {
 	itemID := chi.URLParam(r, "id")
 
-	result := item.itemService.GetItemByID(itemID)
+	result := item.service.GetItemByID(itemID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
@@ -56,7 +56,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.itemService.CreateItem(itemReq)
+	id, err := item.service.CreateItem(itemReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -95,7 +95,7 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := item.itemService.UpdateItem(itemID, itemReq)
+	err := item.service.UpdateItem(itemID, itemReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -111,7 +111,7 @@ func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
 	itemID := chi.URLParam(r, "id")
 
-	err := item.itemService.DeleteItem(itemID)
+	err := item.service.DeleteItem(itemID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -125,6 +125,6 @@ func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
 // NewItemPresentation ...
 func NewItemPresentation(db *db.DB) presentations.BaseAbstract {
 	return &Item{
-		itemService: service.NewItemService(db),
+		service: service.NewItemService(db),
 	}
 }

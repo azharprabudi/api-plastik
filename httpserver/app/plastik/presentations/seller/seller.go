@@ -20,7 +20,7 @@ import (
 
 // Find ...
 func (seller *Seller) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := seller.sellerService.GetSeller()
+	results, err := seller.service.GetSeller()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -41,7 +41,7 @@ func (seller *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := seller.sellerService.GetSellerByID(u)
+	result := seller.service.GetSellerByID(u)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
@@ -71,7 +71,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := seller.sellerService.CreateSeller(sellerCatIncReq)
+	id, err := seller.service.CreateSeller(sellerCatIncReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -118,7 +118,7 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = seller.sellerService.UpdateSeller(u, sellerReq)
+	err = seller.service.UpdateSeller(u, sellerReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -142,7 +142,7 @@ func (seller *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = seller.sellerService.DeleteSeller(u)
+	err = seller.service.DeleteSeller(u)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -156,6 +156,6 @@ func (seller *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 // NewPresentationSeller ...
 func NewPresentationSeller(db *db.DB) presentations.BaseAbstract {
 	return &Seller{
-		sellerService: service.NewSellerService(db),
+		service: service.NewSellerService(db),
 	}
 }

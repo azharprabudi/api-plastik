@@ -6,5 +6,5 @@ import (
 
 // ItemCategory ...
 type ItemCategory struct {
-	itemService service.ItemServiceInterface
+	service service.ItemServiceInterface
 }
