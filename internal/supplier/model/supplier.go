@@ -11,16 +11,23 @@ type SupplierID struct {
 	SupplierID uuid.UUID `db:"id"`
 }
 
-// SupplierModelRead ...
-type SupplierModelRead struct {
-	SupplierModelCreate
+// SupplierRead ...
+type SupplierRead struct {
+	SupplierCreate
 }
 
-// SupplierModelCreate ...
-type SupplierModelCreate struct {
-	SupplierID
-	Name      string    `db:"name"`
-	Phone     *string   `db:"phone"`   // nullable
-	Address   *int      `db:"address"` // nullable
-	CreatedAt time.Time `db:"created_at"`
+// SupplierCreate ...
+type SupplierCreate struct {
+	SupplierID uuid.UUID `db:"id"`
+	Name       string    `db:"name"`
+	Phone      string    `db:"phone"`
+	Address    string    `db:"address"`
+	CreatedAt  time.Time `db:"created_at"`
+}
+
+// SupplierUpdate ...
+type SupplierUpdate struct {
+	Name    string `db:"name"`
+	Phone   string `db:"phone"`
+	Address string `db:"address"`
 }

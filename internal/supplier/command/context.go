@@ -1,12 +1,12 @@
-package query
+package command
 
 import (
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/helper/querybuilder"
 )
 
-// SupplierQuery ...
-type SupplierQuery struct {
+// SupplierCommand ...
+type SupplierCommand struct {
 	db *db.DB
-	qb qb.QueryBuilderInterface
+	q  qb.QueryBuilderInterface
 }
