@@ -80,7 +80,7 @@ func (supplier *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "suppliercategories/", id),
+		"location": baseurl.Get(r, "suppliers/", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -109,6 +109,10 @@ func (supplier *Supplier) Update(w http.ResponseWriter, r *http.Request) {
 	// do validations
 	if supplierReq.Name == "" {
 		validations = append(validations, "name field is required")
+	}
+
+	if supplierReq.Phone == "" {
+		validations = append(validations, "phone field is required")
 	}
 
 	// if validation exists there is error

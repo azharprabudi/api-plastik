@@ -2,6 +2,7 @@ package presentations
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 
@@ -12,13 +13,13 @@ import (
 	"github.com/api-plastik/httpserver/response"
 
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/internal/item/dto"
-	"github.com/api-plastik/internal/item/service"
+	"github.com/api-plastik/internal/expense/dto"
+	"github.com/api-plastik/internal/expense/service"
 )
 
 // Find ...
-func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := item.service.GetItem()
+func (expense *ExpenseType) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := expense.service.GetExpenseType()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -27,34 +28,31 @@ func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (item *Item) FindByID(w http.ResponseWriter, r *http.Request) {
-	itemID := chi.URLParam(r, "id")
+func (expense *ExpenseType) FindByID(w http.ResponseWriter, r *http.Request) {
+	expenseTypeID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
-	result := item.service.GetItemByID(itemID)
+	result := expense.service.GetExpenseTypeByID(expenseTypeID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
-func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
+func (expense *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	itemReq := new(dto.ItemReq)
+	expenseTypeReq := new(dto.ExpenseTypeReq)
 
 	// parse json
-	request.Get(r.Body, itemReq)
+	request.Get(r.Body, expenseTypeReq)
 
 	// do validations
-	if itemReq.Name == "" {
+	if expenseTypeReq.Name == "" {
 		validations = append(validations, "name field is required")
-	}
-
-	if itemReq.ItemCategoryID == "" {
-		validations = append(validations, "itemCategoryId field is required")
-	}
-
-	if itemReq.UnitID == "" {
-		validations = append(validations, "unitId field is required")
 	}
 
 	// if validation exists there is error
@@ -64,7 +62,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.service.CreateItem(itemReq)
+	id, err := expense.service.CreateExpenseType(expenseTypeReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -73,7 +71,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "item/", id),
+		"location": baseurl.Get(r, "expensetype/", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -81,27 +79,24 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
+func (expense *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	itemID := chi.URLParam(r, "id")
+	expenseTypeID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
 	var validations = []string{}
-	itemReq := new(dto.ItemReq)
+	expenseTypeReq := new(dto.ExpenseTypeReq)
 
 	// parse json
-	request.Get(r.Body, itemReq)
+	request.Get(r.Body, expenseTypeReq)
 
 	// do validations
-	if itemReq.Name == "" {
+	if expenseTypeReq.Name == "" {
 		validations = append(validations, "name field is required")
-	}
-
-	if itemReq.ItemCategoryID == "" {
-		validations = append(validations, "itemCategoryId field is required")
-	}
-
-	if itemReq.UnitID == "" {
-		validations = append(validations, "unitId field is required")
 	}
 
 	// if validation exists there is error
@@ -111,7 +106,7 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := item.service.UpdateItem(itemID, itemReq)
+	err = expense.service.UpdateExpenseType(expenseTypeID, expenseTypeReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -123,11 +118,16 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
+func (expense *ExpenseType) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	itemID := chi.URLParam(r, "id")
+	expenseTypeID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
-	err := item.service.DeleteItem(itemID)
+	err = expense.service.DeleteExpenseType(expenseTypeID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -138,9 +138,9 @@ func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// NewItemPresentation ...
-func NewItemPresentation(db *db.DB) presentations.BaseAbstract {
-	return &Item{
-		service: service.NewItemService(db),
+// NewPresentationExpenseType ...
+func NewPresentationExpenseType(db *db.DB) presentations.BaseAbstract {
+	return &ExpenseType{
+		service: service.NewExpenseTypeService(db),
 	}
 }

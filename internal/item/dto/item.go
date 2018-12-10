@@ -8,8 +8,9 @@ import (
 
 // ItemReq ...
 type ItemReq struct {
-	Name       string `json:"name"`
-	CategoryID int    `json:"categoryId"`
+	Name           string `json:"name"`
+	ItemCategoryID int    `json:"itemCategoryId"`
+	UnitID         int    `json:"unitId"`
 }
 
 // ItemRes ...

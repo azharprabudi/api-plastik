@@ -12,13 +12,13 @@ import (
 	"github.com/api-plastik/httpserver/response"
 
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/internal/item/dto"
-	"github.com/api-plastik/internal/item/service"
+	"github.com/api-plastik/internal/expense/dto"
+	"github.com/api-plastik/internal/expense/service"
 )
 
 // Find ...
-func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := item.service.GetItem()
+func (expense *Expense) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := expense.service.GetExpense()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -27,34 +27,34 @@ func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (item *Item) FindByID(w http.ResponseWriter, r *http.Request) {
-	itemID := chi.URLParam(r, "id")
+func (expense *Expense) FindByID(w http.ResponseWriter, r *http.Request) {
+	expenseID := chi.URLParam(r, "id")
 
-	result := item.service.GetItemByID(itemID)
+	result := expense.service.GetExpenseByID(expenseID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
-func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
+func (expense *Expense) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	itemReq := new(dto.ItemReq)
+	expenseReq := new(dto.ExpenseReq)
 
 	// parse json
-	request.Get(r.Body, itemReq)
+	request.Get(r.Body, expenseReq)
 
 	// do validations
-	if itemReq.Name == "" {
+	if expenseReq.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if itemReq.ItemCategoryID == "" {
-		validations = append(validations, "itemCategoryId field is required")
+	if expenseReq.Amount == "" {
+		validations = append(validations, "amount field is required")
 	}
 
-	if itemReq.UnitID == "" {
-		validations = append(validations, "unitId field is required")
+	if expenseReq.ExpenseTypeID == "" {
+		validations = append(validations, "expenseTypeId field is required")
 	}
 
 	// if validation exists there is error
@@ -64,7 +64,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.service.CreateItem(itemReq)
+	id, err := expense.service.CreateExpense(expenseReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -73,7 +73,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "item/", id),
+		"location": baseurl.Get(r, "expense/", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -81,27 +81,27 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
+func (expense *Expense) Update(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	itemID := chi.URLParam(r, "id")
+	expenseID := chi.URLParam(r, "id")
 
 	var validations = []string{}
-	itemReq := new(dto.ItemReq)
+	expenseReq := new(dto.ExpenseReq)
 
 	// parse json
-	request.Get(r.Body, itemReq)
+	request.Get(r.Body, expenseReq)
 
 	// do validations
-	if itemReq.Name == "" {
+	if expenseReq.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if itemReq.ItemCategoryID == "" {
-		validations = append(validations, "itemCategoryId field is required")
+	if expenseReq.Amount == "" {
+		validations = append(validations, "amount field is required")
 	}
 
-	if itemReq.UnitID == "" {
-		validations = append(validations, "unitId field is required")
+	if expenseReq.ExpenseTypeID == "" {
+		validations = append(validations, "expense_type_id field is required")
 	}
 
 	// if validation exists there is error
@@ -111,7 +111,7 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := item.service.UpdateItem(itemID, itemReq)
+	err := expense.service.UpdateExpense(expenseID, expenseReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -123,11 +123,11 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
+func (expense *Expense) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	itemID := chi.URLParam(r, "id")
+	expenseID := chi.URLParam(r, "id")
 
-	err := item.service.DeleteItem(itemID)
+	err := expense.service.DeleteExpense(expenseID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -138,9 +138,9 @@ func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// NewItemPresentation ...
-func NewItemPresentation(db *db.DB) presentations.BaseAbstract {
-	return &Item{
-		service: service.NewItemService(db),
+// NewExpensePresentation ...
+func NewExpensePresentation(db *db.DB) presentations.BaseAbstract {
+	return &Expense{
+		service: service.NewExpenseService(db),
 	}
 }
