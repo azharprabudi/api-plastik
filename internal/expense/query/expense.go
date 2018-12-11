@@ -2,7 +2,7 @@ package query
 
 import (
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/helper/querybuilder"
+	qb "github.com/api-plastik/helper/querybuilder"
 	qbModel "github.com/api-plastik/helper/querybuilder/model"
 	"github.com/api-plastik/internal/expense/model"
 )
@@ -46,7 +46,7 @@ func (iq *ExpenseQuery) GetExpenseTypeByID(categoryID int) *model.ExpenseTypeMod
 	}
 
 	// get query and execute
-	query := iq.qb.QueryWhere("expense_types", []*qbModel.Condition{where})
+	query := iq.qb.QueryWhere("expense_types", []*qbModel.Condition{where}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil
@@ -93,7 +93,7 @@ func (iq *ExpenseQuery) GetExpenseByID(expenseID string) *model.ExpenseRead {
 	}
 
 	// get query and execute
-	query := iq.qb.QueryWhere("expenses", []*qbModel.Condition{where})
+	query := iq.qb.QueryWhere("expenses", []*qbModel.Condition{where}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil

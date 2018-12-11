@@ -1,38 +1,38 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/item/transform"
-	"github.com/satori/go.uuid"
+	"github.com/api-plastik/internal/expense/transform"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/internal/item/command"
-	"github.com/api-plastik/internal/item/dto"
-	"github.com/api-plastik/internal/item/query"
+	"github.com/api-plastik/internal/expense/command"
+	"github.com/api-plastik/internal/expense/dto"
+	"github.com/api-plastik/internal/expense/query"
 )
 
 // GetExpenseType ...
 func (expenseService *ExpenseService) GetExpenseType() ([]*dto.ExpenseTypeRes, error) {
 	// add data to db
-	categoriesModel, err := expenseService.query.GetCategory()
+	expenseTypeModel, err := expenseService.query.GetExpenseType()
 	if err != nil {
 		return nil, err
 	}
 
 	// transform data from model
-	categoriesDTO := expenseService.transform.TransformGetCategory(categoriesModel)
-	return categoriesDTO, nil
+	expenseTypeDTO := expenseService.transform.TransformGetExpenseType(expenseTypeModel)
+	return expenseTypeDTO, nil
 }
 
 // GetExpenseTypeByID ...
-func (expenseService *ExpenseService) GetExpenseTypeByID(categoryID int) *dto.ExpenseTypeRes {
-	categoryModel := expenseService.query.GetCategoryByID(categoryID)
-	if categoryModel == nil {
+func (expenseService *ExpenseService) GetExpenseTypeByID(expenseTypeID int) *dto.ExpenseTypeRes {
+	expenseTypeModel := expenseService.query.GetExpenseTypeByID(expenseTypeID)
+	if expenseTypeModel == nil {
 		return nil
 	}
 
 	// transform data from model
-	categoryDTO := expenseService.transform.TransformGetCategoryByID(categoryModel)
-	return categoryDTO
+	expenseTypeDTO := expenseService.transform.TransformGetExpenseTypeByID(expenseTypeModel)
+	return expenseTypeDTO
 }
 
 // CreateExpenseType ...
@@ -135,8 +135,8 @@ func (expenseService *ExpenseService) DeleteItem(itemID string) error {
 // NewExpenseService ...
 func NewExpenseService(db *db.DB) ExpenseServiceInterface {
 	return &ExpenseService{
-		query:     query.NewItemQuery(db),
-		command:   command.NewItemCommand(db),
-		transform: transform.NewItemTransform(),
+		query:     query.NewExpenseQuery(db),
+		command:   command.NewExpenseCommand(db),
+		transform: transform.NewExpenseTransform(),
 	}
 }

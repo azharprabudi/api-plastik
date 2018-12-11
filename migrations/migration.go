@@ -99,7 +99,7 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 
 	// execute query builder
 	q := qb.NewQueryBuilder()
-	query := q.QueryWhere("meta", []*qbModel.Condition{where})
+	query := q.QueryWhere("meta", []*qbModel.Condition{where}, nil)
 
 	// check the previous table already exists or new to created
 	if isAlreadyCreated == true {

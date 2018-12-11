@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/api-plastik/helper/querybuilder/model"
+	model "github.com/api-plastik/helper/querybuilder/model"
 )
 
 // this function below, to decide is the last loop or not
@@ -124,4 +124,18 @@ func CreateQueriesWith(joins []*model.Join) string {
 		with = fmt.Sprintf(" %s %v %s %s ON %s=%s", with, join.TableFrom, join.Type, join.TableWith, join.ColumnTableFrom, join.ColumnTableWith)
 	}
 	return with
+}
+
+// CreateQueriesOrder ...
+func CreateQueriesOrder(orders []*model.Order) string {
+	var ordrs string
+	for index, order := range orders {
+		var separatorComma = ","
+		if isLastIteration(index, len(orders)) {
+			separatorComma = ""
+		}
+
+		ordrs = fmt.Sprintf(" %s %s %s%s", ordrs, order.Key, order.Value, separatorComma)
+	}
+	return ordrs
 }

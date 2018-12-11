@@ -2,10 +2,10 @@ package query
 
 import (
 	"github.com/api-plastik/db"
-	"github.com/api-plastik/helper/querybuilder"
+	qb "github.com/api-plastik/helper/querybuilder"
 	qbModel "github.com/api-plastik/helper/querybuilder/model"
 	"github.com/api-plastik/internal/seller/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Get ...
@@ -47,7 +47,7 @@ func (iq *SellerQuery) GetByID(sellerID uuid.UUID) *model.SellerRead {
 	}
 
 	// get query and execute
-	query := iq.qb.QueryWhere("sellers", []*qbModel.Condition{where})
+	query := iq.qb.QueryWhere("sellers", []*qbModel.Condition{where}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil

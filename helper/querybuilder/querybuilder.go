@@ -3,8 +3,8 @@ package qb
 import (
 	"fmt"
 
-	"github.com/api-plastik/helper/querybuilder/model"
-	"github.com/api-plastik/helper/querybuilder/queries"
+	model "github.com/api-plastik/helper/querybuilder/model"
+	queries "github.com/api-plastik/helper/querybuilder/queries"
 )
 
 /*
@@ -27,29 +27,32 @@ func (qb *QueryBuilder) Query(tableName string, limit int, offset int) string {
 }
 
 // QueryWhere ...
-func (qb *QueryBuilder) QueryWhere(tableName string, conditions []*model.Condition) string {
+func (qb *QueryBuilder) QueryWhere(tableName string, conditions []*model.Condition, orders []*model.Order) string {
 	// build query
 	query := fmt.Sprintf("select * from \"%s\" where", tableName)
 	where := queries.CreateQueriesWhere(conditions)
-	query = fmt.Sprintf("%s%s", query, where)
+	order := queries.CreateQueriesOrder(orders)
+	query = fmt.Sprintf("%s%s %s", query, where, order)
 	return query
 }
 
 // QueryWith ...
-func (qb *QueryBuilder) QueryWith(tableName string, joins []*model.Join) string {
+func (qb *QueryBuilder) QueryWith(tableName string, joins []*model.Join, orders []*model.Order) string {
 	// build query
 	withs := queries.CreateQueriesWith(joins)
-	query := fmt.Sprintf("select * from \"%s\" %s", tableName, withs)
+	order := queries.CreateQueriesOrder(orders)
+	query := fmt.Sprintf("select * from \"%s\" %s %s", tableName, withs, order)
 	return query
 }
 
 // QueryWhereWith ...
-func (qb *QueryBuilder) QueryWhereWith(tableName string, joins []*model.Join, conditions []*model.Condition) string {
+func (qb *QueryBuilder) QueryWhereWith(tableName string, joins []*model.Join, conditions []*model.Condition, orders []*model.Order) string {
 
 	// build query
 	withs := queries.CreateQueriesWith(joins)
 	where := queries.CreateQueriesWhere(conditions)
-	query := fmt.Sprintf("select * from \"%s\" %s %s", tableName, withs, where)
+	order := queries.CreateQueriesOrder(orders)
+	query := fmt.Sprintf("select * from \"%s\" %s %s %s", tableName, withs, where, order)
 	return query
 }
 
