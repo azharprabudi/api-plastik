@@ -7,19 +7,19 @@ import (
 	newError "github.com/api-plastik/httpserver/error"
 )
 
-// CheckContentType ...
-func CheckContentType(next http.Handler) http.Handler {
+// AcceptContentType ...
+func AcceptContentType(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if len(r.Header["Content-Type"]) > 0 && r.Header["Content-Type"][0] == "application/json" {
+		if len(r.Header["Accept"]) > 0 && r.Header["Accept"][0] == "application/json" {
 			next.ServeHTTP(w, r)
 			return
 		}
 
 		// create error response
-		err, _ := json.Marshal(newError.NewErrorReponse(newError.InternalServerError, "Need content type", "", nil))
+		err, _ := json.Marshal(newError.NewErrorReponse(newError.InternalServerError, "We just accept the content type json", "", nil))
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
 		w.Header().Set("Accept", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(err)
 	})
 }
