@@ -2,23 +2,25 @@ package model
 
 import (
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
-// ItemCategoryID ...
-type ItemCategoryID struct {
-	ItemCategoryID int `db:"id"`
+// ItemCategory ...
+type ItemCategory struct {
+	ItemCategoryID uuid.UUID `db:"id"`
+	Name           string    `db:"name"`
+	CreatedAt      time.Time `db:"created_at"`
 }
 
-// ItemCategoryModelRead ...
-type ItemCategoryModelRead struct {
-	ItemCategoryID
-	ItemCategoryCreate
+// ItemCategoryRead ...
+type ItemCategoryRead struct {
+	ItemCategory
 }
 
 // ItemCategoryCreate ...
 type ItemCategoryCreate struct {
-	Name      string    `db:"name"`
-	CreatedAt time.Time `db:"created_at"`
+	ItemCategory
 }
 
 // ItemCategoryUpdate ...

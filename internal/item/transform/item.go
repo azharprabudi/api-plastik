@@ -10,96 +10,108 @@ import (
 )
 
 // TransformCreateCategory ...
-func (it *ItemTransform) TransformCreateCategory(itemCategoryModelDTO *dto.ItemCategoryReq) *model.ItemCategoryCreate {
-	itemCategoryCreate := &model.ItemCategoryCreate{
-		Name:      itemCategoryModelDTO.Name,
-		CreatedAt: time.Now().UTC(),
+func (it *ItemTransform) TransformCreateCategory(category *dto.ItemCategoryReq) *model.ItemCategoryCreate {
+	create := &model.ItemCategoryCreate{
+		ItemCategory: model.ItemCategory{
+			ItemCategoryID: uuid.NewV4(),
+			Name:           category.Name,
+			CreatedAt:      time.Now().UTC(),
+		},
 	}
-	return itemCategoryCreate
+	return create
 }
 
 // TransformUpdateCategory ...
-func (it *ItemTransform) TransformUpdateCategory(itemCategoryModelDTO *dto.ItemCategoryReq) *model.ItemCategoryUpdate {
-	itemCategoryUpdate := &model.ItemCategoryUpdate{
-		Name: itemCategoryModelDTO.Name,
+func (it *ItemTransform) TransformUpdateCategory(category *dto.ItemCategoryReq) *model.ItemCategoryUpdate {
+	update := &model.ItemCategoryUpdate{
+		Name: category.Name,
 	}
-	return itemCategoryUpdate
+	return update
 }
 
 // TransformGetCategory ...
-func (it *ItemTransform) TransformGetCategory(itemCategoryModelRead []*model.ItemCategoryModelRead) []*dto.ItemCategoryRes {
+func (it *ItemTransform) TransformGetCategory(categories []*model.ItemCategoryRead) []*dto.ItemCategoryRes {
 	// init variable
-	var itemCategoryIncRes = []*dto.ItemCategoryRes{}
+	var res = []*dto.ItemCategoryRes{}
 
 	// transform data as dto expected
-	for _, item := range itemCategoryModelRead {
-		itemCategoryIncRes = append(itemCategoryIncRes, &dto.ItemCategoryRes{
-			ID:        item.ItemCategoryID.ItemCategoryID,
-			Name:      item.Name,
-			CreatedAt: item.CreatedAt,
+	for _, category := range categories {
+		res = append(res, &dto.ItemCategoryRes{
+			ItemCategoryID: category.ItemCategory.ItemCategoryID,
+			ItemCategoryReq: dto.ItemCategoryReq{
+				Name: category.ItemCategory.Name,
+			},
+			CreatedAt: category.ItemCategory.CreatedAt,
 		})
 	}
 
-	return itemCategoryIncRes
+	return res
 }
 
 // TransformGetCategoryByID ...
-func (it *ItemTransform) TransformGetCategoryByID(itemCategoryModelRead *model.ItemCategoryModelRead) *dto.ItemCategoryRes {
+func (it *ItemTransform) TransformGetCategoryByID(category *model.ItemCategoryRead) *dto.ItemCategoryRes {
 	return &dto.ItemCategoryRes{
-		ID:        itemCategoryModelRead.ItemCategoryID.ItemCategoryID,
-		Name:      itemCategoryModelRead.Name,
-		CreatedAt: itemCategoryModelRead.CreatedAt,
+		ItemCategoryID: category.ItemCategoryID,
+		ItemCategoryReq: dto.ItemCategoryReq{
+			Name: category.ItemCategory.Name,
+		},
+		CreatedAt: category.ItemCategory.CreatedAt,
 	}
 }
 
 // TransformCreateItem ...
-func (it *ItemTransform) TransformCreateItem(itemDTO *dto.ItemReq) *model.ItemCreate {
-	itemCreate := &model.ItemCreate{
-		ItemID:         uuid.NewV4(),
-		Name:           itemDTO.Name,
-		CategoryItemID: itemDTO.CategoryID,
-		CreatedAt:      time.Now().UTC(),
+func (it *ItemTransform) TransformCreateItem(item *dto.ItemReq) *model.ItemCreate {
+	create := &model.ItemCreate{
+		Item: model.Item{
+			ItemID:         uuid.NewV4(),
+			Name:           item.Name,
+			ItemCategoryID: item.ItemCategoryID,
+			CreatedAt:      time.Now().UTC(),
+			UnitID:         item.UnitID,
+		},
 	}
-	return itemCreate
+	return create
 }
 
 // TransformUpdateItem ...
-func (it *ItemTransform) TransformUpdateItem(itemDTO *dto.ItemReq) *model.ItemUpdate {
-	itemUpdate := &model.ItemUpdate{
-		Name:           itemDTO.Name,
-		CategoryItemID: itemDTO.CategoryID,
+func (it *ItemTransform) TransformUpdateItem(item *dto.ItemReq) *model.ItemUpdate {
+	update := &model.ItemUpdate{
+		Name:           item.Name,
+		ItemCategoryID: item.ItemCategoryID,
 	}
-	return itemUpdate
+	return update
 }
 
 // TransformGetItem ...
-func (it *ItemTransform) TransformGetItem(itemRead []*model.ItemRead) []*dto.ItemRes {
+func (it *ItemTransform) TransformGetItem(items []*model.ItemRead) []*dto.ItemRes {
 	// init variable
-	var itemRes = []*dto.ItemRes{}
+	var res = []*dto.ItemRes{}
 
 	// transform data as dto expected
-	for _, item := range itemRead {
-		itemRes = append(itemRes, &dto.ItemRes{
-			ID:        item.ItemCreate.ItemID,
-			CreatedAt: item.ItemCreate.CreatedAt,
+	for _, item := range items {
+		res = append(res, &dto.ItemRes{
+			ItemID:    item.Item.ItemID,
+			CreatedAt: item.Item.CreatedAt,
 			ItemReq: dto.ItemReq{
-				Name:       item.ItemCreate.Name,
-				CategoryID: item.ItemCreate.CategoryItemID,
+				Name:           item.Item.Name,
+				ItemCategoryID: item.Item.ItemCategoryID,
+				UnitID:         item.Item.UnitID,
 			},
 		})
 	}
 
-	return itemRes
+	return res
 }
 
 // TransformGetItemByID ...
-func (it *ItemTransform) TransformGetItemByID(itemRead *model.ItemRead) *dto.ItemRes {
+func (it *ItemTransform) TransformGetItemByID(item *model.ItemRead) *dto.ItemRes {
 	return &dto.ItemRes{
-		ID:        itemRead.ItemCreate.ItemID,
-		CreatedAt: itemRead.ItemCreate.CreatedAt,
+		ItemID:    item.Item.ItemID,
+		CreatedAt: item.Item.CreatedAt,
 		ItemReq: dto.ItemReq{
-			Name:       itemRead.ItemCreate.Name,
-			CategoryID: itemRead.ItemCreate.CategoryItemID,
+			Name:           item.Item.Name,
+			ItemCategoryID: item.Item.ItemCategoryID,
+			UnitID:         item.Item.UnitID,
 		},
 	}
 }

@@ -34,9 +34,6 @@ func (iq *SellerQuery) Get() ([]*model.SellerRead, error) {
 		rows.StructScan(tmp)
 		results = append(results, tmp)
 	}
-	if err != nil {
-		return nil, err
-	}
 
 	return results, nil
 }

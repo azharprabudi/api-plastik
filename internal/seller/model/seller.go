@@ -6,11 +6,6 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-// SellerID ...
-type SellerID struct {
-	SellerID uuid.UUID `db:"id"`
-}
-
 // Seller ...
 type Seller struct {
 	SellerID  uuid.UUID `db:"id"`

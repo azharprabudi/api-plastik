@@ -11,50 +11,51 @@ import (
 )
 
 // GetItemCategory ...
-func (itemService *ItemService) GetItemCategory() ([]*dto.ItemCategoryRes, error) {
+func (is *ItemService) GetItemCategory() ([]*dto.ItemCategoryRes, error) {
 	// add data to db
-	categoriesModel, err := itemService.query.GetCategory()
+	categories, err := is.query.GetCategory()
 	if err != nil {
 		return nil, err
 	}
 
 	// transform data from model
-	categoriesDTO := itemService.transform.TransformGetCategory(categoriesModel)
+	categoriesDTO := is.transform.TransformGetCategory(categories)
 	return categoriesDTO, nil
 }
 
 // GetItemCategoryByID ...
-func (itemService *ItemService) GetItemCategoryByID(categoryID int) *dto.ItemCategoryRes {
-	categoryModel := itemService.query.GetCategoryByID(categoryID)
-	if categoryModel == nil {
+func (is *ItemService) GetItemCategoryByID(itemCatID uuid.UUID) *dto.ItemCategoryRes {
+	category := is.query.GetCategoryByID(itemCatID)
+	if category == nil {
 		return nil
 	}
 
 	// transform data from model
-	categoryDTO := itemService.transform.TransformGetCategoryByID(categoryModel)
+	categoryDTO := is.transform.TransformGetCategoryByID(category)
 	return categoryDTO
 }
 
 // CreateItemCategory ...
-func (itemService *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryReq) (int64, error) {
+func (is *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryReq) (uuid.UUID, error) {
 	// transform dto to model
-	itemCategoryCreate := itemService.transform.TransformCreateCategory(itemCategory)
+	create := is.transform.TransformCreateCategory(itemCategory)
 
 	// add data to db
-	id, err := itemService.command.CreateCategory(itemCategoryCreate)
+	err := is.command.CreateCategory(create)
 	if err != nil {
-		return 0, err
+		return uuid.Nil, err
 	}
-	return id, nil
+
+	return create.ItemCategoryID, nil
 }
 
 // UpdateItemCategory ...
-func (itemService *ItemService) UpdateItemCategory(categoryID int, itemCategory *dto.ItemCategoryReq) error {
+func (is *ItemService) UpdateItemCategory(itemCatID uuid.UUID, itemCategory *dto.ItemCategoryReq) error {
 	// transform dto to model
-	itemCategoryUpdate := itemService.transform.TransformUpdateCategory(itemCategory)
+	update := is.transform.TransformUpdateCategory(itemCategory)
 
 	// update to db
-	err := itemService.command.UpdateCategory(categoryID, itemCategoryUpdate)
+	err := is.command.UpdateCategory(itemCatID, update)
 	if err != nil {
 		return err
 	}
@@ -62,9 +63,9 @@ func (itemService *ItemService) UpdateItemCategory(categoryID int, itemCategory 
 }
 
 // DeleteItemCategory ...
-func (itemService *ItemService) DeleteItemCategory(categoryID int) error {
+func (is *ItemService) DeleteItemCategory(itemCatID uuid.UUID) error {
 	// delete data from db
-	err := itemService.command.DeleteCategory(categoryID)
+	err := is.command.DeleteCategory(itemCatID)
 	if err != nil {
 		return err
 	}
@@ -72,63 +73,66 @@ func (itemService *ItemService) DeleteItemCategory(categoryID int) error {
 }
 
 // GetItem ...
-func (itemService *ItemService) GetItem() ([]*dto.ItemRes, error) {
+func (is *ItemService) GetItem() ([]*dto.ItemRes, error) {
 	// add data to db
-	itemModel, err := itemService.query.GetItem()
+	item, err := is.query.GetItem()
 	if err != nil {
 		return nil, err
 	}
 
 	// transform data from model
-	itemDTO := itemService.transform.TransformGetItem(itemModel)
+	itemDTO := is.transform.TransformGetItem(item)
 	return itemDTO, nil
 }
 
 // GetItemByID ...
-func (itemService *ItemService) GetItemByID(itemID string) *dto.ItemRes {
-	itemModel := itemService.query.GetItemByID(itemID)
-	if itemModel == nil {
+func (is *ItemService) GetItemByID(itemID uuid.UUID) *dto.ItemRes {
+	item := is.query.GetItemByID(itemID)
+	if item == nil {
 		return nil
 	}
 
 	// transform data from model
-	itemDTO := itemService.transform.TransformGetItemByID(itemModel)
+	itemDTO := is.transform.TransformGetItemByID(item)
 	return itemDTO
 }
 
 // CreateItem ...
-func (itemService *ItemService) CreateItem(item *dto.ItemReq) (uuid.UUID, error) {
+func (is *ItemService) CreateItem(item *dto.ItemReq) (uuid.UUID, error) {
 	// transform dto to model
-	itemCreate := itemService.transform.TransformCreateItem(item)
+	create := is.transform.TransformCreateItem(item)
 
 	// add data to db
-	err := itemService.command.CreateItem(itemCreate)
+	err := is.command.CreateItem(create)
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return itemCreate.ItemID, nil
+
+	return create.Item.ItemID, nil
 }
 
 // UpdateItem ...
-func (itemService *ItemService) UpdateItem(itemID string, item *dto.ItemReq) error {
+func (is *ItemService) UpdateItem(itemID uuid.UUID, item *dto.ItemReq) error {
 	// transform dto to model
-	itemUpdate := itemService.transform.TransformUpdateItem(item)
+	update := is.transform.TransformUpdateItem(item)
 
 	// update to db
-	err := itemService.command.UpdateItem(itemID, itemUpdate)
+	err := is.command.UpdateItem(itemID, update)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // DeleteItem ...
-func (itemService *ItemService) DeleteItem(itemID string) error {
+func (is *ItemService) DeleteItem(itemID uuid.UUID) error {
 	// delete data from db
-	err := itemService.command.DeleteItem(itemID)
+	err := is.command.DeleteItem(itemID)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

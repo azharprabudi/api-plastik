@@ -34,7 +34,7 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Patch("/itemcategory/{id}", itemCategory.Update)
 		r.Delete("/itemcategory/{id}", itemCategory.Delete)
 
-		/* item */
+		/* supplier */
 		r.Get("/supplier", supplier.Find)
 		r.Get("/supplier/{id}", supplier.FindByID)
 		r.Post("/supplier", supplier.Create)

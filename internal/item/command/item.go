@@ -3,39 +3,39 @@ package command
 import (
 	"github.com/api-plastik/db"
 	"github.com/api-plastik/helper/querybuilder"
-	qbModel "github.com/api-plastik/helper/querybuilder/model"
+	qbmodel "github.com/api-plastik/helper/querybuilder/model"
 	"github.com/api-plastik/internal/item/model"
+	"github.com/satori/go.uuid"
 )
 
 // CreateCategory ...
-func (itemCommand *ItemCommand) CreateCategory(itemCat *model.ItemCategoryCreate) (int64, error) {
-	// temp id for returned
-	var id int64
+func (ic *ItemCommand) CreateCategory(category *model.ItemCategoryCreate) error {
+	query := ic.q.Create("item_categories", (*category).ItemCategory)
+	_, err := ic.db.PgSQL.Exec(query, category.ItemCategoryID, category.ItemCategory.Name, category.ItemCategory.CreatedAt)
 
-	query := itemCommand.q.Create("item_categories", *itemCat)
-	err := itemCommand.db.PgSQL.QueryRowx(query, itemCat.Name, itemCat.CreatedAt).Scan(&id)
+	// return the id has been created
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return id, nil
+	return nil
 }
 
 // UpdateCategory ...
-func (itemCommand *ItemCommand) UpdateCategory(id int, itemCat *model.ItemCategoryUpdate) error {
+func (ic *ItemCommand) UpdateCategory(id uuid.UUID, category *model.ItemCategoryUpdate) error {
 	// create condition
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
-	query := itemCommand.q.UpdateWhere("item_categories", *itemCat, []*qbModel.Condition{where})
+	query := ic.q.UpdateWhere("item_categories", *category, []*qbmodel.Condition{where})
 
 	// exec query
-	_, err := itemCommand.db.PgSQL.Exec(query, itemCat.Name)
+	_, err := ic.db.PgSQL.Exec(query, category.Name)
 	if err != nil {
 		return err
 	}
@@ -43,20 +43,20 @@ func (itemCommand *ItemCommand) UpdateCategory(id int, itemCat *model.ItemCatego
 }
 
 // DeleteCategory ...
-func (itemCommand *ItemCommand) DeleteCategory(id int) error {
+func (ic *ItemCommand) DeleteCategory(id uuid.UUID) error {
 	// create condition
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
-	query := itemCommand.q.Delete("item_categories", []*qbModel.Condition{where})
+	query := ic.q.Delete("item_categories", []*qbmodel.Condition{where})
 
 	// exec query
-	_, err := itemCommand.db.PgSQL.Exec(query)
+	_, err := ic.db.PgSQL.Exec(query)
 	if err != nil {
 		return err
 	}
@@ -64,9 +64,9 @@ func (itemCommand *ItemCommand) DeleteCategory(id int) error {
 }
 
 // CreateItem ...
-func (itemCommand *ItemCommand) CreateItem(item *model.ItemCreate) error {
-	query := itemCommand.q.Create("items", *item)
-	_, err := itemCommand.db.PgSQL.Exec(query, item.ItemID, item.CategoryItemID, item.Name, item.CreatedAt)
+func (ic *ItemCommand) CreateItem(item *model.ItemCreate) error {
+	query := ic.q.Create("items", (*item).Item)
+	_, err := ic.db.PgSQL.Exec(query, item.Item.ItemID, item.Item.ItemCategoryID, item.Item.Name, item.Item.UnitID, item.CreatedAt)
 	if err != nil {
 		return err
 	}
@@ -75,20 +75,20 @@ func (itemCommand *ItemCommand) CreateItem(item *model.ItemCreate) error {
 }
 
 // UpdateItem ...
-func (itemCommand *ItemCommand) UpdateItem(id string, item *model.ItemUpdate) error {
+func (ic *ItemCommand) UpdateItem(id uuid.UUID, item *model.ItemUpdate) error {
 	// create condition
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
-	query := itemCommand.q.UpdateWhere("items", *item, []*qbModel.Condition{where})
+	query := ic.q.UpdateWhere("items", *item, []*qbmodel.Condition{where})
 
 	// exec query
-	_, err := itemCommand.db.PgSQL.Exec(query, item.Name, item.CategoryItemID)
+	_, err := ic.db.PgSQL.Exec(query, item.Name, item.ItemCategoryID)
 	if err != nil {
 		return err
 	}
@@ -96,20 +96,20 @@ func (itemCommand *ItemCommand) UpdateItem(id string, item *model.ItemUpdate) er
 }
 
 // DeleteItem ...
-func (itemCommand *ItemCommand) DeleteItem(id string) error {
+func (ic *ItemCommand) DeleteItem(id uuid.UUID) error {
 	// create condition
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
-	query := itemCommand.q.Delete("items", []*qbModel.Condition{where})
+	query := ic.q.Delete("items", []*qbmodel.Condition{where})
 
 	// exec query
-	_, err := itemCommand.db.PgSQL.Exec(query)
+	_, err := ic.db.PgSQL.Exec(query)
 	if err != nil {
 		return err
 	}

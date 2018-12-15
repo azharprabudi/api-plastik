@@ -3,6 +3,8 @@ package presentations
 import (
 	"net/http"
 
+	"github.com/satori/go.uuid"
+
 	"github.com/go-chi/chi"
 
 	"github.com/api-plastik/helper/baseurl"
@@ -17,8 +19,8 @@ import (
 )
 
 // Find ...
-func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := item.service.GetItem()
+func (i *Item) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := i.service.GetItem()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -27,34 +29,38 @@ func (item *Item) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (item *Item) FindByID(w http.ResponseWriter, r *http.Request) {
-	itemID := chi.URLParam(r, "id")
+func (i *Item) FindByID(w http.ResponseWriter, r *http.Request) {
+	itemID, err := uuid.FromString(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
-	result := item.service.GetItemByID(itemID)
+	result := i.service.GetItemByID(itemID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
-func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
-
+func (i *Item) Create(w http.ResponseWriter, r *http.Request) {
 	var validations = []string{}
-	itemReq := new(dto.ItemReq)
+	req := new(dto.ItemReq)
 
 	// parse json
-	request.Get(r.Body, itemReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if itemReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if itemReq.ItemCategoryID == "" {
-		validations = append(validations, "itemCategoryId field is required")
+	if req.ItemCategoryID == uuid.Nil {
+		validations = append(validations, "item category id field is required")
 	}
 
-	if itemReq.UnitID == "" {
-		validations = append(validations, "unitId field is required")
+	if req.UnitID == uuid.Nil {
+		validations = append(validations, "unit id field is required")
 	}
 
 	// if validation exists there is error
@@ -64,7 +70,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.service.CreateItem(itemReq)
+	id, err := i.service.CreateItem(req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -73,7 +79,7 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "item/", id),
+		"location": baseurl.Get(r, "item", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -81,27 +87,28 @@ func (item *Item) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
+func (i *Item) Update(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	itemID := chi.URLParam(r, "id")
+	itemID, err := uuid.FromString(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
 	var validations = []string{}
-	itemReq := new(dto.ItemReq)
+	req := new(dto.ItemReq)
 
 	// parse json
-	request.Get(r.Body, itemReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if itemReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if itemReq.ItemCategoryID == "" {
+	if req.ItemCategoryID == uuid.Nil {
 		validations = append(validations, "itemCategoryId field is required")
-	}
-
-	if itemReq.UnitID == "" {
-		validations = append(validations, "unitId field is required")
 	}
 
 	// if validation exists there is error
@@ -111,7 +118,7 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := item.service.UpdateItem(itemID, itemReq)
+	err = i.service.UpdateItem(itemID, req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -123,11 +130,16 @@ func (item *Item) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (item *Item) Delete(w http.ResponseWriter, r *http.Request) {
+func (i *Item) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	itemID := chi.URLParam(r, "id")
+	itemID, err := uuid.FromString(chi.URLParam(r, "id"))
+	if err != nil {
+		// response error
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
-	err := item.service.DeleteItem(itemID)
+	err = i.service.DeleteItem(itemID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))

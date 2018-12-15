@@ -1,6 +1,10 @@
 package dto
 
-import "time"
+import (
+	"time"
+
+	"github.com/satori/go.uuid"
+)
 
 // ItemCategoryReq ...
 type ItemCategoryReq struct {
@@ -9,7 +13,7 @@ type ItemCategoryReq struct {
 
 // ItemCategoryRes ...
 type ItemCategoryRes struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
+	ItemCategoryReq
+	ItemCategoryID uuid.UUID `json:"id"`
+	CreatedAt      time.Time `json:"createdAt"`
 }

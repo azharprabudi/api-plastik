@@ -11,21 +11,27 @@ type ItemID struct {
 	ItemID uuid.UUID `db:"id"`
 }
 
+// Item ...
+type Item struct {
+	ItemID         uuid.UUID `db:"id"`
+	ItemCategoryID uuid.UUID `db:"category_id"`
+	Name           string    `db:"name"`
+	UnitID         uuid.UUID `db:"unit_id"`
+	CreatedAt      time.Time `db:"created_at"`
+}
+
 // ItemRead ...
 type ItemRead struct {
-	ItemCreate
+	Item
 }
 
 // ItemCreate ...
 type ItemCreate struct {
-	ItemID         uuid.UUID `db:"id"`
-	CategoryItemID int       `db:"category_id"`
-	Name           string    `db:"name"`
-	CreatedAt      time.Time `db:"created_at"`
+	Item
 }
 
 // ItemUpdate ...
 type ItemUpdate struct {
-	Name           string `db:"name"`
-	CategoryItemID int    `db:"category_id"`
+	Name           string    `db:"name"`
+	ItemCategoryID uuid.UUID `db:"category_id"`
 }

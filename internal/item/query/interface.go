@@ -1,14 +1,17 @@
 package query
 
-import "github.com/api-plastik/internal/item/model"
+import (
+	"github.com/api-plastik/internal/item/model"
+	"github.com/satori/go.uuid"
+)
 
 // ItemQueryInterface ...
 type ItemQueryInterface interface {
 	// Item Category
-	GetCategory() ([]*model.ItemCategoryModelRead, error)
-	GetCategoryByID(int) *model.ItemCategoryModelRead
+	GetCategory() ([]*model.ItemCategoryRead, error)
+	GetCategoryByID(uuid.UUID) *model.ItemCategoryRead
 
 	// Item
 	GetItem() ([]*model.ItemRead, error)
-	GetItemByID(string) *model.ItemRead
+	GetItemByID(uuid.UUID) *model.ItemRead
 }

@@ -8,14 +8,14 @@ import (
 
 // ItemReq ...
 type ItemReq struct {
-	Name           string `json:"name"`
-	ItemCategoryID int    `json:"itemCategoryId"`
-	UnitID         int    `json:"unitId"`
+	Name           string    `json:"name"`
+	ItemCategoryID uuid.UUID `json:"itemCategoryId"`
+	UnitID         uuid.UUID `json:"unitId"`
 }
 
 // ItemRes ...
 type ItemRes struct {
-	ID        uuid.UUID `json:"id"`
+	ItemID    uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 	ItemReq
 }

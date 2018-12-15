@@ -2,9 +2,9 @@ package presentations
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/api-plastik/helper/baseurl"
 	"github.com/api-plastik/httpserver/app/plastik/presentations"
@@ -18,8 +18,8 @@ import (
 )
 
 // Find ...
-func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := item.service.GetItemCategory()
+func (ic *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := ic.service.GetItemCategory()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -28,30 +28,29 @@ func (item *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (item *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
-	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
+func (ic *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
+	itemCatID, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result := item.service.GetItemCategoryByID(categoryID)
+	result := ic.service.GetItemCategoryByID(itemCatID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
-func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
+func (ic *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	itemCatReq := new(dto.ItemCategoryReq)
+	req := new(dto.ItemCategoryReq)
 
 	// parse json
-	request.Get(r.Body, itemCatReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if itemCatReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
@@ -62,7 +61,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := item.service.CreateItemCategory(itemCatReq)
+	id, err := ic.service.CreateItemCategory(req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -71,7 +70,7 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "itemcategories/", id),
+		"location": baseurl.Get(r, "itemcategories", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -79,23 +78,22 @@ func (item *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
+func (ic *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	itemCatID, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
 	var validations = []string{}
-	itemCatReq := new(dto.ItemCategoryReq)
+	req := new(dto.ItemCategoryReq)
 
 	// parse json
-	request.Get(r.Body, itemCatReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if itemCatReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
@@ -106,7 +104,7 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = item.service.UpdateItemCategory(categoryID, itemCatReq)
+	err = ic.service.UpdateItemCategory(itemCatID, req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -118,16 +116,16 @@ func (item *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (item *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
+func (ic *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	categoryID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	itemCatID, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	err = item.service.DeleteItemCategory(categoryID)
+	err = ic.service.DeleteItemCategory(itemCatID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))

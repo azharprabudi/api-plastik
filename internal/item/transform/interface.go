@@ -10,8 +10,8 @@ type ItemTransformInterface interface {
 	// category
 	TransformCreateCategory(*dto.ItemCategoryReq) *model.ItemCategoryCreate
 	TransformUpdateCategory(*dto.ItemCategoryReq) *model.ItemCategoryUpdate
-	TransformGetCategory([]*model.ItemCategoryModelRead) []*dto.ItemCategoryRes
-	TransformGetCategoryByID(*model.ItemCategoryModelRead) *dto.ItemCategoryRes
+	TransformGetCategory([]*model.ItemCategoryRead) []*dto.ItemCategoryRes
+	TransformGetCategoryByID(*model.ItemCategoryRead) *dto.ItemCategoryRes
 
 	// item
 	TransformCreateItem(*dto.ItemReq) *model.ItemCreate

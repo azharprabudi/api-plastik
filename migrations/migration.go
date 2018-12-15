@@ -5,7 +5,7 @@ import (
 
 	"github.com/api-plastik/db"
 	qb "github.com/api-plastik/helper/querybuilder"
-	qbModel "github.com/api-plastik/helper/querybuilder/model"
+	"github.com/api-plastik/helper/querybuilder/model"
 	trx "github.com/api-plastik/helper/transaction"
 	execsql "github.com/api-plastik/migrations/exec-sql"
 	"github.com/api-plastik/migrations/model"
@@ -30,13 +30,13 @@ func migratePgSQL(sql *sqlx.DB) error {
 	t := trx.NewTransaction()
 	c := t.CreateTrx(sql)
 	err := t.RunTrx(c, func(tx *sqlx.Tx) error {
-		isAlreadyCreated := initVerTblPgSQL(tx)
+		initVerTblPgSQL(tx)
 
 		// get current version table
 		currVer := getCurrVer()
 
 		// get old version
-		oldVer, err := getOldVer(sql, tx, isAlreadyCreated)
+		oldVer, err := getOldVer(tx)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ func migratePgSQL(sql *sqlx.DB) error {
 func initVerTblPgSQL(tx *sqlx.Tx) bool {
 	/* create table version pg */
 	sql := `
-	CREATE TABLE "meta"(
+	CREATE TABLE IF NOT EXISTS  "meta"(
 		"key" varchar(100) NOT NULL,
 		"value" varchar(100) NOT NULL,
 		CONSTRAINT info_pk PRIMARY KEY ("key")
@@ -86,11 +86,10 @@ func getCurrVer() int {
 }
 
 // get older version sql
-func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
+func getOldVer(tx *sqlx.Tx) (int, error) {
 	// initialize variable
-	var err error
 	meta := new(model.Meta)
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "key",
 		Operator: "=",
 		Value:    "db-version",
@@ -99,14 +98,10 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 
 	// execute query builder
 	q := qb.NewQueryBuilder()
-	query := q.QueryWhere("meta", []*qbModel.Condition{where}, nil)
+	query := q.QueryWhere("meta", []*qbmodel.Condition{where}, nil)
 
 	// check the previous table already exists or new to created
-	if isAlreadyCreated == true {
-		err = sql.QueryRowx(query).StructScan(meta)
-	} else {
-		err = tx.QueryRowx(query).StructScan(meta)
-	}
+	err := tx.QueryRowx(query).StructScan(meta)
 
 	// check error
 	if err != nil {
@@ -126,7 +121,11 @@ func getOldVer(sql *sqlx.DB, tx *sqlx.Tx, isAlreadyCreated bool) (int, error) {
 // function to running list of migration
 func doMigrateSQL(tx *sqlx.Tx, startVer int, untilVer int) {
 	for i := startVer; i < untilVer; i++ {
-		tx.Exec(execPgSQL[i])
+		_, err := tx.Exec(execPgSQL[i])
+		if err != nil {
+			print("err")
+			print(err)
+		}
 	}
 }
 
@@ -139,7 +138,7 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 		Value: verStr,
 	}
 
-	condition := &qbModel.Condition{
+	condition := &qbmodel.Condition{
 		Key:      "key",
 		Operator: "=",
 		Value:    "db-version",
@@ -148,7 +147,7 @@ func updateVer(tx *sqlx.Tx, currVer int) error {
 
 	// execute query
 	q := qb.NewQueryBuilder()
-	query := q.UpdateWhere("meta", meta, []*qbModel.Condition{condition})
+	query := q.UpdateWhere("meta", meta, []*qbmodel.Condition{condition})
 
 	// execute the query
 	_, err := tx.Exec(query, meta.Key, meta.Value)

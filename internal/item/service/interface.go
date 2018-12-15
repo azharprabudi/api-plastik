@@ -8,16 +8,16 @@ import (
 // ItemServiceInterface ...
 type ItemServiceInterface interface {
 	// Category
-	CreateItemCategory(*dto.ItemCategoryReq) (int64, error)
-	UpdateItemCategory(int, *dto.ItemCategoryReq) error
-	DeleteItemCategory(int) error
+	CreateItemCategory(*dto.ItemCategoryReq) (uuid.UUID, error)
+	UpdateItemCategory(uuid.UUID, *dto.ItemCategoryReq) error
+	DeleteItemCategory(uuid.UUID) error
 	GetItemCategory() ([]*dto.ItemCategoryRes, error)
-	GetItemCategoryByID(int) *dto.ItemCategoryRes
+	GetItemCategoryByID(uuid.UUID) *dto.ItemCategoryRes
 
 	// Item
 	CreateItem(*dto.ItemReq) (uuid.UUID, error)
-	UpdateItem(string, *dto.ItemReq) error
-	DeleteItem(string) error
+	UpdateItem(uuid.UUID, *dto.ItemReq) error
+	DeleteItem(uuid.UUID) error
 	GetItem() ([]*dto.ItemRes, error)
-	GetItemByID(string) *dto.ItemRes
+	GetItemByID(uuid.UUID) *dto.ItemRes
 }
