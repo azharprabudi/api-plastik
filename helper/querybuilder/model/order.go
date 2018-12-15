@@ -1,4 +1,4 @@
-package model
+package qbmodel
 
 // Order ...
 type Order struct {

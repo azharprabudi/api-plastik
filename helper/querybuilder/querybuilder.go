@@ -3,8 +3,8 @@ package qb
 import (
 	"fmt"
 
-	model "github.com/api-plastik/helper/querybuilder/model"
-	queries "github.com/api-plastik/helper/querybuilder/queries"
+	"github.com/api-plastik/helper/querybuilder/model"
+	"github.com/api-plastik/helper/querybuilder/queries"
 )
 
 /*
@@ -14,7 +14,7 @@ import (
  */
 
 // Query ...
-func (qb *QueryBuilder) Query(tableName string, limit int, offset int) string {
+func (qb *QueryBuilder) Query(tableName string, limit int, offset int, orders []*qbmodel.Order) string {
 	query := fmt.Sprintf("select * from \"%s\"", tableName)
 	if limit != 0 && offset == 0 {
 		query = fmt.Sprintf("%s limit=%d", query, limit)
@@ -23,65 +23,67 @@ func (qb *QueryBuilder) Query(tableName string, limit int, offset int) string {
 	} else if limit != 0 && offset != 0 {
 		query = fmt.Sprintf("%s limit=%d offset=%d", query, limit, offset)
 	}
+	order := qbqueries.CreateQueriesOrder(orders)
+	query = fmt.Sprintf("%s %s", query, order)
 	return query
 }
 
 // QueryWhere ...
-func (qb *QueryBuilder) QueryWhere(tableName string, conditions []*model.Condition, orders []*model.Order) string {
+func (qb *QueryBuilder) QueryWhere(tableName string, conditions []*qbmodel.Condition, orders []*qbmodel.Order) string {
 	// build query
-	query := fmt.Sprintf("select * from \"%s\" where", tableName)
-	where := queries.CreateQueriesWhere(conditions)
-	order := queries.CreateQueriesOrder(orders)
+	query := fmt.Sprintf("select * from \"%s\"", tableName)
+	where := qbqueries.CreateQueriesWhere(conditions)
+	order := qbqueries.CreateQueriesOrder(orders)
 	query = fmt.Sprintf("%s%s %s", query, where, order)
 	return query
 }
 
 // QueryWith ...
-func (qb *QueryBuilder) QueryWith(tableName string, joins []*model.Join, orders []*model.Order) string {
+func (qb *QueryBuilder) QueryWith(tableName string, joins []*qbmodel.Join, orders []*qbmodel.Order) string {
 	// build query
-	withs := queries.CreateQueriesWith(joins)
-	order := queries.CreateQueriesOrder(orders)
+	withs := qbqueries.CreateQueriesWith(joins)
+	order := qbqueries.CreateQueriesOrder(orders)
 	query := fmt.Sprintf("select * from \"%s\" %s %s", tableName, withs, order)
 	return query
 }
 
 // QueryWhereWith ...
-func (qb *QueryBuilder) QueryWhereWith(tableName string, joins []*model.Join, conditions []*model.Condition, orders []*model.Order) string {
+func (qb *QueryBuilder) QueryWhereWith(tableName string, joins []*qbmodel.Join, conditions []*qbmodel.Condition, orders []*qbmodel.Order) string {
 
 	// build query
-	withs := queries.CreateQueriesWith(joins)
-	where := queries.CreateQueriesWhere(conditions)
-	order := queries.CreateQueriesOrder(orders)
+	withs := qbqueries.CreateQueriesWith(joins)
+	where := qbqueries.CreateQueriesWhere(conditions)
+	order := qbqueries.CreateQueriesOrder(orders)
 	query := fmt.Sprintf("select * from \"%s\" %s %s %s", tableName, withs, where, order)
 	return query
 }
 
 // Create ...
 func (qb *QueryBuilder) Create(tableName string, data interface{}) string {
-	cols, injection := queries.CreateQueriesInsert(data)
+	cols, injection := qbqueries.CreateQueriesInsert(data)
 	query := fmt.Sprintf("INSERT INTO \"%s\" (%s) VALUES (%s) RETURNING id", tableName, cols, injection)
 	return query
 }
 
 // Update ...
-func (qb *QueryBuilder) Update(tableName string, data interface{}, conditions []*model.Condition) string {
-	upd := queries.CreateQueriesUpdate(data)
+func (qb *QueryBuilder) Update(tableName string, data interface{}, conditions []*qbmodel.Condition) string {
+	upd := qbqueries.CreateQueriesUpdate(data)
 	query := fmt.Sprintf("UPDATE \"%s\" %s", tableName, upd)
 	return query
 }
 
 // UpdateWhere ...
-func (qb *QueryBuilder) UpdateWhere(tableName string, data interface{}, conditions []*model.Condition) string {
-	upd := queries.CreateQueriesUpdate(data)
-	withs := queries.CreateQueriesWhere(conditions)
-	query := fmt.Sprintf("UPDATE \"%s\" SET %s WHERE %s", tableName, upd, withs)
+func (qb *QueryBuilder) UpdateWhere(tableName string, data interface{}, conditions []*qbmodel.Condition) string {
+	upd := qbqueries.CreateQueriesUpdate(data)
+	withs := qbqueries.CreateQueriesWhere(conditions)
+	query := fmt.Sprintf("UPDATE \"%s\" SET %s %s", tableName, upd, withs)
 	return query
 }
 
 // Delete ...
-func (qb *QueryBuilder) Delete(tableName string, conditions []*model.Condition) string {
-	withs := queries.CreateQueriesWhere(conditions)
-	query := fmt.Sprintf("DELETE FROM \"%s\" WHERE %s", tableName, withs)
+func (qb *QueryBuilder) Delete(tableName string, conditions []*qbmodel.Condition) string {
+	withs := qbqueries.CreateQueriesWhere(conditions)
+	query := fmt.Sprintf("DELETE FROM \"%s\" %s", tableName, withs)
 	return query
 }
 

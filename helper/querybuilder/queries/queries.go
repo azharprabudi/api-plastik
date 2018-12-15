@@ -1,10 +1,10 @@
-package queries
+package qbqueries
 
 import (
 	"fmt"
 	"reflect"
 
-	model "github.com/api-plastik/helper/querybuilder/model"
+	"github.com/api-plastik/helper/querybuilder/model"
 )
 
 // this function below, to decide is the last loop or not
@@ -100,9 +100,14 @@ func CreateQueriesUpdate(data interface{}) string {
 }
 
 // CreateQueriesWhere ...
-func CreateQueriesWhere(conditions []*model.Condition) string {
+func CreateQueriesWhere(conditions []*qbmodel.Condition) string {
 	var where string
 	for index, condition := range conditions {
+		// add flag where condition
+		if index == 0 {
+			where = "where "
+		}
+
 		nextCondition := condition.NextCond
 		if isLastIteration(index, len(conditions)) {
 			nextCondition = ""
@@ -118,7 +123,7 @@ func CreateQueriesWhere(conditions []*model.Condition) string {
 }
 
 // CreateQueriesWith ...
-func CreateQueriesWith(joins []*model.Join) string {
+func CreateQueriesWith(joins []*qbmodel.Join) string {
 	var with string
 	for _, join := range joins {
 		with = fmt.Sprintf(" %s %v %s %s ON %s=%s", with, join.TableFrom, join.Type, join.TableWith, join.ColumnTableFrom, join.ColumnTableWith)
@@ -127,9 +132,14 @@ func CreateQueriesWith(joins []*model.Join) string {
 }
 
 // CreateQueriesOrder ...
-func CreateQueriesOrder(orders []*model.Order) string {
+func CreateQueriesOrder(orders []*qbmodel.Order) string {
 	var ordrs string
 	for index, order := range orders {
+		// add flag where condition
+		if index == 0 {
+			ordrs = "order by "
+		}
+
 		var separatorComma = ","
 		if isLastIteration(index, len(orders)) {
 			separatorComma = ""

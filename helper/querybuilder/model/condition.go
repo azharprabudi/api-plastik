@@ -1,4 +1,4 @@
-package model
+package qbmodel
 
 // Condition ...
 type Condition struct {

@@ -1,4 +1,4 @@
-package model
+package qbmodel
 
 // Join ...
 type Join struct {
