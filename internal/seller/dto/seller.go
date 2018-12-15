@@ -15,7 +15,7 @@ type SellerReq struct {
 
 // SellerRes ...
 type SellerRes struct {
-	ID uuid.UUID `json:"id"`
 	SellerReq
+	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 }

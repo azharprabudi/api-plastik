@@ -19,8 +19,8 @@ import (
 )
 
 // Find ...
-func (seller *Seller) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := seller.service.GetSeller()
+func (s *Seller) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := s.service.GetSeller()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -29,7 +29,7 @@ func (seller *Seller) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (seller *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
+func (s *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
 	// get query param id
 	sellerID := chi.URLParam(r, "id")
 
@@ -41,26 +41,26 @@ func (seller *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := seller.service.GetSellerByID(u)
+	result := s.service.GetSellerByID(u)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
-func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
+func (s *Seller) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	sellerReq := new(dto.SellerReq)
+	seller := new(dto.SellerReq)
 
 	// parse json
-	request.Get(r.Body, sellerReq)
+	request.Get(r.Body, seller)
 
 	// do validations
-	if sellerReq.Name == "" {
+	if seller.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if sellerReq.Phone == "" {
+	if seller.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
@@ -71,7 +71,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := seller.service.CreateSeller(sellerReq)
+	id, err := s.service.CreateSeller(seller)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -80,7 +80,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "sellers/", id),
+		"location": baseurl.Get(r, "sellers", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -88,7 +88,7 @@ func (seller *Seller) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
+func (s *Seller) Update(w http.ResponseWriter, r *http.Request) {
 	// get query param id
 	sellerID := chi.URLParam(r, "id")
 
@@ -101,17 +101,17 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var validations = []string{}
-	sellerReq := new(dto.SellerReq)
+	seller := new(dto.SellerReq)
 
 	// parse json
-	request.Get(r.Body, sellerReq)
+	request.Get(r.Body, seller)
 
 	// do validations
-	if sellerReq.Name == "" {
+	if seller.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if sellerReq.Phone == "" {
+	if seller.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
@@ -122,7 +122,7 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = seller.service.UpdateSeller(u, sellerReq)
+	err = s.service.UpdateSeller(u, seller)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -134,7 +134,7 @@ func (seller *Seller) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (seller *Seller) Delete(w http.ResponseWriter, r *http.Request) {
+func (s *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 	// get query param id
 	sellerID := chi.URLParam(r, "id")
 
@@ -146,7 +146,7 @@ func (seller *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = seller.service.DeleteSeller(u)
+	err = s.service.DeleteSeller(u)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
