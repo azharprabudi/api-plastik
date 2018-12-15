@@ -9,9 +9,9 @@ import (
 )
 
 // Create ...
-func (supplierCommand *SupplierCommand) Create(supplier *model.SupplierCreate) error {
-	query := supplierCommand.q.Create("suppliers", *supplier)
-	_, err := supplierCommand.db.PgSQL.Exec(query, supplier.Name, supplier.CreatedAt)
+func (sc *SupplierCommand) Create(s *model.SupplierCreate) error {
+	query := sc.q.Create("suppliers", (*s).Supplier)
+	_, err := sc.db.PgSQL.Exec(query, s.Supplier.SupplierID, s.Supplier.Name, s.Supplier.Phone, s.Supplier.Address, s.Supplier.CreatedAt)
 	if err != nil {
 		return err
 	}
@@ -20,20 +20,20 @@ func (supplierCommand *SupplierCommand) Create(supplier *model.SupplierCreate) e
 }
 
 // Update ...
-func (supplierCommand *SupplierCommand) Update(id uuid.UUID, supplier *model.SupplierUpdate) error {
+func (sc *SupplierCommand) Update(id uuid.UUID, supplier *model.SupplierUpdate) error {
 	// create condition
 	where := &qbModel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
-	query := supplierCommand.q.UpdateWhere("suppliers", *supplier, []*qbModel.Condition{where})
+	query := sc.q.UpdateWhere("suppliers", *supplier, []*qbModel.Condition{where})
 
 	// exec query
-	_, err := supplierCommand.db.PgSQL.Exec(query, supplier.Name)
+	_, err := sc.db.PgSQL.Exec(query, supplier.Name, supplier.Phone, supplier.Address)
 	if err != nil {
 		return err
 	}
@@ -41,20 +41,20 @@ func (supplierCommand *SupplierCommand) Update(id uuid.UUID, supplier *model.Sup
 }
 
 // Delete ...
-func (supplierCommand *SupplierCommand) Delete(id uuid.UUID) error {
+func (sc *SupplierCommand) Delete(id uuid.UUID) error {
 	// create condition
 	where := &qbModel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
-	query := supplierCommand.q.Delete("suppliers", []*qbModel.Condition{where})
+	query := sc.q.Delete("suppliers", []*qbModel.Condition{where})
 
 	// exec query
-	_, err := supplierCommand.db.PgSQL.Exec(query)
+	_, err := sc.db.PgSQL.Exec(query)
 	if err != nil {
 		return err
 	}

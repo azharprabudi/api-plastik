@@ -3,7 +3,7 @@ package query
 import (
 	"github.com/api-plastik/db"
 	qb "github.com/api-plastik/helper/querybuilder"
-	qbModel "github.com/api-plastik/helper/querybuilder/model"
+	"github.com/api-plastik/helper/querybuilder/model"
 	"github.com/api-plastik/internal/supplier/model"
 	uuid "github.com/satori/go.uuid"
 )
@@ -13,8 +13,16 @@ func (iq *SupplierQuery) Get() ([]*model.SupplierRead, error) {
 	// init variable
 	var results = []*model.SupplierRead{}
 
+	// ordering data
+	orders := []*qbmodel.Order{
+		&qbmodel.Order{
+			Key:   "created_at",
+			Value: "DESC",
+		},
+	}
+
 	// get query
-	query := iq.qb.Query("suppliers", 0, 0)
+	query := iq.qb.Query("suppliers", 0, 0, orders)
 	rows, err := iq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
@@ -39,15 +47,15 @@ func (iq *SupplierQuery) GetByID(supplierID uuid.UUID) *model.SupplierRead {
 	result := new(model.SupplierRead)
 
 	// create conditional
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
 		NextCond: "",
 		Operator: "=",
-		Value:    supplierID,
+		Value:    supplierID.String(),
 	}
 
 	// get query and execute
-	query := iq.qb.QueryWhere("suppliers", []*qbModel.Condition{where}, nil)
+	query := iq.qb.QueryWhere("suppliers", []*qbmodel.Condition{where}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil

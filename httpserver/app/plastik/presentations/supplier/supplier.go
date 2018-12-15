@@ -19,8 +19,8 @@ import (
 )
 
 // Find ...
-func (supplier *Supplier) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := supplier.service.GetSupplier()
+func (s *Supplier) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := s.service.GetSupplier()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -29,7 +29,7 @@ func (supplier *Supplier) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (supplier *Supplier) FindByID(w http.ResponseWriter, r *http.Request) {
+func (s *Supplier) FindByID(w http.ResponseWriter, r *http.Request) {
 	// get query param id
 	supplierID := chi.URLParam(r, "id")
 
@@ -41,26 +41,26 @@ func (supplier *Supplier) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := supplier.service.GetSupplierByID(u)
+	result := s.service.GetSupplierByID(u)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
-func (supplier *Supplier) Create(w http.ResponseWriter, r *http.Request) {
+func (s *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	supplierReq := new(dto.SupplierReq)
+	req := new(dto.SupplierReq)
 
 	// parse json
-	request.Get(r.Body, supplierReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if supplierReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if supplierReq.Phone == "" {
+	if req.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
@@ -71,7 +71,7 @@ func (supplier *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := supplier.service.CreateSupplier(supplierReq)
+	id, err := s.service.CreateSupplier(req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -80,7 +80,7 @@ func (supplier *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "suppliers/", id),
+		"location": baseurl.Get(r, "suppliers", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -88,7 +88,7 @@ func (supplier *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (supplier *Supplier) Update(w http.ResponseWriter, r *http.Request) {
+func (s *Supplier) Update(w http.ResponseWriter, r *http.Request) {
 	// get query param id
 	supplierID := chi.URLParam(r, "id")
 
@@ -122,7 +122,7 @@ func (supplier *Supplier) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = supplier.service.UpdateSupplier(u, supplierReq)
+	err = s.service.UpdateSupplier(u, supplierReq)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -134,7 +134,7 @@ func (supplier *Supplier) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (supplier *Supplier) Delete(w http.ResponseWriter, r *http.Request) {
+func (s *Supplier) Delete(w http.ResponseWriter, r *http.Request) {
 	// get query param id
 	supplierID := chi.URLParam(r, "id")
 
@@ -146,7 +146,7 @@ func (supplier *Supplier) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = supplier.service.DeleteSupplier(u)
+	err = s.service.DeleteSupplier(u)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))

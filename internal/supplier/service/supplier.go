@@ -11,50 +11,50 @@ import (
 )
 
 // GetSupplier ...
-func (supplierService *SupplierService) GetSupplier() ([]*dto.SupplierRes, error) {
+func (ss *SupplierService) GetSupplier() ([]*dto.SupplierRes, error) {
 	// add data to db
-	supplierModel, err := supplierService.query.Get()
+	supplier, err := ss.query.Get()
 	if err != nil {
 		return nil, err
 	}
 
 	// transform data from model
-	supplierDTO := supplierService.transform.TransformGet(supplierModel)
+	supplierDTO := ss.transform.TransformGet(supplier)
 	return supplierDTO, nil
 }
 
 // GetSupplierByID ...
-func (supplierService *SupplierService) GetSupplierByID(supplierID uuid.UUID) *dto.SupplierRes {
-	supplierModel := supplierService.query.GetByID(supplierID)
-	if supplierModel == nil {
+func (ss *SupplierService) GetSupplierByID(supplierID uuid.UUID) *dto.SupplierRes {
+	supplier := ss.query.GetByID(supplierID)
+	if supplier == nil {
 		return nil
 	}
 
 	// transform data from model
-	supplierDTO := supplierService.transform.TransformGetByID(supplierModel)
+	supplierDTO := ss.transform.TransformGetByID(supplier)
 	return supplierDTO
 }
 
 // CreateSupplier ...
-func (supplierService *SupplierService) CreateSupplier(item *dto.SupplierReq) (uuid.UUID, error) {
+func (ss *SupplierService) CreateSupplier(item *dto.SupplierReq) (uuid.UUID, error) {
 	// transform dto to model
-	supplierCreate := supplierService.transform.TransformCreate(item)
+	supplier := ss.transform.TransformCreate(item)
 
 	// add data to db
-	err := supplierService.command.Create(supplierCreate)
+	err := ss.command.Create(supplier)
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return supplierCreate.SupplierID, nil
+	return supplier.SupplierID, nil
 }
 
 // UpdateSupplier ...
-func (supplierService *SupplierService) UpdateSupplier(supplierID uuid.UUID, item *dto.SupplierReq) error {
+func (ss *SupplierService) UpdateSupplier(supplierID uuid.UUID, item *dto.SupplierReq) error {
 	// transform dto to model
-	supplierUpdate := supplierService.transform.TransformUpdate(item)
+	supplier := ss.transform.TransformUpdate(item)
 
 	// update to db
-	err := supplierService.command.Update(supplierID, supplierUpdate)
+	err := ss.command.Update(supplierID, supplier)
 	if err != nil {
 		return err
 	}
@@ -62,9 +62,9 @@ func (supplierService *SupplierService) UpdateSupplier(supplierID uuid.UUID, ite
 }
 
 // DeleteSupplier ...
-func (supplierService *SupplierService) DeleteSupplier(supplierID uuid.UUID) error {
+func (ss *SupplierService) DeleteSupplier(supplierID uuid.UUID) error {
 	// delete data from db
-	err := supplierService.command.Delete(supplierID)
+	err := ss.command.Delete(supplierID)
 	if err != nil {
 		return err
 	}
