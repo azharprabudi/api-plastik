@@ -5,17 +5,15 @@ import (
 	"os"
 
 	"github.com/azharprabudi/api-plastik/config"
-
 	"github.com/go-chi/chi"
 )
 
 // StartServer ...
 func StartServer(r *chi.Mux) {
-	// get the port, from env variable at server local or deployed
-	port, exists := os.LookupEnv("PORT")
-	if !exists {
+	// get conf port
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
 		port = os.Getenv(config.Port)
-
 	}
 
 	err := http.ListenAndServe(port, r)

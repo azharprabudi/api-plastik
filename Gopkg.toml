@@ -44,3 +44,4 @@
 # Configuration Heroku
 [metadata.heroku]
   root-package = "github.com/azharprabudi/api-plastik"
+  install = [ "./..." ]
