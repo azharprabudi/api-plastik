@@ -13,7 +13,7 @@ var (
 	// Mode ...
 	Mode = "development"
 	// Port ...
-	Port = ":3000"
+	Port = ":8080"
 
 	/*
 		list of db configuration
