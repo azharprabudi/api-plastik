@@ -36,7 +36,7 @@ var (
 				"PASS": "DB_PG_PASS",
 			},
 			"dbSource": {
-				"value": "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+				"value": "host=%s port=%s user=%s password=%s dbname=%s",
 			},
 		},
 	}
