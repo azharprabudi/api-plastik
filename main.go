@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/azharprabudi/api-plastik/cmd"
-	"github.com/azharprabudi/api-plastik/config"
 	"github.com/azharprabudi/api-plastik/db"
 	"github.com/azharprabudi/api-plastik/migrations"
 	"github.com/azharprabudi/api-plastik/router"
@@ -19,5 +18,5 @@ func main() {
 	r := router.InitRoute(db)
 
 	/* running server */
-	cmd.StartServer(config.Port, r)
+	cmd.StartServer(r)
 }
