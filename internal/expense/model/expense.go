@@ -14,12 +14,17 @@ type Expense struct {
 	Amount        float64   `db:"amount"`
 	Note          string    `db:"note"`
 	CreatedAt     time.Time `db:"created_at"`
-	Images        []string  `db:"images"`
 }
 
 // ExpenseRead ...
 type ExpenseRead struct {
 	Expense
+}
+
+// ExpenseReadDetail ...
+type ExpenseReadDetail struct {
+	Expense
+	ExpenseImage
 }
 
 // ExpenseCreate ...

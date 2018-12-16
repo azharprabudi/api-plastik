@@ -13,5 +13,5 @@ type ExpenseQueryInterface interface {
 
 	// Expense
 	GetExpense() ([]*model.ExpenseRead, error)
-	GetExpenseByID(uuid.UUID) *model.ExpenseRead
+	GetExpenseByID(uuid.UUID) *model.ExpenseReadDetail
 }

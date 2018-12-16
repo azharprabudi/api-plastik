@@ -30,14 +30,14 @@ func (et *ExpenseType) Find(w http.ResponseWriter, r *http.Request) {
 
 // FindByID ...
 func (et *ExpenseType) FindByID(w http.ResponseWriter, r *http.Request) {
-	expenseTypeID, err := uuid.UUID(chi.URLParam(r, "id"))
+	expenseTypeID, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result := expense.service.GetExpenseTypeByID(expenseTypeID)
+	result := et.service.GetExpenseTypeByID(expenseTypeID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
@@ -90,7 +90,7 @@ func (et *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var validations = []string{}
-	expenseTypeReq := new(dto.ExpenseTypeReq)
+	req := new(dto.ExpenseTypeReq)
 
 	// parse json
 	request.Get(r.Body, req)
@@ -121,7 +121,7 @@ func (et *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 // Delete ...
 func (et *ExpenseType) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	expenseTypeID, err := uuid.UUID(chi.URLParam(r, "id"))
+	expenseTypeID, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -139,9 +139,9 @@ func (et *ExpenseType) Delete(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// NewPresentationExpenseType ...
-func NewPresentationExpenseType(db *db.DB) presentations.BaseAbstract {
+// NewExpenseTypePresentation ...
+func NewExpenseTypePresentation(db *db.DB) presentations.BaseAbstract {
 	return &ExpenseType{
-		service: service.NewExpenseTypeService(db),
+		service: service.NewExpenseService(db),
 	}
 }

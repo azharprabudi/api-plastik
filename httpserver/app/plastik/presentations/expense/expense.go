@@ -8,7 +8,6 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/azharprabudi/api-plastik/helper/baseurl"
-	"github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations"
 	newError "github.com/azharprabudi/api-plastik/httpserver/error"
 	"github.com/azharprabudi/api-plastik/httpserver/request"
 	"github.com/azharprabudi/api-plastik/httpserver/response"
@@ -20,7 +19,7 @@ import (
 
 // Find ...
 func (e *Expense) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := expense.service.GetExpense()
+	results, err := e.service.GetExpense()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -36,7 +35,7 @@ func (e *Expense) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := expense.service.GetExpenseByID(expenseID)
+	result := e.service.GetExpenseByID(expenseID)
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
@@ -54,10 +53,6 @@ func (e *Expense) Create(w http.ResponseWriter, r *http.Request) {
 		validations = append(validations, "name field is required")
 	}
 
-	if req.Amount == "" {
-		validations = append(validations, "amount field is required")
-	}
-
 	if req.ExpenseTypeID == uuid.Nil {
 		validations = append(validations, "expense type id field is required")
 	}
@@ -69,7 +64,7 @@ func (e *Expense) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := expense.service.CreateExpense(req)
+	id, err := e.service.CreateExpense(req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -86,7 +81,7 @@ func (e *Expense) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewExpensePresentation ...
-func NewExpensePresentation(db *db.DB) presentations.ExpenseAbstract {
+func NewExpensePresentation(db *db.DB) ExpenseAbstract {
 	return &Expense{
 		service: service.NewExpenseService(db),
 	}

@@ -6,30 +6,29 @@ import (
 	qbModel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 	"github.com/azharprabudi/api-plastik/internal/expense/model"
 	"github.com/jmoiron/sqlx"
+	"github.com/satori/go.uuid"
 )
 
 // CreateExpenseType ...
-func (expenseCommand *ExpenseCommand) CreateExpenseType(expenseType *model.ExpenseTypeCreate) (int64, error) {
-	// temp id for returned
-	var id int64
+func (expenseCommand *ExpenseCommand) CreateExpenseType(expenseType *model.ExpenseTypeCreate) error {
+	query := expenseCommand.q.Create("expense_types", (*expenseType).ExpenseType)
+	_, err := expenseCommand.db.PgSQL.Exec(query, expenseType.ExpenseType.ExpenseTypeID, expenseType.ExpenseType.Name, expenseType.ExpenseType.CreatedAt)
 
-	query := expenseCommand.q.Create("expense_types", *expenseType)
-	err := expenseCommand.db.PgSQL.QueryRowx(query, expenseType.Name, expenseType.CreatedAt).Scan(&id)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return id, nil
+	return nil
 }
 
 // UpdateExpenseType ...
-func (expenseCommand *ExpenseCommand) UpdateExpenseType(id int, expenseType *model.ExpenseTypeUpdate) error {
+func (expenseCommand *ExpenseCommand) UpdateExpenseType(id uuid.UUID, expenseType *model.ExpenseTypeUpdate) error {
 	// create condition
 	where := &qbModel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
@@ -44,13 +43,13 @@ func (expenseCommand *ExpenseCommand) UpdateExpenseType(id int, expenseType *mod
 }
 
 // DeleteExpenseType ...
-func (expenseCommand *ExpenseCommand) DeleteExpenseType(id int) error {
+func (expenseCommand *ExpenseCommand) DeleteExpenseType(id uuid.UUID) error {
 	// create condition
 	where := &qbModel.Condition{
 		Key:      "id",
-		Value:    id,
 		Operator: "=",
 		NextCond: "",
+		Value:    id.String(),
 	}
 
 	// create query
@@ -66,8 +65,8 @@ func (expenseCommand *ExpenseCommand) DeleteExpenseType(id int) error {
 
 // CreateExpense ...
 func (expenseCommand *ExpenseCommand) CreateExpense(tx *sqlx.Tx, expense *model.ExpenseCreate) error {
-	query := expenseCommand.q.Create("expenses", *expense)
-	_, err := tx.Exec(query, expense.ExpenseID, expense.ExpenseTypeID, expense.Name, expense.CreatedAt)
+	query := expenseCommand.q.Create("expenses", (*expense).Expense)
+	_, err := tx.Exec(query, expense.Expense.ExpenseID, expense.Expense.ExpenseTypeID, expense.Expense.Name, expense.Expense.Amount, expense.Expense.Note, expense.Expense.CreatedAt)
 	if err != nil {
 		return err
 	}

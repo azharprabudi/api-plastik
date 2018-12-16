@@ -13,8 +13,9 @@ import (
 func (et *ExpenseTransform) TransformCreateExpenseType(expense *dto.ExpenseTypeReq) *model.ExpenseTypeCreate {
 	create := &model.ExpenseTypeCreate{
 		ExpenseType: model.ExpenseType{
-			Name:      expense.Name,
-			CreatedAt: time.Now().UTC(),
+			ExpenseTypeID: uuid.NewV4(),
+			Name:          expense.Name,
+			CreatedAt:     time.Now().UTC(),
 		},
 	}
 	return create
@@ -68,7 +69,6 @@ func (et *ExpenseTransform) TransformCreateExpense(expense *dto.ExpenseReq) *mod
 			Amount:        expense.Amount,
 			Note:          expense.Note,
 			ExpenseTypeID: expense.ExpenseTypeID,
-			Images:        expense.Images,
 		},
 	}
 	return create
@@ -95,14 +95,17 @@ func (et *ExpenseTransform) TransformGetExpense(expenses []*model.ExpenseRead) [
 }
 
 // TransformGetExpenseByID ...
-func (et *ExpenseTransform) TransformGetExpenseByID(expense *model.ExpenseRead) *dto.ExpenseRes {
-	return &dto.ExpenseRes{
-		ExpenseID: expense.Expense.ExpenseID,
-		CreatedAt: expense.Expense.CreatedAt,
-		ExpenseReq: dto.ExpenseReq{
-			Name:          expense.Expense.Name,
-			ExpenseTypeID: expense.Expense.ExpenseTypeID,
-		},
+func (et *ExpenseTransform) TransformGetExpenseByID(expense *model.ExpenseReadDetail) *dto.ExpenseResDetail {
+	var images = []dto.ExpenseImageRes{}
+
+	return &dto.ExpenseResDetail{
+		ExpenseID:     expense.Expense.ExpenseID,
+		CreatedAt:     expense.Expense.CreatedAt,
+		ExpenseTypeID: expense.Expense.ExpenseTypeID,
+		Name:          expense.Expense.Name,
+		Amount:        expense.Expense.Amount,
+		Note:          expense.Expense.Note,
+		Images:        images,
 	}
 }
 

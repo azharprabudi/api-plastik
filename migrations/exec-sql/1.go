@@ -21,15 +21,16 @@ CREATE TABLE "items" (
 CREATE TABLE "item_units" (
 	"id" uuid NOT NULL,
 	"name" varchar(100) NOT NULL,
+	"created_at" timestamptz NOT NULL,
 	CONSTRAINT item_units_pk PRIMARY KEY ("id")
 );
 
-INSERT INTO "item_units"(id, name)
-		VALUES ('22641d60-c7e9-413d-b0d7-59618810a3c4', 'kg')
+INSERT INTO "item_units"(id, name, created_at)
+		VALUES ('22641d60-c7e9-413d-b0d7-59618810a3c4', 'kg', CURRENT_TIMESTAMP)
 		ON CONFLICT DO NOTHING;
 
-INSERT INTO "item_units"(id, name)
-	VALUES ('1c4d74e7-cd09-41f0-8190-5a2dcaffb195', 'pcs')
+INSERT INTO "item_units"(id, name, created_at)
+	VALUES ('1c4d74e7-cd09-41f0-8190-5a2dcaffb195', 'pcs', CURRENT_TIMESTAMP)
 	ON CONFLICT DO NOTHING;
 
 ALTER TABLE items
@@ -63,6 +64,7 @@ CREATE TABLE "sellers" (
 CREATE TABLE "expense_types" (
 	"id" uuid NOT NULL,
 	"name" varchar(100) NOT NULL,
+	"created_at" timestamptz NOT NULL,
 	CONSTRAINT expense_types_pk PRIMARY KEY ("id")
 );
 
@@ -72,6 +74,7 @@ CREATE TABLE "expenses" (
 	"name" varchar(100) NOT NULL,
 	"amount" numeric(20, 2) NOT NULL,
 	"note" text null,
+	"created_at" timestamptz NOT NULL,
 	CONSTRAINT expenses_pk PRIMARY KEY ("id")
 );
 
@@ -85,6 +88,7 @@ CREATE TABLE "expense_images" (
 	"id" uuid NOT NULL,
 	"image" varchar(100) NOT NULL,
 	"expense_id" uuid NOT NULL,
+	"created_at" timestamptz NOT NULL,
 	CONSTRAINT expense_images_pk PRIMARY KEY ("id")
 );
 

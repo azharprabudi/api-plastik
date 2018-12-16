@@ -17,7 +17,7 @@ type ExpenseTransformInterface interface {
 	// expense
 	TransformCreateExpense(*dto.ExpenseReq) *model.ExpenseCreate
 	TransformGetExpense([]*model.ExpenseRead) []*dto.ExpenseRes
-	TransformGetExpenseByID(*model.ExpenseRead) *dto.ExpenseRes
+	TransformGetExpenseByID(*model.ExpenseReadDetail) *dto.ExpenseResDetail
 
 	// expense images
 	TransformCreateExpenseImages([]string, uuid.UUID) []*model.ExpenseImageCreate

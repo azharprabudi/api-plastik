@@ -7,15 +7,15 @@ import (
 
 // ExpenseServiceInterface ...
 type ExpenseServiceInterface interface {
-	// Category
-	CreateExpenseCategory(*dto.ExpenseCategoryReq) (int64, error)
-	UpdateExpenseCategory(uuid.UUID, *dto.ExpenseCategoryReq) error
-	DeleteExpenseCategory(uuid.UUID) error
-	GetExpenseCategory() ([]*dto.ExpenseCategoryRes, error)
-	GetExpenseCategoryByID(uuid.UUID) *dto.ExpenseCategoryRes
+	// ExpenseType
+	CreateExpenseType(*dto.ExpenseTypeReq) (uuid.UUID, error)
+	UpdateExpenseType(uuid.UUID, *dto.ExpenseTypeReq) error
+	DeleteExpenseType(uuid.UUID) error
+	GetExpenseType() ([]*dto.ExpenseTypeRes, error)
+	GetExpenseTypeByID(uuid.UUID) *dto.ExpenseTypeRes
 
 	// Expense
 	GetExpense() ([]*dto.ExpenseRes, error)
-	GetExpenseByID(uuid.UUID) *dto.ExpenseRes
+	GetExpenseByID(uuid.UUID) *dto.ExpenseResDetail
 	CreateExpense(*dto.ExpenseReq) (uuid.UUID, error)
 }

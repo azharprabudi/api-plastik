@@ -2,10 +2,13 @@ package routes
 
 import (
 	"github.com/azharprabudi/api-plastik/db"
+	expenseTypePresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/expense-type"
 	itemPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item"
 	itemCategoryPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item-category"
 	sellerPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/seller"
 	supplierPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/supplier"
+
+	expensePresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/expense"
 
 	"github.com/go-chi/chi"
 )
@@ -17,6 +20,8 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)
 	supplier := supplierPresentation.NewPresentationSupplier(db)
 	seller := sellerPresentation.NewPresentationSeller(db)
+	expenseType := expenseTypePresentation.NewExpenseTypePresentation(db)
+	expense := expensePresentation.NewExpensePresentation(db)
 
 	// route
 	(*newR).Route("/v1", func(r chi.Router) {
@@ -47,5 +52,17 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Post("/seller", seller.Create)
 		r.Patch("/seller/{id}", seller.Update)
 		r.Delete("/seller/{id}", seller.Delete)
+
+		/* expense type */
+		r.Get("/expensetype", expenseType.Find)
+		r.Get("/expensetype/{id}", expenseType.FindByID)
+		r.Post("/expensetype", expenseType.Create)
+		r.Patch("/expensetype/{id}", expenseType.Update)
+		r.Delete("/expensetype/{id}", expenseType.Delete)
+
+		/* expense */
+		r.Get("/expense", expense.Find)
+		r.Get("/expense/{id}", expense.FindByID)
+		r.Post("/expense", expense.Create)
 	})
 }

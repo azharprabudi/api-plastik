@@ -38,23 +38,24 @@ func (es *ExpenseService) GetExpenseTypeByID(expenseTypeID uuid.UUID) *dto.Expen
 }
 
 // CreateExpenseType ...
-func (es *ExpenseService) CreateExpenseType(itemCategory *dto.ExpenseTypeReq) (uuid.UUID, error) {
-	create := es.transform.TransformCreateCategory(itemCategory)
+func (es *ExpenseService) CreateExpenseType(expenseType *dto.ExpenseTypeReq) (uuid.UUID, error) {
+	create := es.transform.TransformCreateExpenseType(expenseType)
 
 	// add data to db
-	id, err := es.command.CreateCategory(create)
+	err := es.command.CreateExpenseType(create)
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return id, nil
+
+	return create.ExpenseType.ExpenseTypeID, nil
 }
 
 // UpdateExpenseType ...
-func (es *ExpenseService) UpdateExpenseType(expenseTypeID uuid.UUID, itemCategory *dto.ExpenseTypeReq) error {
-	update := es.transform.TransformUpdateCategory(itemCategory)
+func (es *ExpenseService) UpdateExpenseType(expenseTypeID uuid.UUID, expenseType *dto.ExpenseTypeReq) error {
+	update := es.transform.TransformUpdateExpenseType(expenseType)
 
 	// update to db
-	err := es.command.UpdateCategory(expenseTypeID, update)
+	err := es.command.UpdateExpenseType(expenseTypeID, update)
 	if err != nil {
 		return err
 	}
@@ -64,7 +65,7 @@ func (es *ExpenseService) UpdateExpenseType(expenseTypeID uuid.UUID, itemCategor
 // DeleteExpenseType ...
 func (es *ExpenseService) DeleteExpenseType(expenseTypeID uuid.UUID) error {
 	// delete data from db
-	err := es.command.DeleteCategory(expenseTypeID)
+	err := es.command.DeleteExpenseType(expenseTypeID)
 	if err != nil {
 		return err
 	}
@@ -80,20 +81,20 @@ func (es *ExpenseService) GetExpense() ([]*dto.ExpenseRes, error) {
 	}
 
 	// transform data from model
-	itemDTO := es.transform.TransformGetExpense(expense)
-	return itemDTO, nil
+	expenseDTO := es.transform.TransformGetExpense(expense)
+	return expenseDTO, nil
 }
 
 // GetExpenseByID ...
-func (es *ExpenseService) GetExpenseByID(expenseID uuid.UUID) *dto.ExpenseRes {
+func (es *ExpenseService) GetExpenseByID(expenseID uuid.UUID) *dto.ExpenseResDetail {
 	expense := es.query.GetExpenseByID(expenseID)
 	if expense == nil {
 		return nil
 	}
 
 	// transform data from model
-	itemDTO := es.transform.TransformGetExpenseByID(expense)
-	return itemDTO
+	expenseDTO := es.transform.TransformGetExpenseByID(expense)
+	return expenseDTO
 }
 
 // CreateExpense ...
@@ -102,12 +103,12 @@ func (es *ExpenseService) CreateExpense(expense *dto.ExpenseReq) (uuid.UUID, err
 	create := es.transform.TransformCreateExpense(expense)
 
 	// create expense images
-	createImg := es.transform.TransformCreateExpenseImages(expense.Images)
+	createImg := es.transform.TransformCreateExpenseImages(expense.Images, create.ExpenseID)
 
 	// add data to db
 	newTrx := trx.NewTransaction()
-	ctx := newTrx.CreateTrx()
-	newTrx.RunTrx(ctx, func(tx *sqlx.Tx) {
+	ctx := newTrx.CreateTrx(es.db.PgSQL)
+	err := newTrx.RunTrx(ctx, func(tx *sqlx.Tx) error {
 		// insert expense
 		err := es.command.CreateExpense(tx, create)
 		if err != nil {
@@ -130,12 +131,17 @@ func (es *ExpenseService) CreateExpense(expense *dto.ExpenseReq) (uuid.UUID, err
 
 	})
 
+	if err != nil {
+		return uuid.Nil, err
+	}
+
 	return create.ExpenseID, nil
 }
 
 // NewExpenseService ...
 func NewExpenseService(db *db.DB) ExpenseServiceInterface {
 	return &ExpenseService{
+		db:        db,
 		query:     query.NewExpenseQuery(db),
 		command:   command.NewExpenseCommand(db),
 		transform: transform.NewExpenseTransform(),

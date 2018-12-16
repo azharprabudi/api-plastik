@@ -8,7 +8,7 @@ import (
 
 // ExpenseReq ...
 type ExpenseReq struct {
-	ExpenseTypeID uuid.UUID `json:"id"`
+	ExpenseTypeID uuid.UUID `json:"expenseTypeId"`
 	Name          string    `json:"name"`
 	Amount        float64   `json:"amount"`
 	Note          string    `json:"note"`
@@ -20,4 +20,15 @@ type ExpenseRes struct {
 	ExpenseID uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 	ExpenseReq
+}
+
+// ExpenseResDetail ...
+type ExpenseResDetail struct {
+	ExpenseID     uuid.UUID         `json:"id"`
+	CreatedAt     time.Time         `json:"createdAt"`
+	ExpenseTypeID uuid.UUID         `json:"expenseTypeId"`
+	Name          string            `json:"name"`
+	Amount        float64           `json:"amount"`
+	Note          string            `json:"note"`
+	Images        []ExpenseImageRes `json:"images"`
 }

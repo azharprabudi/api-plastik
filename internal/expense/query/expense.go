@@ -91,9 +91,9 @@ func (eq *ExpenseQuery) GetExpense() ([]*model.ExpenseRead, error) {
 }
 
 // GetExpenseByID ...
-func (eq *ExpenseQuery) GetExpenseByID(expenseID uuid.UUID) *model.ExpenseRead {
+func (eq *ExpenseQuery) GetExpenseByID(expenseID uuid.UUID) *model.ExpenseReadDetail {
 	// init variable
-	result := new(model.ExpenseRead)
+	result := new(model.ExpenseReadDetail)
 
 	// create conditional
 	where := &qbmodel.Condition{
