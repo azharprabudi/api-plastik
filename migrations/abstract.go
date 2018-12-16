@@ -1,6 +1,6 @@
 package migrations
 
-import "github.com/api-plastik/db"
+import "github.com/azharprabudi/api-plastik/db"
 
 // Migration ...
 type Migration struct {

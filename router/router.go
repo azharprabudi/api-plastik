@@ -1,9 +1,9 @@
 package router
 
 import (
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/httpserver/app/plastik/middlewares"
-	"github.com/api-plastik/httpserver/app/plastik/routes"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/httpserver/app/plastik/middlewares"
+	"github.com/azharprabudi/api-plastik/httpserver/app/plastik/routes"
 	"github.com/go-chi/chi"
 )
 

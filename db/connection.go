@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/api-plastik/config"
+	"github.com/azharprabudi/api-plastik/config"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )

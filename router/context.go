@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/db"
 	"github.com/go-chi/chi"
 )
 

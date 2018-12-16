@@ -1,60 +1,60 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/expense/transform"
+	"github.com/azharprabudi/api-plastik/helper/transaction"
+	"github.com/azharprabudi/api-plastik/internal/expense/transform"
+	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/internal/expense/command"
-	"github.com/api-plastik/internal/expense/dto"
-	"github.com/api-plastik/internal/expense/query"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/internal/expense/command"
+	"github.com/azharprabudi/api-plastik/internal/expense/dto"
+	"github.com/azharprabudi/api-plastik/internal/expense/query"
 )
 
 // GetExpenseType ...
-func (expenseService *ExpenseService) GetExpenseType() ([]*dto.ExpenseTypeRes, error) {
+func (es *ExpenseService) GetExpenseType() ([]*dto.ExpenseTypeRes, error) {
 	// add data to db
-	expenseTypeModel, err := expenseService.query.GetExpenseType()
+	expenseType, err := es.query.GetExpenseType()
 	if err != nil {
 		return nil, err
 	}
 
 	// transform data from model
-	expenseTypeDTO := expenseService.transform.TransformGetExpenseType(expenseTypeModel)
+	expenseTypeDTO := es.transform.TransformGetExpenseType(expenseType)
 	return expenseTypeDTO, nil
 }
 
 // GetExpenseTypeByID ...
-func (expenseService *ExpenseService) GetExpenseTypeByID(expenseTypeID int) *dto.ExpenseTypeRes {
-	expenseTypeModel := expenseService.query.GetExpenseTypeByID(expenseTypeID)
-	if expenseTypeModel == nil {
+func (es *ExpenseService) GetExpenseTypeByID(expenseTypeID uuid.UUID) *dto.ExpenseTypeRes {
+	expenseType := es.query.GetExpenseTypeByID(expenseTypeID)
+	if expenseType == nil {
 		return nil
 	}
 
 	// transform data from model
-	expenseTypeDTO := expenseService.transform.TransformGetExpenseTypeByID(expenseTypeModel)
+	expenseTypeDTO := es.transform.TransformGetExpenseTypeByID(expenseType)
 	return expenseTypeDTO
 }
 
 // CreateExpenseType ...
-func (expenseService *ExpenseService) CreateExpenseType(itemCategory *dto.ExpenseTypeReq) (int64, error) {
-	// transform dto to model
-	itemCategoryCreate := expenseService.transform.TransformCreateCategory(itemCategory)
+func (es *ExpenseService) CreateExpenseType(itemCategory *dto.ExpenseTypeReq) (uuid.UUID, error) {
+	create := es.transform.TransformCreateCategory(itemCategory)
 
 	// add data to db
-	id, err := expenseService.command.CreateCategory(itemCategoryCreate)
+	id, err := es.command.CreateCategory(create)
 	if err != nil {
-		return 0, err
+		return uuid.Nil, err
 	}
 	return id, nil
 }
 
 // UpdateExpenseType ...
-func (expenseService *ExpenseService) UpdateExpenseType(categoryID int, itemCategory *dto.ExpenseTypeReq) error {
-	// transform dto to model
-	itemCategoryUpdate := expenseService.transform.TransformUpdateCategory(itemCategory)
+func (es *ExpenseService) UpdateExpenseType(expenseTypeID uuid.UUID, itemCategory *dto.ExpenseTypeReq) error {
+	update := es.transform.TransformUpdateCategory(itemCategory)
 
 	// update to db
-	err := expenseService.command.UpdateCategory(categoryID, itemCategoryUpdate)
+	err := es.command.UpdateCategory(expenseTypeID, update)
 	if err != nil {
 		return err
 	}
@@ -62,74 +62,75 @@ func (expenseService *ExpenseService) UpdateExpenseType(categoryID int, itemCate
 }
 
 // DeleteExpenseType ...
-func (expenseService *ExpenseService) DeleteExpenseType(categoryID int) error {
+func (es *ExpenseService) DeleteExpenseType(expenseTypeID uuid.UUID) error {
 	// delete data from db
-	err := expenseService.command.DeleteCategory(categoryID)
+	err := es.command.DeleteCategory(expenseTypeID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// GetItem ...
-func (expenseService *ExpenseService) GetItem() ([]*dto.ItemRes, error) {
+// GetExpense ...
+func (es *ExpenseService) GetExpense() ([]*dto.ExpenseRes, error) {
 	// add data to db
-	itemModel, err := expenseService.query.GetItem()
+	expense, err := es.query.GetExpense()
 	if err != nil {
 		return nil, err
 	}
 
 	// transform data from model
-	itemDTO := expenseService.transform.TransformGetItem(itemModel)
+	itemDTO := es.transform.TransformGetExpense(expense)
 	return itemDTO, nil
 }
 
-// GetItemByID ...
-func (expenseService *ExpenseService) GetItemByID(itemID string) *dto.ItemRes {
-	itemModel := expenseService.query.GetItemByID(itemID)
-	if itemModel == nil {
+// GetExpenseByID ...
+func (es *ExpenseService) GetExpenseByID(expenseID uuid.UUID) *dto.ExpenseRes {
+	expense := es.query.GetExpenseByID(expenseID)
+	if expense == nil {
 		return nil
 	}
 
 	// transform data from model
-	itemDTO := expenseService.transform.TransformGetItemByID(itemModel)
+	itemDTO := es.transform.TransformGetExpenseByID(expense)
 	return itemDTO
 }
 
-// CreateItem ...
-func (expenseService *ExpenseService) CreateItem(item *dto.ItemReq) (uuid.UUID, error) {
-	// transform dto to model
-	itemCreate := expenseService.transform.TransformCreateItem(item)
+// CreateExpense ...
+func (es *ExpenseService) CreateExpense(expense *dto.ExpenseReq) (uuid.UUID, error) {
+	// create expense
+	create := es.transform.TransformCreateExpense(expense)
+
+	// create expense images
+	createImg := es.transform.TransformCreateExpenseImages(expense.Images)
 
 	// add data to db
-	err := expenseService.command.CreateItem(itemCreate)
-	if err != nil {
-		return uuid.Nil, err
-	}
-	return itemCreate.ItemID, nil
-}
+	newTrx := trx.NewTransaction()
+	ctx := newTrx.CreateTrx()
+	newTrx.RunTrx(ctx, func(tx *sqlx.Tx) {
+		// insert expense
+		err := es.command.CreateExpense(tx, create)
+		if err != nil {
+			return err
+		}
 
-// UpdateItem ...
-func (expenseService *ExpenseService) UpdateItem(itemID string, item *dto.ItemReq) error {
-	// transform dto to model
-	itemUpdate := expenseService.transform.TransformUpdateItem(item)
+		// insert images
+		for _, expenseImg := range createImg {
+			err := es.command.CreateExpenseImage(tx, expenseImg)
+			if err != nil {
+				break
+			}
+		}
 
-	// update to db
-	err := expenseService.command.UpdateItem(itemID, itemUpdate)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+		// return error if exists
+		if err != nil {
+			return err
+		}
+		return nil
 
-// DeleteItem ...
-func (expenseService *ExpenseService) DeleteItem(itemID string) error {
-	// delete data from db
-	err := expenseService.command.DeleteItem(itemID)
-	if err != nil {
-		return err
-	}
-	return nil
+	})
+
+	return create.ExpenseID, nil
 }
 
 // NewExpenseService ...

@@ -1,8 +1,8 @@
 package transform
 
 import (
-	"github.com/api-plastik/internal/item/dto"
-	"github.com/api-plastik/internal/item/model"
+	"github.com/azharprabudi/api-plastik/internal/item/dto"
+	"github.com/azharprabudi/api-plastik/internal/item/model"
 )
 
 // ItemTransformInterface ...

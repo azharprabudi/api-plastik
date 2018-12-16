@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/api-plastik/config"
-	newError "github.com/api-plastik/httpserver/error"
+	"github.com/azharprabudi/api-plastik/config"
+	newError "github.com/azharprabudi/api-plastik/httpserver/error"
 )
 
 // CheckClientSecret ...

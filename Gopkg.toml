@@ -40,3 +40,9 @@
 [[constraint]]
   name = "github.com/satori/go.uuid"
   version = "1.2.0"
+
+# Configuration Heroku
+[metadata.heroku]
+  root-package = "github.com/azharprabudi/api-plastik"
+  ensure = true
+  install = [ "./..." ]

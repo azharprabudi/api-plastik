@@ -2,23 +2,25 @@ package model
 
 import (
 	"time"
+
+	"github.com/satori/go.uuid"
 )
 
-// ExpenseTypeID ...
-type ExpenseTypeID struct {
-	ExpenseTypeID int `db:"id"`
+// ExpenseType ...
+type ExpenseType struct {
+	ExpenseTypeID uuid.UUID `db:"id"`
+	Name          string    `db:"name"`
+	CreatedAt     time.Time `db:"created_at"`
 }
 
-// ExpenseTypeModelRead ...
-type ExpenseTypeModelRead struct {
-	ExpenseTypeID
-	ExpenseTypeCreate
+// ExpenseTypeRead ...
+type ExpenseTypeRead struct {
+	ExpenseType
 }
 
 // ExpenseTypeCreate ...
 type ExpenseTypeCreate struct {
-	Name      string    `db:"name"`
-	CreatedAt time.Time `db:"created_at"`
+	ExpenseType
 }
 
 // ExpenseTypeUpdate ...

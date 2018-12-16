@@ -1,8 +1,8 @@
 package transform
 
 import (
-	"github.com/api-plastik/internal/supplier/dto"
-	"github.com/api-plastik/internal/supplier/model"
+	"github.com/azharprabudi/api-plastik/internal/supplier/dto"
+	"github.com/azharprabudi/api-plastik/internal/supplier/model"
 )
 
 // SupplierTransformInterface ...

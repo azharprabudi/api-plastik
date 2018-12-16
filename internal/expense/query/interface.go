@@ -1,14 +1,17 @@
 package query
 
-import "github.com/api-plastik/internal/expense/model"
+import (
+	"github.com/azharprabudi/api-plastik/internal/expense/model"
+	"github.com/satori/go.uuid"
+)
 
 // ExpenseQueryInterface ...
 type ExpenseQueryInterface interface {
 	// Expense Type
-	GetExpenseType() ([]*model.ExpenseTypeModelRead, error)
-	GetExpenseTypeByID(int) *model.ExpenseTypeModelRead
+	GetExpenseType() ([]*model.ExpenseTypeRead, error)
+	GetExpenseTypeByID(uuid.UUID) *model.ExpenseTypeRead
 
 	// Expense
 	GetExpense() ([]*model.ExpenseRead, error)
-	GetExpenseByID(string) *model.ExpenseRead
+	GetExpenseByID(uuid.UUID) *model.ExpenseRead
 }

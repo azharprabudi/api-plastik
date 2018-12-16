@@ -1,7 +1,7 @@
 package presentations
 
 import (
-	"github.com/api-plastik/internal/seller/service"
+	"github.com/azharprabudi/api-plastik/internal/seller/service"
 )
 
 // Seller ...

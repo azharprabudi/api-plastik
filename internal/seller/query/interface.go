@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/api-plastik/internal/seller/model"
+	"github.com/azharprabudi/api-plastik/internal/seller/model"
 	"github.com/satori/go.uuid"
 )
 

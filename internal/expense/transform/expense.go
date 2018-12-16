@@ -5,107 +5,121 @@ import (
 
 	"github.com/satori/go.uuid"
 
-	"github.com/api-plastik/internal/expense/dto"
-	"github.com/api-plastik/internal/expense/model"
+	"github.com/azharprabudi/api-plastik/internal/expense/dto"
+	"github.com/azharprabudi/api-plastik/internal/expense/model"
 )
 
 // TransformCreateExpenseType ...
-func (et *ExpenseTransform) TransformCreateExpenseType(expenseExpenseTypeModelDTO *dto.ExpenseTypeReq) *model.ExpenseTypeCreate {
-	expenseExpenseTypeCreate := &model.ExpenseTypeCreate{
-		Name:      expenseExpenseTypeModelDTO.Name,
-		CreatedAt: time.Now().UTC(),
+func (et *ExpenseTransform) TransformCreateExpenseType(expense *dto.ExpenseTypeReq) *model.ExpenseTypeCreate {
+	create := &model.ExpenseTypeCreate{
+		ExpenseType: model.ExpenseType{
+			Name:      expense.Name,
+			CreatedAt: time.Now().UTC(),
+		},
 	}
-	return expenseExpenseTypeCreate
+	return create
 }
 
 // TransformUpdateExpenseType ...
-func (et *ExpenseTransform) TransformUpdateExpenseType(expenseExpenseTypeModelDTO *dto.ExpenseTypeReq) *model.ExpenseTypeUpdate {
-	expenseExpenseTypeUpdate := &model.ExpenseTypeUpdate{
-		Name: expenseExpenseTypeModelDTO.Name,
+func (et *ExpenseTransform) TransformUpdateExpenseType(expense *dto.ExpenseTypeReq) *model.ExpenseTypeUpdate {
+	update := &model.ExpenseTypeUpdate{
+		Name: expense.Name,
 	}
-	return expenseExpenseTypeUpdate
+	return update
 }
 
 // TransformGetExpenseType ...
-func (et *ExpenseTransform) TransformGetExpenseType(expenseExpenseTypeModelRead []*model.ExpenseTypeModelRead) []*dto.ExpenseTypeRes {
+func (et *ExpenseTransform) TransformGetExpenseType(expenses []*model.ExpenseTypeRead) []*dto.ExpenseTypeRes {
 	// inet variable
-	var expenseExpenseTypeIncRes = []*dto.ExpenseTypeRes{}
+	var res = []*dto.ExpenseTypeRes{}
 
 	// transform data as dto expected
-	for _, expense := range expenseExpenseTypeModelRead {
-		expenseExpenseTypeIncRes = append(expenseExpenseTypeIncRes, &dto.ExpenseTypeRes{
-			ID:        expense.ExpenseTypeID.ExpenseTypeID,
-			Name:      expense.Name,
+	for _, expense := range expenses {
+		res = append(res, &dto.ExpenseTypeRes{
+			ExpenseTypeID: expense.ExpenseType.ExpenseTypeID,
+			ExpenseTypeReq: dto.ExpenseTypeReq{
+				Name: expense.Name,
+			},
 			CreatedAt: expense.CreatedAt,
 		})
 	}
 
-	return expenseExpenseTypeIncRes
+	return res
 }
 
 // TransformGetExpenseTypeByID ...
-func (et *ExpenseTransform) TransformGetExpenseTypeByID(expenseExpenseTypeModelRead *model.ExpenseTypeModelRead) *dto.ExpenseTypeRes {
+func (et *ExpenseTransform) TransformGetExpenseTypeByID(expense *model.ExpenseTypeRead) *dto.ExpenseTypeRes {
 	return &dto.ExpenseTypeRes{
-		ID:        expenseExpenseTypeModelRead.ExpenseTypeID.ExpenseTypeID,
-		Name:      expenseExpenseTypeModelRead.Name,
-		CreatedAt: expenseExpenseTypeModelRead.CreatedAt,
+		ExpenseTypeReq: dto.ExpenseTypeReq{
+			Name: expense.Name,
+		},
+		ExpenseTypeID: expense.ExpenseTypeID,
+		CreatedAt:     expense.CreatedAt,
 	}
 }
 
 // TransformCreateExpense ...
-func (et *ExpenseTransform) TransformCreateExpense(expenseDTO *dto.ExpenseReq) *model.ExpenseCreate {
-	expenseCreate := &model.ExpenseCreate{
-		ExpenseID:     uuid.NewV4(),
-		Name:          expenseDTO.Name,
-		ExpenseTypeID: expenseDTO.ExpenseTypeID,
-		CreatedAt:     time.Now().UTC(),
-		Amount:        expenseDTO.Amount,
-		Note:          expenseDTO.Note,
+func (et *ExpenseTransform) TransformCreateExpense(expense *dto.ExpenseReq) *model.ExpenseCreate {
+	create := &model.ExpenseCreate{
+		Expense: model.Expense{
+			ExpenseID:     uuid.NewV4(),
+			Name:          expense.Name,
+			CreatedAt:     time.Now().UTC(),
+			Amount:        expense.Amount,
+			Note:          expense.Note,
+			ExpenseTypeID: expense.ExpenseTypeID,
+			Images:        expense.Images,
+		},
 	}
-	return expenseCreate
-}
-
-// TransformUpdateExpense ...
-func (et *ExpenseTransform) TransformUpdateExpense(expenseDTO *dto.ExpenseReq) *model.ExpenseUpdate {
-	expenseUpdate := &model.ExpenseUpdate{
-		Name:          expenseDTO.Name,
-		ExpenseTypeID: expenseDTO.ExpenseTypeID,
-		Amount:        expenseDTO.Amount,
-		Note:          expenseDTO.Note,
-	}
-	return expenseUpdate
+	return create
 }
 
 // TransformGetExpense ...
-func (et *ExpenseTransform) TransformGetExpense(expenseRead []*model.ExpenseRead) []*dto.ExpenseRes {
+func (et *ExpenseTransform) TransformGetExpense(expenses []*model.ExpenseRead) []*dto.ExpenseRes {
 	// inet variable
-	var expenseRes = []*dto.ExpenseRes{}
+	var res = []*dto.ExpenseRes{}
 
 	// transform data as dto expected
-	for _, expense := range expenseRead {
-		expenseRes = append(expenseRes, &dto.ExpenseRes{
-			ID:        expense.ExpenseCreate.ExpenseID,
-			CreatedAt: expense.ExpenseCreate.CreatedAt,
+	for _, expense := range expenses {
+		res = append(res, &dto.ExpenseRes{
+			ExpenseID: expense.Expense.ExpenseID,
+			CreatedAt: expense.Expense.CreatedAt,
 			ExpenseReq: dto.ExpenseReq{
-				Name:          expense.ExpenseCreate.Name,
-				ExpenseTypeID: expense.ExpenseCreate.ExpenseTypeID,
+				Name:          expense.Expense.Name,
+				ExpenseTypeID: expense.Expense.ExpenseTypeID,
 			},
 		})
 	}
 
-	return expenseRes
+	return res
 }
 
 // TransformGetExpenseByID ...
-func (et *ExpenseTransform) TransformGetExpenseByID(expenseRead *model.ExpenseRead) *dto.ExpenseRes {
+func (et *ExpenseTransform) TransformGetExpenseByID(expense *model.ExpenseRead) *dto.ExpenseRes {
 	return &dto.ExpenseRes{
-		ID:        expenseRead.ExpenseCreate.ExpenseID,
-		CreatedAt: expenseRead.ExpenseCreate.CreatedAt,
+		ExpenseID: expense.Expense.ExpenseID,
+		CreatedAt: expense.Expense.CreatedAt,
 		ExpenseReq: dto.ExpenseReq{
-			Name:          expenseRead.ExpenseCreate.Name,
-			ExpenseTypeID: expenseRead.ExpenseCreate.ExpenseTypeID,
+			Name:          expense.Expense.Name,
+			ExpenseTypeID: expense.Expense.ExpenseTypeID,
 		},
 	}
+}
+
+// TransformCreateExpenseImages ...
+func (et *ExpenseTransform) TransformCreateExpenseImages(expenseImg []string, expenseID uuid.UUID) []*model.ExpenseImageCreate {
+	var res = []*model.ExpenseImageCreate{}
+	for _, image := range expenseImg {
+		res = append(res, &model.ExpenseImageCreate{
+			ExpenseImage: model.ExpenseImage{
+				ExepenseID:     expenseID,
+				ExpenseImageID: uuid.NewV4(),
+				Image:          image,
+			},
+		})
+
+	}
+	return res
 }
 
 // NewExpenseTransform ...

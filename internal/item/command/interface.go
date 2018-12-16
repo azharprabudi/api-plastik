@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/api-plastik/internal/item/model"
+	"github.com/azharprabudi/api-plastik/internal/item/model"
 	uuid "github.com/satori/go.uuid"
 )
 

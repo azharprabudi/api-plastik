@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/api-plastik/helper/querybuilder/model"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 )
 
 // this function below, to decide is the last loop or not

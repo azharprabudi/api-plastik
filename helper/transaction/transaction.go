@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/api-plastik/config"
+	"github.com/azharprabudi/api-plastik/config"
 	"github.com/jmoiron/sqlx"
 )
 

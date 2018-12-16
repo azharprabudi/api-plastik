@@ -3,8 +3,8 @@ package qb
 import (
 	"fmt"
 
-	"github.com/api-plastik/helper/querybuilder/model"
-	"github.com/api-plastik/helper/querybuilder/queries"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder/queries"
 )
 
 /*

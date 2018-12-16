@@ -1,12 +1,11 @@
 package command
 
 import (
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/helper/querybuilder"
-	qbModel "github.com/api-plastik/helper/querybuilder/model"
-	"github.com/api-plastik/internal/expense/model"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder"
+	qbModel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	"github.com/azharprabudi/api-plastik/internal/expense/model"
 	"github.com/jmoiron/sqlx"
-	"github.com/satori/go.uuid"
 )
 
 // CreateExpenseType ...
@@ -76,70 +75,10 @@ func (expenseCommand *ExpenseCommand) CreateExpense(tx *sqlx.Tx, expense *model.
 	return nil
 }
 
-// UpdateExpense ...
-func (expenseCommand *ExpenseCommand) UpdateExpense(tx *sqlx.Tx, id string, expense *model.ExpenseUpdate) error {
-	// create condition
-	where := &qbModel.Condition{
-		Key:      "id",
-		Value:    id,
-		Operator: "=",
-		NextCond: "",
-	}
-
-	// create query
-	query := expenseCommand.q.UpdateWhere("expenses", *expense, []*qbModel.Condition{where})
-
-	// exec query
-	_, err := tx.Exec(query, expense.ExpenseTypeID, expense.Name)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// DeleteExpense ...
-func (expenseCommand *ExpenseCommand) DeleteExpense(tx *sqlx.Tx, id string) error {
-	// create condition
-	where := &qbModel.Condition{
-		Key:      "id",
-		Value:    id,
-		Operator: "=",
-		NextCond: "",
-	}
-
-	// create query
-	query := expenseCommand.q.Delete("expenses", []*qbModel.Condition{where})
-
-	// exec query
-	_, err := tx.Exec(query)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // CreateExpenseImage ...
-func (expenseCommand *ExpenseCommand) CreateExpenseImage(tx *sqlx.Tx, expenseImage *model.ExpenseImageCreate) error {
-	query := expenseCommand.q.Create("expense_images", *expenseImage)
-	_, err := tx.Exec(query, expenseImage.Value)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteExpenseImage ...
-func (expenseCommand *ExpenseCommand) DeleteExpenseImage(tx *sqlx.Tx, id uuid.UUID) error {
-	where := &qbModel.Condition{
-		Key:      "expense_id",
-		Operator: "=",
-		Value:    id,
-		NextCond: "",
-	}
-
-	query := expenseCommand.q.Delete("expense_images", []*qbModel.Condition{where})
-	_, err := tx.Exec(query)
+func (expenseCommand *ExpenseCommand) CreateExpenseImage(tx *sqlx.Tx, image *model.ExpenseImageCreate) error {
+	query := expenseCommand.q.Create("expense_images", *image)
+	_, err := tx.Exec(query, image.ExpenseImage.ExpenseImageID, image.ExpenseImage.ExepenseID, image.ExpenseImage.Image)
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,8 @@
 package query
 
 import (
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/helper/querybuilder"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder"
 )
 
 // ExpenseQuery ...

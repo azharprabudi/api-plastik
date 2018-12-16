@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	newError "github.com/api-plastik/httpserver/error"
+	newError "github.com/azharprabudi/api-plastik/httpserver/error"
 )
 
 // AcceptContentType ...

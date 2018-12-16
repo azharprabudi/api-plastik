@@ -1,13 +1,13 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/seller/transform"
+	"github.com/azharprabudi/api-plastik/internal/seller/transform"
 	"github.com/satori/go.uuid"
 
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/internal/seller/command"
-	"github.com/api-plastik/internal/seller/dto"
-	"github.com/api-plastik/internal/seller/query"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/internal/seller/command"
+	"github.com/azharprabudi/api-plastik/internal/seller/dto"
+	"github.com/azharprabudi/api-plastik/internal/seller/query"
 )
 
 // GetSeller ...

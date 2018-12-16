@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/seller/dto"
+	"github.com/azharprabudi/api-plastik/internal/seller/dto"
 	"github.com/satori/go.uuid"
 )
 

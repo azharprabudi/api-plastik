@@ -1,7 +1,7 @@
 package presentations
 
 import (
-	"github.com/api-plastik/internal/item/service"
+	"github.com/azharprabudi/api-plastik/internal/item/service"
 )
 
 // ItemCategory ...

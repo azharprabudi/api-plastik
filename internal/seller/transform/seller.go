@@ -5,8 +5,8 @@ import (
 
 	"github.com/satori/go.uuid"
 
-	"github.com/api-plastik/internal/seller/dto"
-	"github.com/api-plastik/internal/seller/model"
+	"github.com/azharprabudi/api-plastik/internal/seller/dto"
+	"github.com/azharprabudi/api-plastik/internal/seller/model"
 )
 
 // TransformCreate ...

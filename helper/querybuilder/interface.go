@@ -1,6 +1,6 @@
 package qb
 
-import "github.com/api-plastik/helper/querybuilder/model"
+import "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 
 // QueryBuilderInterface ...
 type QueryBuilderInterface interface {

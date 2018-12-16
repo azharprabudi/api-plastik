@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/seller/command"
-	"github.com/api-plastik/internal/seller/query"
-	"github.com/api-plastik/internal/seller/transform"
+	"github.com/azharprabudi/api-plastik/internal/seller/command"
+	"github.com/azharprabudi/api-plastik/internal/seller/query"
+	"github.com/azharprabudi/api-plastik/internal/seller/transform"
 )
 
 // SellerService ...

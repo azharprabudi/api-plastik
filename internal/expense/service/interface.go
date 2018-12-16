@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/expense/dto"
+	"github.com/azharprabudi/api-plastik/internal/expense/dto"
 	"github.com/satori/go.uuid"
 )
 
@@ -9,15 +9,13 @@ import (
 type ExpenseServiceInterface interface {
 	// Category
 	CreateExpenseCategory(*dto.ExpenseCategoryReq) (int64, error)
-	UpdateExpenseCategory(int, *dto.ExpenseCategoryReq) error
-	DeleteExpenseCategory(int) error
+	UpdateExpenseCategory(uuid.UUID, *dto.ExpenseCategoryReq) error
+	DeleteExpenseCategory(uuid.UUID) error
 	GetExpenseCategory() ([]*dto.ExpenseCategoryRes, error)
-	GetExpenseCategoryByID(int) *dto.ExpenseCategoryRes
+	GetExpenseCategoryByID(uuid.UUID) *dto.ExpenseCategoryRes
 
 	// Expense
-	CreateExpense(*dto.ExpenseReq) (uuid.UUID, error)
-	UpdateExpense(string, *dto.ExpenseReq) error
-	DeleteExpense(string) error
 	GetExpense() ([]*dto.ExpenseRes, error)
-	GetExpenseByID(string) *dto.ExpenseRes
+	GetExpenseByID(uuid.UUID) *dto.ExpenseRes
+	CreateExpense(*dto.ExpenseReq) (uuid.UUID, error)
 }

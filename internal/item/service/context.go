@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/item/command"
-	"github.com/api-plastik/internal/item/query"
-	"github.com/api-plastik/internal/item/transform"
+	"github.com/azharprabudi/api-plastik/internal/item/command"
+	"github.com/azharprabudi/api-plastik/internal/item/query"
+	"github.com/azharprabudi/api-plastik/internal/item/transform"
 )
 
 // ItemService ...

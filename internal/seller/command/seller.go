@@ -1,10 +1,10 @@
 package command
 
 import (
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/helper/querybuilder"
-	qbModel "github.com/api-plastik/helper/querybuilder/model"
-	"github.com/api-plastik/internal/seller/model"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder"
+	qbModel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	"github.com/azharprabudi/api-plastik/internal/seller/model"
 	uuid "github.com/satori/go.uuid"
 )
 

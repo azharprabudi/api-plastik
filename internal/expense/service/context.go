@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/api-plastik/internal/expense/command"
-	"github.com/api-plastik/internal/expense/query"
-	"github.com/api-plastik/internal/expense/transform"
+	"github.com/azharprabudi/api-plastik/internal/expense/command"
+	"github.com/azharprabudi/api-plastik/internal/expense/query"
+	"github.com/azharprabudi/api-plastik/internal/expense/transform"
 )
 
 // ExpenseService ...

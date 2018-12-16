@@ -1,53 +1,59 @@
 package query
 
 import (
-	"github.com/api-plastik/db"
-	qb "github.com/api-plastik/helper/querybuilder"
-	qbModel "github.com/api-plastik/helper/querybuilder/model"
-	"github.com/api-plastik/internal/expense/model"
+	"github.com/azharprabudi/api-plastik/db"
+	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	"github.com/azharprabudi/api-plastik/internal/expense/model"
+	"github.com/satori/go.uuid"
 )
 
 // GetExpenseType ...
-func (iq *ExpenseQuery) GetExpenseType() ([]*model.ExpenseTypeModelRead, error) {
+func (eq *ExpenseQuery) GetExpenseType() ([]*model.ExpenseTypeRead, error) {
 	// init variable
-	var results = []*model.ExpenseTypeModelRead{}
+	var results = []*model.ExpenseTypeRead{}
+
+	// order
+	orders := []*qbmodel.Order{
+		&qbmodel.Order{
+			Key:   "created_at",
+			Value: "desc",
+		},
+	}
 
 	// get query
-	query := iq.qb.Query("expense_types", 0, 0)
-	rows, err := iq.db.PgSQL.Queryx(query)
+	query := eq.qb.Query("expense_types", 0, 0, orders)
+	rows, err := eq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
 	}
 
 	// get struct
 	for rows.Next() {
-		tmp := new(model.ExpenseTypeModelRead)
+		tmp := new(model.ExpenseTypeRead)
 		rows.StructScan(tmp)
 		results = append(results, tmp)
-	}
-	if err != nil {
-		return nil, err
 	}
 
 	return results, nil
 }
 
 // GetExpenseTypeByID ...
-func (iq *ExpenseQuery) GetExpenseTypeByID(categoryID int) *model.ExpenseTypeModelRead {
+func (eq *ExpenseQuery) GetExpenseTypeByID(ExpenseTypeID uuid.UUID) *model.ExpenseTypeRead {
 	// init variable
-	result := new(model.ExpenseTypeModelRead)
+	result := new(model.ExpenseTypeRead)
 
 	// create conditional
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
 		NextCond: "",
 		Operator: "=",
-		Value:    categoryID,
+		Value:    ExpenseTypeID.String(),
 	}
 
 	// get query and execute
-	query := iq.qb.QueryWhere("expense_types", []*qbModel.Condition{where}, nil)
-	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
+	query := eq.qb.QueryWhere("expense_types", []*qbmodel.Condition{where}, nil)
+	err := eq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil
 	}
@@ -55,13 +61,21 @@ func (iq *ExpenseQuery) GetExpenseTypeByID(categoryID int) *model.ExpenseTypeMod
 }
 
 // GetExpense ...
-func (iq *ExpenseQuery) GetExpense() ([]*model.ExpenseRead, error) {
+func (eq *ExpenseQuery) GetExpense() ([]*model.ExpenseRead, error) {
 	// init variable
 	var results = []*model.ExpenseRead{}
 
+	// orders
+	orders := []*qbmodel.Order{
+		&qbmodel.Order{
+			Key:   "created_at",
+			Value: "desc",
+		},
+	}
+
 	// get query
-	query := iq.qb.Query("expenses", 0, 0)
-	rows, err := iq.db.PgSQL.Queryx(query)
+	query := eq.qb.Query("expenses", 0, 0, orders)
+	rows, err := eq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
 	}
@@ -72,32 +86,38 @@ func (iq *ExpenseQuery) GetExpense() ([]*model.ExpenseRead, error) {
 		rows.StructScan(tmp)
 		results = append(results, tmp)
 	}
-	if err != nil {
-		return nil, err
-	}
 
 	return results, nil
 }
 
 // GetExpenseByID ...
-func (iq *ExpenseQuery) GetExpenseByID(expenseID string) *model.ExpenseRead {
+func (eq *ExpenseQuery) GetExpenseByID(expenseID uuid.UUID) *model.ExpenseRead {
 	// init variable
 	result := new(model.ExpenseRead)
 
 	// create conditional
-	where := &qbModel.Condition{
+	where := &qbmodel.Condition{
 		Key:      "id",
 		NextCond: "",
 		Operator: "=",
 		Value:    expenseID,
 	}
 
+	// create join
+	join := &qbmodel.Join{
+		TableFrom:       "",
+		ColumnTableFrom: "id",
+		TableWith:       "expense_images",
+		ColumnTableWith: "expense_id",
+	}
+
 	// get query and execute
-	query := iq.qb.QueryWhere("expenses", []*qbModel.Condition{where}, nil)
-	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
+	query := eq.qb.QueryWhereWith("expenses", []*qbmodel.Join{join}, []*qbmodel.Condition{where}, nil)
+	err := eq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil
 	}
+
 	return result
 }
 

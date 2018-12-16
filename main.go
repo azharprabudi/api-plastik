@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/api-plastik/cmd"
-	"github.com/api-plastik/config"
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/migrations"
-	"github.com/api-plastik/router"
+	"github.com/azharprabudi/api-plastik/cmd"
+	"github.com/azharprabudi/api-plastik/config"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/migrations"
+	"github.com/azharprabudi/api-plastik/router"
 )
 
 func main() {

@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"github.com/api-plastik/db"
-	itemPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/item"
-	itemCategoryPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/item-category"
-	sellerPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/seller"
-	supplierPresentation "github.com/api-plastik/httpserver/app/plastik/presentations/supplier"
+	"github.com/azharprabudi/api-plastik/db"
+	itemPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item"
+	itemCategoryPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item-category"
+	sellerPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/seller"
+	supplierPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/supplier"
 
 	"github.com/go-chi/chi"
 )

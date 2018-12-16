@@ -3,12 +3,12 @@ package migrations
 import (
 	"strconv"
 
-	"github.com/api-plastik/db"
-	qb "github.com/api-plastik/helper/querybuilder"
-	"github.com/api-plastik/helper/querybuilder/model"
-	trx "github.com/api-plastik/helper/transaction"
-	execsql "github.com/api-plastik/migrations/exec-sql"
-	"github.com/api-plastik/migrations/model"
+	"github.com/azharprabudi/api-plastik/db"
+	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
+	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	trx "github.com/azharprabudi/api-plastik/helper/transaction"
+	execsql "github.com/azharprabudi/api-plastik/migrations/exec-sql"
+	"github.com/azharprabudi/api-plastik/migrations/model"
 	"github.com/jmoiron/sqlx"
 )
 

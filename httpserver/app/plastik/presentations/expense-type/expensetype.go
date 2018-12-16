@@ -2,24 +2,25 @@ package presentations
 
 import (
 	"net/http"
-	"strconv"
+
+	"github.com/satori/go.uuid"
 
 	"github.com/go-chi/chi"
 
-	"github.com/api-plastik/helper/baseurl"
-	"github.com/api-plastik/httpserver/app/plastik/presentations"
-	newError "github.com/api-plastik/httpserver/error"
-	"github.com/api-plastik/httpserver/request"
-	"github.com/api-plastik/httpserver/response"
+	"github.com/azharprabudi/api-plastik/helper/baseurl"
+	"github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations"
+	newError "github.com/azharprabudi/api-plastik/httpserver/error"
+	"github.com/azharprabudi/api-plastik/httpserver/request"
+	"github.com/azharprabudi/api-plastik/httpserver/response"
 
-	"github.com/api-plastik/db"
-	"github.com/api-plastik/internal/expense/dto"
-	"github.com/api-plastik/internal/expense/service"
+	"github.com/azharprabudi/api-plastik/db"
+	"github.com/azharprabudi/api-plastik/internal/expense/dto"
+	"github.com/azharprabudi/api-plastik/internal/expense/service"
 )
 
 // Find ...
-func (expense *ExpenseType) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := expense.service.GetExpenseType()
+func (et *ExpenseType) Find(w http.ResponseWriter, r *http.Request) {
+	results, err := et.service.GetExpenseType()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -28,8 +29,8 @@ func (expense *ExpenseType) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (expense *ExpenseType) FindByID(w http.ResponseWriter, r *http.Request) {
-	expenseTypeID, err := strconv.Atoi(chi.URLParam(r, "id"))
+func (et *ExpenseType) FindByID(w http.ResponseWriter, r *http.Request) {
+	expenseTypeID, err := uuid.UUID(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -42,16 +43,16 @@ func (expense *ExpenseType) FindByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create ...
-func (expense *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
+func (et *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
-	expenseTypeReq := new(dto.ExpenseTypeReq)
+	req := new(dto.ExpenseTypeReq)
 
 	// parse json
-	request.Get(r.Body, expenseTypeReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if expenseTypeReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
@@ -62,7 +63,7 @@ func (expense *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := expense.service.CreateExpenseType(expenseTypeReq)
+	id, err := et.service.CreateExpenseType(req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -71,7 +72,7 @@ func (expense *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "expensetype/", id),
+		"location": baseurl.Get(r, "expensetype", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
@@ -79,9 +80,9 @@ func (expense *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (expense *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
+func (et *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	expenseTypeID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	expenseTypeID, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -92,10 +93,10 @@ func (expense *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 	expenseTypeReq := new(dto.ExpenseTypeReq)
 
 	// parse json
-	request.Get(r.Body, expenseTypeReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if expenseTypeReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
@@ -106,7 +107,7 @@ func (expense *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = expense.service.UpdateExpenseType(expenseTypeID, expenseTypeReq)
+	err = et.service.UpdateExpenseType(expenseTypeID, req)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -118,16 +119,16 @@ func (expense *ExpenseType) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (expense *ExpenseType) Delete(w http.ResponseWriter, r *http.Request) {
+func (et *ExpenseType) Delete(w http.ResponseWriter, r *http.Request) {
 	// get id from url parameter
-	expenseTypeID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	expenseTypeID, err := uuid.UUID(chi.URLParam(r, "id"))
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	err = expense.service.DeleteExpenseType(expenseTypeID)
+	err = et.service.DeleteExpenseType(expenseTypeID)
 	if err != nil {
 		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
