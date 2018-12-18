@@ -70,7 +70,7 @@ func (ic *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "itemcategories", id),
+		"location": baseurl.Get(r, "item-category", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)

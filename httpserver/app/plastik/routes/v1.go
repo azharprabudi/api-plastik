@@ -33,11 +33,11 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Delete("/item/{id}", item.Delete)
 
 		/* itemCategory */
-		r.Get("/itemcategory", itemCategory.Find)
-		r.Get("/itemcategory/{id}", itemCategory.FindByID)
-		r.Post("/itemcategory", itemCategory.Create)
-		r.Patch("/itemcategory/{id}", itemCategory.Update)
-		r.Delete("/itemcategory/{id}", itemCategory.Delete)
+		r.Get("/item-category", itemCategory.Find)
+		r.Get("/item-category/{id}", itemCategory.FindByID)
+		r.Post("/item-category", itemCategory.Create)
+		r.Patch("/item-category/{id}", itemCategory.Update)
+		r.Delete("/item-category/{id}", itemCategory.Delete)
 
 		/* supplier */
 		r.Get("/supplier", supplier.Find)
@@ -54,11 +54,11 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Delete("/seller/{id}", seller.Delete)
 
 		/* expense type */
-		r.Get("/expensetype", expenseType.Find)
-		r.Get("/expensetype/{id}", expenseType.FindByID)
-		r.Post("/expensetype", expenseType.Create)
-		r.Patch("/expensetype/{id}", expenseType.Update)
-		r.Delete("/expensetype/{id}", expenseType.Delete)
+		r.Get("/expense-type", expenseType.Find)
+		r.Get("/expense-type/{id}", expenseType.FindByID)
+		r.Post("/expense-type", expenseType.Create)
+		r.Patch("/expense-type/{id}", expenseType.Update)
+		r.Delete("/expense-type/{id}", expenseType.Delete)
 
 		/* expense */
 		r.Get("/expense", expense.Find)

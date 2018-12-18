@@ -3,7 +3,7 @@ package presentations
 import (
 	"net/http"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/go-chi/chi"
 
@@ -72,7 +72,7 @@ func (et *ExpenseType) Create(w http.ResponseWriter, r *http.Request) {
 
 	// create headers
 	headers := map[string]string{
-		"location": baseurl.Get(r, "expensetype", id),
+		"location": baseurl.Get(r, "expense-type", id),
 	}
 
 	response.Send(w, http.StatusCreated, headers, nil)
