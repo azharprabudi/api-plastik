@@ -18,4 +18,7 @@ type ItemTransformInterface interface {
 	TransformUpdateItem(*dto.ItemReq) *model.ItemUpdate
 	TransformGetItem([]*model.ItemRead) []*dto.ItemRes
 	TransformGetItemByID(*model.ItemRead) *dto.ItemRes
+
+	// item unit
+	TransformGetItemUnit([]*model.ItemUnitRead) []*dto.ItemUnitRes
 }

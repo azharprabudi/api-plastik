@@ -3,7 +3,7 @@ package presentations
 import (
 	"net/http"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/go-chi/chi"
 
@@ -149,6 +149,8 @@ func (i *Item) Delete(w http.ResponseWriter, r *http.Request) {
 	response.Send(w, http.StatusOK, nil, nil)
 	return
 }
+
+// FindItemUnit
 
 // NewItemPresentation ...
 func NewItemPresentation(db *db.DB) presentations.BaseAbstract {

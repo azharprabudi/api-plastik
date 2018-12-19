@@ -2,7 +2,7 @@ package query
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/item/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // ItemQueryInterface ...
@@ -14,4 +14,7 @@ type ItemQueryInterface interface {
 	// Item
 	GetItem() ([]*model.ItemRead, error)
 	GetItemByID(uuid.UUID) *model.ItemRead
+
+	// Item Unit
+	GetItemUnit() ([]*model.ItemUnitRead, error)
 }

@@ -5,7 +5,7 @@ import (
 	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
 	qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 	"github.com/azharprabudi/api-plastik/internal/item/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // GetCategory ...
@@ -113,6 +113,23 @@ func (iq *ItemQuery) GetItemByID(itemID uuid.UUID) *model.ItemRead {
 		return nil
 	}
 	return result
+}
+
+// GetItemUnit ...
+func (iq *ItemQuery) GetItemUnit() ([]*model.ItemUnitRead, error) {
+	query := iq.qb.Query("item_units", 0, 0, nil)
+	res, err := iq.db.PgSQL.Queryx(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*model.ItemUnitRead
+	for res.Next() {
+		tmp := new(model.ItemUnitRead)
+		res.StructScan(tmp)
+		result = append(result, tmp)
+	}
+	return result, nil
 }
 
 // NewItemQuery ...

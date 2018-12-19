@@ -4,7 +4,9 @@ import (
 	"github.com/azharprabudi/api-plastik/db"
 	expenseTypePresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/expense-type"
 	itemPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item"
+
 	itemCategoryPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item-category"
+	itemUnitPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item-unit"
 	sellerPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/seller"
 	supplierPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/supplier"
 
@@ -17,6 +19,7 @@ import (
 func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	// initialize presentations
 	item := itemPresentation.NewItemPresentation(db)
+	itemUnit := itemUnitPresentation.NewPresentationItemUnit(db)
 	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)
 	supplier := supplierPresentation.NewPresentationSupplier(db)
 	seller := sellerPresentation.NewPresentationSeller(db)
@@ -31,6 +34,9 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Post("/item", item.Create)
 		r.Patch("/item/{id}", item.Update)
 		r.Delete("/item/{id}", item.Delete)
+
+		/* item unit */
+		r.Get("/item-unit", itemUnit.Find)
 
 		/* itemCategory */
 		r.Get("/item-category", itemCategory.Find)

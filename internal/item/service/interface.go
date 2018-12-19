@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/item/dto"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // ItemServiceInterface ...
@@ -20,4 +20,7 @@ type ItemServiceInterface interface {
 	DeleteItem(uuid.UUID) error
 	GetItem() ([]*dto.ItemRes, error)
 	GetItemByID(uuid.UUID) *dto.ItemRes
+
+	// Item Unit
+	GetItemUnit() ([]*dto.ItemUnitRes, error)
 }

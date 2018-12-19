@@ -3,7 +3,7 @@ package transform
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/internal/item/dto"
 	"github.com/azharprabudi/api-plastik/internal/item/model"
@@ -114,6 +114,21 @@ func (it *ItemTransform) TransformGetItemByID(item *model.ItemRead) *dto.ItemRes
 			UnitID:         item.Item.UnitID,
 		},
 	}
+}
+
+// TransformGetItemUnit ...
+func (it *ItemTransform) TransformGetItemUnit(itemUnit []*model.ItemUnitRead) []*dto.ItemUnitRes {
+	var results []*dto.ItemUnitRes
+	for _, unit := range itemUnit {
+		results = append(results, &dto.ItemUnitRes{
+			ItemUnit: dto.ItemUnit{
+				ID:        unit.ID,
+				Name:      unit.Name,
+				CreatedAt: unit.CreatedAt,
+			},
+		})
+	}
+	return results
 }
 
 // NewItemTransform ...

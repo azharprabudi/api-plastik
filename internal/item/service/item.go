@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/item/transform"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/db"
 	"github.com/azharprabudi/api-plastik/internal/item/command"
@@ -134,6 +134,18 @@ func (is *ItemService) DeleteItem(itemID uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// GetItemUnit ...
+func (is *ItemService) GetItemUnit() ([]*dto.ItemUnitRes, error) {
+	// get from tbl item unit
+	res, err := is.query.GetItemUnit()
+	if err != nil {
+		return nil, err
+	}
+
+	itemUnitDTO := is.transform.TransformGetItemUnit(res)
+	return itemUnitDTO, nil
 }
 
 // NewItemService ...
