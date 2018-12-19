@@ -13,9 +13,8 @@ func StartServer(r *chi.Mux) {
 	// get conf port
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
-		port = os.Getenv(config.Port)
+		port = config.Port
 	}
-
 	err := http.ListenAndServe(port, r)
 	if err != nil {
 		panic(err)
