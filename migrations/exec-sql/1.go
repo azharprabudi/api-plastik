@@ -95,6 +95,6 @@ CREATE TABLE "expense_images" (
 ALTER TABLE expense_images
    ADD CONSTRAINT fk_expense
    FOREIGN KEY ("expense_id") 
-   REFERENCES "expense_types"("id");
+   REFERENCES "expenses"("id");
 
 `

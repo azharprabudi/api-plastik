@@ -2,11 +2,11 @@ package command
 
 import (
 	"github.com/azharprabudi/api-plastik/db"
-	"github.com/azharprabudi/api-plastik/helper/querybuilder"
+	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
 	qbModel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 	"github.com/azharprabudi/api-plastik/internal/expense/model"
 	"github.com/jmoiron/sqlx"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // CreateExpenseType ...
@@ -76,8 +76,8 @@ func (expenseCommand *ExpenseCommand) CreateExpense(tx *sqlx.Tx, expense *model.
 
 // CreateExpenseImage ...
 func (expenseCommand *ExpenseCommand) CreateExpenseImage(tx *sqlx.Tx, image *model.ExpenseImageCreate) error {
-	query := expenseCommand.q.Create("expense_images", *image)
-	_, err := tx.Exec(query, image.ExpenseImage.ExpenseImageID, image.ExpenseImage.ExepenseID, image.ExpenseImage.Image)
+	query := expenseCommand.q.Create("expense_images", (*image).ExpenseImage)
+	_, err := tx.Exec(query, image.ExpenseImage.ExpenseImageID, image.ExpenseImage.ExpenseID, image.ExpenseImage.Image, image.ExpenseImage.CreatedAt)
 	if err != nil {
 		return err
 	}

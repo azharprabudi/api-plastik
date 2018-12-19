@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/azharprabudi/api-plastik/helper/transaction"
+	trx "github.com/azharprabudi/api-plastik/helper/transaction"
 	"github.com/azharprabudi/api-plastik/internal/expense/transform"
 	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
@@ -103,21 +103,22 @@ func (es *ExpenseService) CreateExpense(expense *dto.ExpenseReq) (uuid.UUID, err
 	create := es.transform.TransformCreateExpense(expense)
 
 	// create expense images
-	createImg := es.transform.TransformCreateExpenseImages(expense.Images, create.ExpenseID)
+	createImg := es.transform.TransformCreateExpenseImages(expense.Images, create.Expense.ExpenseID)
 
 	// add data to db
 	newTrx := trx.NewTransaction()
 	ctx := newTrx.CreateTrx(es.db.PgSQL)
 	err := newTrx.RunTrx(ctx, func(tx *sqlx.Tx) error {
+		var err error
 		// insert expense
-		err := es.command.CreateExpense(tx, create)
+		err = es.command.CreateExpense(tx, create)
 		if err != nil {
 			return err
 		}
 
 		// insert images
 		for _, expenseImg := range createImg {
-			err := es.command.CreateExpenseImage(tx, expenseImg)
+			err = es.command.CreateExpenseImage(tx, expenseImg)
 			if err != nil {
 				break
 			}

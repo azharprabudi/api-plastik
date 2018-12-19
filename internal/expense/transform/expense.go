@@ -3,7 +3,7 @@ package transform
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/internal/expense/dto"
 	"github.com/azharprabudi/api-plastik/internal/expense/model"
@@ -115,13 +115,14 @@ func (et *ExpenseTransform) TransformCreateExpenseImages(expenseImg []string, ex
 	for _, image := range expenseImg {
 		res = append(res, &model.ExpenseImageCreate{
 			ExpenseImage: model.ExpenseImage{
-				ExepenseID:     expenseID,
+				ExpenseID:      expenseID,
 				ExpenseImageID: uuid.NewV4(),
 				Image:          image,
+				CreatedAt:      time.Now().UTC(),
 			},
 		})
-
 	}
+
 	return res
 }
 

@@ -1,14 +1,17 @@
 package model
 
 import (
-	"github.com/satori/go.uuid"
+	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // ExpenseImage ...
 type ExpenseImage struct {
 	ExpenseImageID uuid.UUID `db:"id"`
-	ExepenseID     uuid.UUID `db:"expense_id"`
+	ExpenseID      uuid.UUID `db:"expense_id"`
 	Image          string    `db:"image"`
+	CreatedAt      time.Time `db:"created_at"`
 }
 
 // ExpenseImageRead ...
