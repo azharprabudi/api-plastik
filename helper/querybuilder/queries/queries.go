@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 )
 
 // this function below, to decide is the last loop or not
@@ -126,7 +126,11 @@ func CreateQueriesWhere(conditions []*qbmodel.Condition) string {
 func CreateQueriesWith(joins []*qbmodel.Join) string {
 	var with string
 	for _, join := range joins {
-		with = fmt.Sprintf(" %s %v %s %s ON %s=%s", with, join.TableFrom, join.Type, join.TableWith, join.ColumnTableFrom, join.ColumnTableWith)
+		if join.TableFrom != "" {
+			with = fmt.Sprintf(" %s \"%s\" %s \"%s\" ON '%s'='%s'", with, join.TableFrom, join.Type, join.TableWith, join.ColumnTableFrom, join.ColumnTableWith)
+		} else {
+			with = fmt.Sprintf(" %s %s \"%v\" ON '%s'='%s'", with, join.Type, join.TableWith, join.ColumnTableFrom, join.ColumnTableWith)
+		}
 	}
 	return with
 }
