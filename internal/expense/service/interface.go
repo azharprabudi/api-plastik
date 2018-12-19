@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/expense/dto"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // ExpenseServiceInterface ...
@@ -16,6 +16,6 @@ type ExpenseServiceInterface interface {
 
 	// Expense
 	GetExpense() ([]*dto.ExpenseRes, error)
-	GetExpenseByID(uuid.UUID) *dto.ExpenseResDetail
+	GetExpenseByID(uuid.UUID) (*dto.ExpenseResDetail, error)
 	CreateExpense(*dto.ExpenseReq) (uuid.UUID, error)
 }

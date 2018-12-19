@@ -2,7 +2,7 @@ package query
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/expense/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // ExpenseQueryInterface ...
@@ -13,5 +13,5 @@ type ExpenseQueryInterface interface {
 
 	// Expense
 	GetExpense() ([]*model.ExpenseRead, error)
-	GetExpenseByID(uuid.UUID) *model.ExpenseReadDetail
+	GetExpenseByID(uuid.UUID) (*model.ExpenseReadDetail, error)
 }

@@ -96,7 +96,16 @@ func (et *ExpenseTransform) TransformGetExpense(expenses []*model.ExpenseRead) [
 
 // TransformGetExpenseByID ...
 func (et *ExpenseTransform) TransformGetExpenseByID(expense *model.ExpenseReadDetail) *dto.ExpenseResDetail {
-	var images = []dto.ExpenseImageRes{}
+	var images = []*dto.ExpenseImageRes{}
+
+	// loop the model images
+	for i := 0; i < len(expense.Image); i++ {
+		images = append(images, &dto.ExpenseImageRes{
+			ExpenseID:      (*expense.Image[i]).ExpenseID,
+			ExpenseImageID: (*expense.Image[i]).ExpenseImageID,
+			Image:          (*expense.Image[i]).Image,
+		})
+	}
 
 	return &dto.ExpenseResDetail{
 		ExpenseID:     expense.Expense.ExpenseID,

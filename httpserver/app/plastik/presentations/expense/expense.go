@@ -3,7 +3,7 @@ package presentations
 import (
 	"net/http"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/go-chi/chi"
 
@@ -35,7 +35,11 @@ func (e *Expense) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := e.service.GetExpenseByID(expenseID)
+	result, err := e.service.GetExpenseByID(expenseID)
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }

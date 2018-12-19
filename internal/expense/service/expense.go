@@ -86,15 +86,15 @@ func (es *ExpenseService) GetExpense() ([]*dto.ExpenseRes, error) {
 }
 
 // GetExpenseByID ...
-func (es *ExpenseService) GetExpenseByID(expenseID uuid.UUID) *dto.ExpenseResDetail {
-	expense := es.query.GetExpenseByID(expenseID)
-	if expense == nil {
-		return nil
+func (es *ExpenseService) GetExpenseByID(expenseID uuid.UUID) (*dto.ExpenseResDetail, error) {
+	expense, err := es.query.GetExpenseByID(expenseID)
+	if err != nil {
+		return nil, err
 	}
 
 	// transform data from model
 	expenseDTO := es.transform.TransformGetExpenseByID(expense)
-	return expenseDTO
+	return expenseDTO, nil
 }
 
 // CreateExpense ...

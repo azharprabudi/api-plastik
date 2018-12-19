@@ -27,11 +27,11 @@ type ExpenseRes struct {
 
 // ExpenseResDetail ...
 type ExpenseResDetail struct {
-	ExpenseID     uuid.UUID         `json:"id"`
-	CreatedAt     time.Time         `json:"createdAt"`
-	ExpenseTypeID uuid.UUID         `json:"expenseTypeId"`
-	Name          string            `json:"name"`
-	Amount        float64           `json:"amount"`
-	Note          string            `json:"note"`
-	Images        []ExpenseImageRes `json:"images"`
+	ExpenseID     uuid.UUID          `json:"id"`
+	CreatedAt     time.Time          `json:"createdAt"`
+	ExpenseTypeID uuid.UUID          `json:"expenseTypeId"`
+	Name          string             `json:"name"`
+	Amount        float64            `json:"amount"`
+	Note          string             `json:"note"`
+	Images        []*ExpenseImageRes `json:"images"`
 }

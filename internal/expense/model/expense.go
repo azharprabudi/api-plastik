@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Expense ...
@@ -24,7 +24,7 @@ type ExpenseRead struct {
 // ExpenseReadDetail ...
 type ExpenseReadDetail struct {
 	Expense
-	ExpenseImage
+	Image []*ExpenseImage
 }
 
 // ExpenseCreate ...
