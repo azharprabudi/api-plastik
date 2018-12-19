@@ -17,9 +17,12 @@ type ExpenseReq struct {
 
 // ExpenseRes ...
 type ExpenseRes struct {
-	ExpenseID uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	ExpenseReq
+	ExpenseID     uuid.UUID `json:"id"`
+	CreatedAt     time.Time `json:"createdAt"`
+	ExpenseTypeID uuid.UUID `json:"expenseTypeId"`
+	Name          string    `json:"name"`
+	Amount        float64   `json:"amount"`
+	Note          string    `json:"note"`
 }
 
 // ExpenseResDetail ...

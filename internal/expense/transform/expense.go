@@ -82,12 +82,12 @@ func (et *ExpenseTransform) TransformGetExpense(expenses []*model.ExpenseRead) [
 	// transform data as dto expected
 	for _, expense := range expenses {
 		res = append(res, &dto.ExpenseRes{
-			ExpenseID: expense.Expense.ExpenseID,
-			CreatedAt: expense.Expense.CreatedAt,
-			ExpenseReq: dto.ExpenseReq{
-				Name:          expense.Expense.Name,
-				ExpenseTypeID: expense.Expense.ExpenseTypeID,
-			},
+			ExpenseID:     expense.Expense.ExpenseID,
+			CreatedAt:     expense.Expense.CreatedAt,
+			Name:          expense.Expense.Name,
+			Amount:        expense.Expense.Amount,
+			Note:          expense.Expense.Note,
+			ExpenseTypeID: expense.Expense.ExpenseTypeID,
 		})
 	}
 
