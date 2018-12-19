@@ -10,8 +10,6 @@ var (
 		list of server configuration
 	*/
 
-	// Mode ...
-	Mode = "development"
 	// Port ...
 	Port = ":3000"
 
@@ -36,7 +34,7 @@ var (
 				"PASS": "DB_PG_PASS",
 			},
 			"dbSource": {
-				"value": "host=%s port=%s user=%s password=%s dbname=%s",
+				"value": "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			},
 		},
 	}
