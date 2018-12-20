@@ -153,7 +153,7 @@ func (i *Item) Delete(w http.ResponseWriter, r *http.Request) {
 // FindItemUnit
 
 // NewItemPresentation ...
-func NewItemPresentation(db *db.DB) presentations.BaseAbstract {
+func NewItemPresentation(db *db.DB) presentations.BaseInterface {
 	return &Item{
 		service: service.NewItemService(db),
 	}

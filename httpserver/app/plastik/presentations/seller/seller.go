@@ -3,7 +3,7 @@ package presentations
 import (
 	"net/http"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/go-chi/chi"
 
@@ -158,7 +158,7 @@ func (s *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewPresentationSeller ...
-func NewPresentationSeller(db *db.DB) presentations.BaseAbstract {
+func NewPresentationSeller(db *db.DB) presentations.BaseInterface {
 	return &Seller{
 		service: service.NewSellerService(db),
 	}

@@ -137,7 +137,7 @@ func (ic *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewPresentationItemCategory ...
-func NewPresentationItemCategory(db *db.DB) presentations.BaseAbstract {
+func NewPresentationItemCategory(db *db.DB) presentations.BaseInterface {
 	return &ItemCategory{
 		service: service.NewItemService(db),
 	}

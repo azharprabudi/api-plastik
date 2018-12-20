@@ -2,8 +2,8 @@ package presentations
 
 import "net/http"
 
-// BaseAbstract ...
-type BaseAbstract interface {
+// BaseInterface ...
+type BaseInterface interface {
 	Find(w http.ResponseWriter, r *http.Request)
 	FindByID(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)

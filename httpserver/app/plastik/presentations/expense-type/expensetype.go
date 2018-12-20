@@ -140,7 +140,7 @@ func (et *ExpenseType) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewExpenseTypePresentation ...
-func NewExpenseTypePresentation(db *db.DB) presentations.BaseAbstract {
+func NewExpenseTypePresentation(db *db.DB) presentations.BaseInterface {
 	return &ExpenseType{
 		service: service.NewExpenseService(db),
 	}
