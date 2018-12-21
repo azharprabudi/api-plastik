@@ -85,6 +85,11 @@ func (tt *TransactionTransform) MakeResponseGetTransaction(transactions []*model
 	return results
 }
 
+// MakeResponseGetTransactionByID ...
+func (tt *TransactionTransform) MakeResponseGetTransactionByID(transaction *model.TransactionReadDetail) *dto.TransactionResDetail {
+	return nil
+}
+
 func NewTransactionTransform() TransactionTransformInterface {
 	return &TransactionTransform{}
 }

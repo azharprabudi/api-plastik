@@ -19,7 +19,7 @@ import (
 )
 
 // Find ...
-func (s *Supplier) Find(w http.ResponseWriter, r *http.Request) {
+func (s *SupplierPresentation) Find(w http.ResponseWriter, r *http.Request) {
 	results, err := s.service.GetSupplier()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -29,30 +29,22 @@ func (s *Supplier) Find(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindByID ...
-func (s *Supplier) FindByID(w http.ResponseWriter, r *http.Request) {
-	// get query param id
-	supplierID := chi.URLParam(r, "id")
-
-	// parse string to uuid
-	u, err := uuid.FromString(supplierID)
+func (s *SupplierPresentation) FindByID(w http.ResponseWriter, r *http.Request) {
+	id, _ := uuid.FromString(chi.URLParam(r, "id"))
+	supplier, err := s.service.GetSupplierByID(id)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result := s.service.GetSupplierByID(u)
-	response.Send(w, http.StatusOK, nil, result)
+	response.Send(w, http.StatusOK, nil, supplier)
 	return
 }
 
 // Create ...
-func (s *Supplier) Create(w http.ResponseWriter, r *http.Request) {
-
-	var validations = []string{}
+func (s *SupplierPresentation) Create(w http.ResponseWriter, r *http.Request) {
 	req := new(dto.SupplierReq)
-
-	// parse json
+	var validations = []string{}
 	request.Get(r.Body, req)
 
 	// do validations
@@ -64,21 +56,19 @@ func (s *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 		validations = append(validations, "phone field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
+	// create supplier
 	id, err := s.service.CreateSupplier(req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	// create headers
+	// create headers and response
 	headers := map[string]string{
 		"location": baseurl.Get(r, "suppliers", id),
 	}
@@ -88,43 +78,28 @@ func (s *Supplier) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update ...
-func (s *Supplier) Update(w http.ResponseWriter, r *http.Request) {
-	// get query param id
-	supplierID := chi.URLParam(r, "id")
-
-	// parse string to uuid
-	u, err := uuid.FromString(supplierID)
-	if err != nil {
-		// response error
-		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
-		return
-	}
-
+func (s *SupplierPresentation) Update(w http.ResponseWriter, r *http.Request) {
+	id, _ := uuid.FromString(chi.URLParam(r, "id"))
 	var validations = []string{}
-	supplierReq := new(dto.SupplierReq)
-
-	// parse json
-	request.Get(r.Body, supplierReq)
+	req := new(dto.SupplierReq)
+	request.Get(r.Body, req)
 
 	// do validations
-	if supplierReq.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if supplierReq.Phone == "" {
+	if req.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
-	err = s.service.UpdateSupplier(u, supplierReq)
+	err := s.service.UpdateSupplier(id, req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
@@ -134,21 +109,11 @@ func (s *Supplier) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete ...
-func (s *Supplier) Delete(w http.ResponseWriter, r *http.Request) {
-	// get query param id
-	supplierID := chi.URLParam(r, "id")
+func (s *SupplierPresentation) Delete(w http.ResponseWriter, r *http.Request) {
+	id, _ := uuid.FromString(chi.URLParam(r, "id"))
 
-	// parse string to uuid
-	u, err := uuid.FromString(supplierID)
+	err := s.service.DeleteSupplier(id)
 	if err != nil {
-		// response error
-		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
-		return
-	}
-
-	err = s.service.DeleteSupplier(u)
-	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
@@ -157,9 +122,9 @@ func (s *Supplier) Delete(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// NewPresentationSupplier ...
-func NewPresentationSupplier(db *db.DB) presentations.BaseInterface {
-	return &Supplier{
+// NewSupplierPresentation ...
+func NewSupplierPresentation(db *db.DB) presentations.BaseInterface {
+	return &SupplierPresentation{
 		service: service.NewSupplierService(db),
 	}
 }

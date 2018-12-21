@@ -74,7 +74,7 @@ func (ts *TransactionService) FindTransactionByID(id uuid.UUID) (*dto.Transactio
 		return nil, err
 	}
 
-	return transaction, nil
+	return ts.transform.MakeResponseGetTransactionByID(transaction), nil
 }
 
 // NewSupplierService ...

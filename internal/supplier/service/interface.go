@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/supplier/dto"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // SupplierServiceInterface ...
@@ -11,5 +11,5 @@ type SupplierServiceInterface interface {
 	UpdateSupplier(uuid.UUID, *dto.SupplierReq) error
 	DeleteSupplier(uuid.UUID) error
 	GetSupplier() ([]*dto.SupplierRes, error)
-	GetSupplierByID(uuid.UUID) *dto.SupplierRes
+	GetSupplierByID(uuid.UUID) (*dto.SupplierRes, error)
 }

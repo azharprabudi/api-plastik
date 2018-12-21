@@ -5,6 +5,6 @@ import (
 )
 
 // Supplier ...
-type Supplier struct {
+type SupplierPresentation struct {
 	service service.SupplierServiceInterface
 }

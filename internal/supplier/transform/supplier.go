@@ -3,47 +3,42 @@ package transform
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/internal/supplier/dto"
 	"github.com/azharprabudi/api-plastik/internal/supplier/model"
 )
 
 // TransformCreate ...
-func (st *SupplierTransform) TransformCreate(s *dto.SupplierReq) *model.SupplierCreate {
-	create := &model.SupplierCreate{
+func (st *SupplierTransform) MakeModelCreateSupplier(req *dto.SupplierReq) *model.SupplierCreate {
+	return &model.SupplierCreate{
 		Supplier: model.Supplier{
 			SupplierID: uuid.NewV4(),
-			Name:       s.Name,
-			Address:    s.Address,
-			Phone:      s.Phone,
+			Name:       req.Supplier.Name,
+			Address:    req.Supplier.Address,
+			Phone:      req.Supplier.Phone,
 			CreatedAt:  time.Now().UTC(),
 		},
 	}
-	return create
 }
 
 // TransformUpdate ...
-func (st *SupplierTransform) TransformUpdate(s *dto.SupplierReq) *model.SupplierUpdate {
-	supplierUpdate := &model.SupplierUpdate{
-		Name:    s.Name,
-		Address: s.Address,
-		Phone:   s.Phone,
+func (st *SupplierTransform) MakeModelUpdateSupplier(req *dto.SupplierReq) *model.SupplierUpdate {
+	return &model.SupplierUpdate{
+		Name:    req.Supplier.Name,
+		Address: req.Supplier.Address,
+		Phone:   req.Supplier.Phone,
 	}
-	return supplierUpdate
 }
 
-// TransformGet ...
-func (st *SupplierTransform) TransformGet(s []*model.SupplierRead) []*dto.SupplierRes {
-	// init variable
-	var res = []*dto.SupplierRes{}
-
-	// transform data as dto expected
-	for _, supplier := range s {
-		res = append(res, &dto.SupplierRes{
+// MakeResponseGetSuppliers ...
+func (st *SupplierTransform) MakeResponseGetSuppliers(res []*model.SupplierRead) []*dto.SupplierRes {
+	var results = []*dto.SupplierRes{}
+	for _, supplier := range res {
+		results = append(results, &dto.SupplierRes{
 			ID:        supplier.Supplier.SupplierID,
 			CreatedAt: supplier.Supplier.CreatedAt,
-			SupplierReq: dto.SupplierReq{
+			Supplier: dto.Supplier{
 				Name:    supplier.Supplier.Name,
 				Phone:   supplier.Supplier.Phone,
 				Address: supplier.Supplier.Address,
@@ -51,18 +46,18 @@ func (st *SupplierTransform) TransformGet(s []*model.SupplierRead) []*dto.Suppli
 		})
 	}
 
-	return res
+	return results
 }
 
-// TransformGetByID ...
-func (st *SupplierTransform) TransformGetByID(s *model.SupplierRead) *dto.SupplierRes {
+// MakeResponseGetSupplierByID ...
+func (st *SupplierTransform) MakeResponseGetSupplierByID(res *model.SupplierRead) *dto.SupplierRes {
 	return &dto.SupplierRes{
-		ID:        s.SupplierID,
-		CreatedAt: s.CreatedAt,
-		SupplierReq: dto.SupplierReq{
-			Name:    s.Name,
-			Phone:   s.Phone,
-			Address: s.Address,
+		ID:        res.SupplierID,
+		CreatedAt: res.CreatedAt,
+		Supplier: dto.Supplier{
+			Name:    res.Name,
+			Phone:   res.Phone,
+			Address: res.Address,
 		},
 	}
 }

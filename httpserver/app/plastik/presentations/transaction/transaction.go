@@ -78,7 +78,7 @@ func (t *Transaction) Create(w http.ResponseWriter, r *http.Request) {
 
 // FindByID ...
 func (t *Transaction) FindByID(w http.ResponseWriter, r *http.Request) {
-	id := uuid.FromString(chi.URLParam(r, id))
+	id, _ := uuid.FromString(chi.URLParam(r, "id"))
 	transaction, err := t.service.FindTransactionByID(id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))

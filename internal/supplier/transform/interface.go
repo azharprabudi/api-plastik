@@ -7,8 +7,8 @@ import (
 
 // SupplierTransformInterface ...
 type SupplierTransformInterface interface {
-	TransformCreate(*dto.SupplierReq) *model.SupplierCreate
-	TransformUpdate(*dto.SupplierReq) *model.SupplierUpdate
-	TransformGet([]*model.SupplierRead) []*dto.SupplierRes
-	TransformGetByID(*model.SupplierRead) *dto.SupplierRes
+	MakeModelCreateSupplier(*dto.SupplierReq) *model.SupplierCreate
+	MakeModelUpdateSupplier(*dto.SupplierReq) *model.SupplierUpdate
+	MakeResponseGetSuppliers([]*model.SupplierRead) []*dto.SupplierRes
+	MakeResponseGetSupplierByID(*model.SupplierRead) *dto.SupplierRes
 }

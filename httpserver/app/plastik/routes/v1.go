@@ -23,7 +23,7 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	item := itemPresentation.NewItemPresentation(db)
 	itemUnit := itemUnitPresentation.NewPresentationItemUnit(db)
 	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)
-	supplier := supplierPresentation.NewPresentationSupplier(db)
+	supplier := supplierPresentation.NewSupplierPresentation(db)
 	seller := sellerPresentation.NewPresentationSeller(db)
 	expenseType := expenseTypePresentation.NewExpenseTypePresentation(db)
 	expense := expensePresentation.NewExpensePresentation(db)

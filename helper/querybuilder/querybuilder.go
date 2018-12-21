@@ -3,8 +3,8 @@ package qb
 import (
 	"fmt"
 
-	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
-	"github.com/azharprabudi/api-plastik/helper/querybuilder/queries"
+	qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	qbqueries "github.com/azharprabudi/api-plastik/helper/querybuilder/queries"
 )
 
 /*
@@ -34,7 +34,7 @@ func (qb *QueryBuilder) QueryWhere(tableName string, conditions []*qbmodel.Condi
 	query := fmt.Sprintf("select * from \"%s\"", tableName)
 	where := qbqueries.CreateQueriesWhere(conditions)
 	order := qbqueries.CreateQueriesOrder(orders)
-	query = fmt.Sprintf("%s%s %s", query, where, order)
+	query = fmt.Sprintf("%s %s %s", query, where, order)
 	return query
 }
 

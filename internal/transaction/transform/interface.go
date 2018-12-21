@@ -15,4 +15,5 @@ type TransactionTransformInterface interface {
 
 	// query
 	MakeResponseGetTransaction([]*model.TransactionRead) []*dto.TransactionRes
+	MakeResponseGetTransactionByID(*model.TransactionReadDetail) *dto.TransactionResDetail
 }

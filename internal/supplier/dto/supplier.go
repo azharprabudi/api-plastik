@@ -3,19 +3,24 @@ package dto
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
-// SupplierReq ...
-type SupplierReq struct {
+// Supplier ...
+type Supplier struct {
 	Name    string `json:"name"`
 	Phone   string `json:"phone"`
 	Address string `json:"address"`
 }
 
+// SupplierReq ...
+type SupplierReq struct {
+	Supplier
+}
+
 // SupplierRes ...
 type SupplierRes struct {
-	ID uuid.UUID `json:"id"`
-	SupplierReq
+	Supplier
+	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 }
