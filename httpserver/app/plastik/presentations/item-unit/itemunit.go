@@ -11,17 +11,18 @@ import (
 
 // Find ...
 func (iu *ItemUnit) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := iu.service.GetItemUnit()
+	results, err := iu.service.GetItemUnits()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
+
 	response.Send(w, http.StatusOK, nil, results)
 	return
 }
 
-// NewPresentationItemUnit ...
-func NewPresentationItemUnit(db *db.DB) ItemUnitAbstract {
+// NewItemUnitPresentation ...
+func NewItemUnitPresentation(db *db.DB) ItemUnitAbstract {
 	return &ItemUnit{
 		service: service.NewItemService(db),
 	}

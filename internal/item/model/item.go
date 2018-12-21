@@ -3,13 +3,8 @@ package model
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
-
-// ItemID ...
-type ItemID struct {
-	ItemID uuid.UUID `db:"id"`
-}
 
 // Item ...
 type Item struct {

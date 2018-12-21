@@ -8,27 +8,21 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// GetCategory ...
-func (iq *ItemQuery) GetCategory() ([]*model.ItemCategoryRead, error) {
-	// init variable
-	var results = []*model.ItemCategoryRead{}
-
-	// orders
-	orders := []*qbmodel.Order{
+// GetCategories ...
+func (iq *ItemQuery) GetCategories() ([]*model.ItemCategoryRead, error) {
+	var results []*model.ItemCategoryRead
+	query := iq.qb.Query("item_categories", 0, 0, []*qbmodel.Order{
 		&qbmodel.Order{
 			Key:   "created_at",
 			Value: "desc",
 		},
-	}
+	})
 
-	// get query
-	query := iq.qb.Query("item_categories", 0, 0, orders)
 	rows, err := iq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
 	}
 
-	// get struct
 	for rows.Next() {
 		tmp := new(model.ItemCategoryRead)
 		rows.StructScan(tmp)
@@ -39,84 +33,68 @@ func (iq *ItemQuery) GetCategory() ([]*model.ItemCategoryRead, error) {
 }
 
 // GetCategoryByID ...
-func (iq *ItemQuery) GetCategoryByID(categoryID uuid.UUID) *model.ItemCategoryRead {
-	// init variable
+func (iq *ItemQuery) GetCategoryByID(id uuid.UUID) (*model.ItemCategoryRead, error) {
 	result := new(model.ItemCategoryRead)
-
-	// create conditional
-	where := &qbmodel.Condition{
+	query := iq.qb.QueryWhere("item_categories", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		NextCond: "",
 		Operator: "=",
-		Value:    categoryID.String(),
-	}
-
-	// get query and execute
-	query := iq.qb.QueryWhere("item_categories", []*qbmodel.Condition{where}, nil)
+		Value:    id.String(),
+	}}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return result
+
+	return result, nil
 }
 
 // GetItem ...
-func (iq *ItemQuery) GetItem() ([]*model.ItemRead, error) {
-	// init variable
-	var results = []*model.ItemRead{}
-
-	// order created at
-	orders := []*qbmodel.Order{
+func (iq *ItemQuery) GetItems() ([]*model.ItemRead, error) {
+	var results []*model.ItemRead
+	query := iq.qb.Query("items", 0, 0, []*qbmodel.Order{
 		&qbmodel.Order{
 			Key:   "created_at",
 			Value: "desc",
 		},
-	}
-
-	// get query
-	query := iq.qb.Query("items", 0, 0, orders)
+	})
 	rows, err := iq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
 	}
 
-	// get struct
 	for rows.Next() {
 		tmp := new(model.ItemRead)
 		rows.StructScan(tmp)
 		results = append(results, tmp)
 	}
+
 	if err != nil {
 		return nil, err
 	}
-
 	return results, nil
 }
 
 // GetItemByID ...
-func (iq *ItemQuery) GetItemByID(itemID uuid.UUID) *model.ItemRead {
-	// init variable
+func (iq *ItemQuery) GetItemByID(itemID uuid.UUID) (*model.ItemRead, error) {
 	result := new(model.ItemRead)
-
-	// create conditional
-	where := &qbmodel.Condition{
+	query := iq.qb.QueryWhere("items", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		NextCond: "",
 		Operator: "=",
 		Value:    itemID.String(),
-	}
+	}}, nil)
 
-	// get query and execute
-	query := iq.qb.QueryWhere("items", []*qbmodel.Condition{where}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return result
+
+	return result, nil
 }
 
-// GetItemUnit ...
-func (iq *ItemQuery) GetItemUnit() ([]*model.ItemUnitRead, error) {
+// GetItemUnits ...
+func (iq *ItemQuery) GetItemUnits() ([]*model.ItemUnitRead, error) {
 	query := iq.qb.Query("item_units", 0, 0, nil)
 	res, err := iq.db.PgSQL.Queryx(query)
 	if err != nil {
@@ -129,6 +107,7 @@ func (iq *ItemQuery) GetItemUnit() ([]*model.ItemUnitRead, error) {
 		res.StructScan(tmp)
 		result = append(result, tmp)
 	}
+
 	return result, nil
 }
 

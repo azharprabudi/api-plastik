@@ -10,114 +10,93 @@ import (
 	"github.com/azharprabudi/api-plastik/internal/item/query"
 )
 
-// GetItemCategory ...
-func (is *ItemService) GetItemCategory() ([]*dto.ItemCategoryRes, error) {
-	// add data to db
-	categories, err := is.query.GetCategory()
+// GetItemCategories ...
+func (is *ItemService) GetItemCategories() ([]*dto.ItemCategoryRes, error) {
+	itemCategories, err := is.query.GetCategories()
 	if err != nil {
 		return nil, err
 	}
 
-	// transform data from model
-	categoriesDTO := is.transform.TransformGetCategory(categories)
-	return categoriesDTO, nil
+	return is.transform.MakeResponseGetCategories(itemCategories), nil
 }
 
 // GetItemCategoryByID ...
-func (is *ItemService) GetItemCategoryByID(itemCatID uuid.UUID) *dto.ItemCategoryRes {
-	category := is.query.GetCategoryByID(itemCatID)
-	if category == nil {
-		return nil
+func (is *ItemService) GetItemCategoryByID(id uuid.UUID) (*dto.ItemCategoryRes, error) {
+	itemCategory, err := is.query.GetCategoryByID(id)
+	if err != nil {
+		return nil, err
 	}
 
-	// transform data from model
-	categoryDTO := is.transform.TransformGetCategoryByID(category)
-	return categoryDTO
+	return is.transform.MakeResponseGetCategoryByID(itemCategory), nil
 }
 
 // CreateItemCategory ...
-func (is *ItemService) CreateItemCategory(itemCategory *dto.ItemCategoryReq) (uuid.UUID, error) {
-	// transform dto to model
-	create := is.transform.TransformCreateCategory(itemCategory)
-
-	// add data to db
-	err := is.command.CreateCategory(create)
+func (is *ItemService) CreateItemCategory(req *dto.ItemCategoryReq) (uuid.UUID, error) {
+	itemCategory := is.transform.MakeModelCreateCategory(req)
+	err := is.command.CreateCategory(itemCategory)
 	if err != nil {
 		return uuid.Nil, err
 	}
 
-	return create.ItemCategoryID, nil
+	return itemCategory.ItemCategory.ItemCategoryID, nil
 }
 
 // UpdateItemCategory ...
-func (is *ItemService) UpdateItemCategory(itemCatID uuid.UUID, itemCategory *dto.ItemCategoryReq) error {
-	// transform dto to model
-	update := is.transform.TransformUpdateCategory(itemCategory)
-
-	// update to db
-	err := is.command.UpdateCategory(itemCatID, update)
+func (is *ItemService) UpdateItemCategory(id uuid.UUID, req *dto.ItemCategoryReq) error {
+	itemCategory := is.transform.MakeModelUpdateCategory(req)
+	err := is.command.UpdateCategory(id, itemCategory)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // DeleteItemCategory ...
-func (is *ItemService) DeleteItemCategory(itemCatID uuid.UUID) error {
-	// delete data from db
-	err := is.command.DeleteCategory(itemCatID)
+func (is *ItemService) DeleteItemCategory(id uuid.UUID) error {
+	err := is.command.DeleteCategory(id)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-// GetItem ...
-func (is *ItemService) GetItem() ([]*dto.ItemRes, error) {
-	// add data to db
-	item, err := is.query.GetItem()
+// GetItems ...
+func (is *ItemService) GetItems() ([]*dto.ItemRes, error) {
+	items, err := is.query.GetItems()
 	if err != nil {
 		return nil, err
 	}
 
-	// transform data from model
-	itemDTO := is.transform.TransformGetItem(item)
-	return itemDTO, nil
+	return is.transform.MakeResponseGetItems(items), nil
 }
 
 // GetItemByID ...
-func (is *ItemService) GetItemByID(itemID uuid.UUID) *dto.ItemRes {
-	item := is.query.GetItemByID(itemID)
-	if item == nil {
-		return nil
+func (is *ItemService) GetItemByID(id uuid.UUID) (*dto.ItemRes, error) {
+	item, err := is.query.GetItemByID(id)
+	if err != nil {
+		return nil, err
 	}
 
-	// transform data from model
-	itemDTO := is.transform.TransformGetItemByID(item)
-	return itemDTO
+	return is.transform.MakeResponseGetItemByID(item), nil
 }
 
 // CreateItem ...
-func (is *ItemService) CreateItem(item *dto.ItemReq) (uuid.UUID, error) {
-	// transform dto to model
-	create := is.transform.TransformCreateItem(item)
-
-	// add data to db
-	err := is.command.CreateItem(create)
+func (is *ItemService) CreateItem(req *dto.ItemReq) (uuid.UUID, error) {
+	item := is.transform.MakeModelCreateItem(req)
+	err := is.command.CreateItem(item)
 	if err != nil {
 		return uuid.Nil, err
 	}
 
-	return create.Item.ItemID, nil
+	return item.Item.ItemID, nil
 }
 
 // UpdateItem ...
-func (is *ItemService) UpdateItem(itemID uuid.UUID, item *dto.ItemReq) error {
-	// transform dto to model
-	update := is.transform.TransformUpdateItem(item)
-
-	// update to db
-	err := is.command.UpdateItem(itemID, update)
+func (is *ItemService) UpdateItem(id uuid.UUID, req *dto.ItemReq) error {
+	item := is.transform.MakeModelUpdateItem(req)
+	err := is.command.UpdateItem(id, item)
 	if err != nil {
 		return err
 	}
@@ -126,9 +105,8 @@ func (is *ItemService) UpdateItem(itemID uuid.UUID, item *dto.ItemReq) error {
 }
 
 // DeleteItem ...
-func (is *ItemService) DeleteItem(itemID uuid.UUID) error {
-	// delete data from db
-	err := is.command.DeleteItem(itemID)
+func (is *ItemService) DeleteItem(id uuid.UUID) error {
+	err := is.command.DeleteItem(id)
 	if err != nil {
 		return err
 	}
@@ -136,16 +114,14 @@ func (is *ItemService) DeleteItem(itemID uuid.UUID) error {
 	return nil
 }
 
-// GetItemUnit ...
-func (is *ItemService) GetItemUnit() ([]*dto.ItemUnitRes, error) {
-	// get from tbl item unit
-	res, err := is.query.GetItemUnit()
+// GetItemUnits ...
+func (is *ItemService) GetItemUnits() ([]*dto.ItemUnitRes, error) {
+	res, err := is.query.GetItemUnits()
 	if err != nil {
 		return nil, err
 	}
 
-	itemUnitDTO := is.transform.TransformGetItemUnit(res)
-	return itemUnitDTO, nil
+	return is.transform.MakeResponseGetItemUnits(res), nil
 }
 
 // NewItemService ...

@@ -21,7 +21,7 @@ import (
 func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	// initialize presentations
 	item := itemPresentation.NewItemPresentation(db)
-	itemUnit := itemUnitPresentation.NewPresentationItemUnit(db)
+	itemUnit := itemUnitPresentation.NewItemUnitPresentation(db)
 	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)
 	supplier := supplierPresentation.NewSupplierPresentation(db)
 	seller := sellerPresentation.NewSellerPresentation(db)

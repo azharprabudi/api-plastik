@@ -40,8 +40,12 @@ func (ts *TransactionService) CreateTransaction(req *dto.TransactionReq) (uuid.U
 		}
 
 		for _, detail := range details {
-			item := ts.itemService.GetItemByID(detail.ItemID)
-			detail.ItemName = &(*item).ItemReq.Name
+			item, err := ts.itemService.GetItemByID(detail.ItemID)
+			if err != nil {
+				break
+			}
+
+			detail.ItemName = &(*item).Item.Name
 			err = ts.command.CreateTransactionDetail(tx, detail)
 			if err != nil {
 				break

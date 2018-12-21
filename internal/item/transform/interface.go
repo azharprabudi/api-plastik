@@ -8,17 +8,17 @@ import (
 // ItemTransformInterface ...
 type ItemTransformInterface interface {
 	// category
-	TransformCreateCategory(*dto.ItemCategoryReq) *model.ItemCategoryCreate
-	TransformUpdateCategory(*dto.ItemCategoryReq) *model.ItemCategoryUpdate
-	TransformGetCategory([]*model.ItemCategoryRead) []*dto.ItemCategoryRes
-	TransformGetCategoryByID(*model.ItemCategoryRead) *dto.ItemCategoryRes
+	MakeModelCreateCategory(*dto.ItemCategoryReq) *model.ItemCategoryCreate
+	MakeModelUpdateCategory(*dto.ItemCategoryReq) *model.ItemCategoryUpdate
+	MakeResponseGetCategories([]*model.ItemCategoryRead) []*dto.ItemCategoryRes
+	MakeResponseGetCategoryByID(*model.ItemCategoryRead) *dto.ItemCategoryRes
 
 	// item
-	TransformCreateItem(*dto.ItemReq) *model.ItemCreate
-	TransformUpdateItem(*dto.ItemReq) *model.ItemUpdate
-	TransformGetItem([]*model.ItemRead) []*dto.ItemRes
-	TransformGetItemByID(*model.ItemRead) *dto.ItemRes
+	MakeModelCreateItem(*dto.ItemReq) *model.ItemCreate
+	MakeModelUpdateItem(*dto.ItemReq) *model.ItemUpdate
+	MakeResponseGetItems([]*model.ItemRead) []*dto.ItemRes
+	MakeResponseGetItemByID(*model.ItemRead) *dto.ItemRes
 
 	// item unit
-	TransformGetItemUnit([]*model.ItemUnitRead) []*dto.ItemUnitRes
+	MakeResponseGetItemUnits([]*model.ItemUnitRead) []*dto.ItemUnitRes
 }

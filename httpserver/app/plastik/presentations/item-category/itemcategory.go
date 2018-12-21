@@ -19,7 +19,7 @@ import (
 
 // Find ...
 func (ic *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := ic.service.GetItemCategory()
+	results, err := ic.service.GetItemCategories()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -29,24 +29,26 @@ func (ic *ItemCategory) Find(w http.ResponseWriter, r *http.Request) {
 
 // FindByID ...
 func (ic *ItemCategory) FindByID(w http.ResponseWriter, r *http.Request) {
-	itemCatID, err := uuid.FromString(chi.URLParam(r, "id"))
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result := ic.service.GetItemCategoryByID(itemCatID)
+	result, err := ic.service.GetItemCategoryByID(id)
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
 func (ic *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
-
 	var validations = []string{}
 	req := new(dto.ItemCategoryReq)
-
-	// parse json
 	request.Get(r.Body, req)
 
 	// do validations
@@ -54,21 +56,18 @@ func (ic *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 		validations = append(validations, "name field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	id, err := ic.service.CreateItemCategory(req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	// create headers
+	// create headers and return it
 	headers := map[string]string{
 		"location": baseurl.Get(r, "item-category", id),
 	}
@@ -79,8 +78,7 @@ func (ic *ItemCategory) Create(w http.ResponseWriter, r *http.Request) {
 
 // Update ...
 func (ic *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
-	// get id from url parameter
-	itemCatID, err := uuid.FromString(chi.URLParam(r, "id"))
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -88,8 +86,6 @@ func (ic *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 
 	var validations = []string{}
 	req := new(dto.ItemCategoryReq)
-
-	// parse json
 	request.Get(r.Body, req)
 
 	// do validations
@@ -97,16 +93,13 @@ func (ic *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 		validations = append(validations, "name field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
-	err = ic.service.UpdateItemCategory(itemCatID, req)
+	err = ic.service.UpdateItemCategory(id, req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
@@ -117,17 +110,14 @@ func (ic *ItemCategory) Update(w http.ResponseWriter, r *http.Request) {
 
 // Delete ...
 func (ic *ItemCategory) Delete(w http.ResponseWriter, r *http.Request) {
-	// get id from url parameter
-	itemCatID, err := uuid.FromString(chi.URLParam(r, "id"))
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	err = ic.service.DeleteItemCategory(itemCatID)
+	err = ic.service.DeleteItemCategory(id)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}

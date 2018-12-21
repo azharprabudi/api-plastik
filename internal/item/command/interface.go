@@ -7,12 +7,9 @@ import (
 
 // ItemCommandInterface ...
 type ItemCommandInterface interface {
-	// item category
 	CreateCategory(*model.ItemCategoryCreate) error
 	UpdateCategory(uuid.UUID, *model.ItemCategoryUpdate) error
 	DeleteCategory(uuid.UUID) error
-
-	// item
 	CreateItem(*model.ItemCreate) error
 	UpdateItem(uuid.UUID, *model.ItemUpdate) error
 	DeleteItem(uuid.UUID) error

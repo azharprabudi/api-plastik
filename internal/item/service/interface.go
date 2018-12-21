@@ -11,16 +11,16 @@ type ItemServiceInterface interface {
 	CreateItemCategory(*dto.ItemCategoryReq) (uuid.UUID, error)
 	UpdateItemCategory(uuid.UUID, *dto.ItemCategoryReq) error
 	DeleteItemCategory(uuid.UUID) error
-	GetItemCategory() ([]*dto.ItemCategoryRes, error)
-	GetItemCategoryByID(uuid.UUID) *dto.ItemCategoryRes
+	GetItemCategories() ([]*dto.ItemCategoryRes, error)
+	GetItemCategoryByID(uuid.UUID) (*dto.ItemCategoryRes, error)
 
 	// Item
 	CreateItem(*dto.ItemReq) (uuid.UUID, error)
 	UpdateItem(uuid.UUID, *dto.ItemReq) error
 	DeleteItem(uuid.UUID) error
-	GetItem() ([]*dto.ItemRes, error)
-	GetItemByID(uuid.UUID) *dto.ItemRes
+	GetItems() ([]*dto.ItemRes, error)
+	GetItemByID(uuid.UUID) (*dto.ItemRes, error)
 
 	// Item Unit
-	GetItemUnit() ([]*dto.ItemUnitRes, error)
+	GetItemUnits() ([]*dto.ItemUnitRes, error)
 }
