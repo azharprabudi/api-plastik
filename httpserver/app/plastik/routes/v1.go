@@ -12,6 +12,8 @@ import (
 
 	expensePresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/expense"
 
+	transactionPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/transaction"
+
 	"github.com/go-chi/chi"
 )
 
@@ -25,6 +27,7 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	seller := sellerPresentation.NewPresentationSeller(db)
 	expenseType := expenseTypePresentation.NewExpenseTypePresentation(db)
 	expense := expensePresentation.NewExpensePresentation(db)
+	transaction := transactionPresentation.NewPresentationTransaction(db)
 
 	// route
 	(*newR).Route("/v1", func(r chi.Router) {
@@ -70,5 +73,10 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Get("/expense", expense.Find)
 		r.Get("/expense/{id}", expense.FindByID)
 		r.Post("/expense", expense.Create)
+
+		/* transaction */
+		r.Get("/transaction", transaction.Find)
+		r.Get("/transaction/{id}", transaction.FindByID)
+		r.Post("/transaction", transaction.Create)
 	})
 }

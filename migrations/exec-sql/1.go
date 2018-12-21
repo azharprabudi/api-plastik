@@ -97,4 +97,59 @@ ALTER TABLE expense_images
    FOREIGN KEY ("expense_id") 
    REFERENCES "expenses"("id");
 
+CREATE TABLE "transactions" (
+	"id" uuid NOT NULL,
+	"note" text,
+	"user_id" uuid,
+	"seller_id" uuid,
+	"supplier_id" uuid,
+	"amount" numeric(20, 2) NOT NULL,
+	"created_at" timestamptz NOT NULL,
+	CONSTRAINT transactions_pk PRIMARY KEY ("id")
+);
+
+ALTER TABLE transactions
+   ADD CONSTRAINT fk_supplier
+   FOREIGN KEY ("supplier_id") 
+   REFERENCES "suppliers"("id");
+
+
+ALTER TABLE transactions
+	ADD CONSTRAINT fk_seller
+	FOREIGN KEY ("seller_id") 
+	REFERENCES "sellers"("id");
+
+CREATE TABLE "transaction_details" (
+	"id" uuid NOT NULL,
+	"item_id" uuid NOT NULL,
+	"item_name" varchar(100) NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"qty" int NOT NULL,
+	"amount" numeric(20, 2) NOT NULL,
+	"created_at" timestamptz NOT NULL,
+	CONSTRAINT transaction_details_pk PRIMARY KEY ("id")
+);
+
+ALTER TABLE transaction_details
+	ADD CONSTRAINT fk_item
+	FOREIGN KEY ("item_id") 
+	REFERENCES "items"("id");
+
+ALTER TABLE transaction_details
+	ADD CONSTRAINT fk_transaction
+	FOREIGN KEY ("transaction_id") 
+	REFERENCES "transactions"("id");
+
+CREATE TABLE "transaction_images" (
+	"id" uuid NOT NULL,
+	"image" varchar(100) NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"created_at" timestamptz NOT NULL,
+	CONSTRAINT transaction_images_pk PRIMARY KEY ("id")
+);
+
+ALTER TABLE transaction_images
+	ADD CONSTRAINT fk_transaction
+	FOREIGN KEY ("transaction_id") 
+	REFERENCES "transaction_images"("id");
 `
