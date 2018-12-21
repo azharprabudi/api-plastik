@@ -3,22 +3,17 @@ package transform
 import (
 	"github.com/azharprabudi/api-plastik/internal/expense/dto"
 	"github.com/azharprabudi/api-plastik/internal/expense/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // ExpenseTransformInterface ...
 type ExpenseTransformInterface interface {
-	// expense type
-	TransformGetExpenseType([]*model.ExpenseTypeRead) []*dto.ExpenseTypeRes
-	TransformGetExpenseTypeByID(*model.ExpenseTypeRead) *dto.ExpenseTypeRes
-	TransformCreateExpenseType(*dto.ExpenseTypeReq) *model.ExpenseTypeCreate
-	TransformUpdateExpenseType(*dto.ExpenseTypeReq) *model.ExpenseTypeUpdate
-
-	// expense
-	TransformCreateExpense(*dto.ExpenseReq) *model.ExpenseCreate
-	TransformGetExpense([]*model.ExpenseRead) []*dto.ExpenseRes
-	TransformGetExpenseByID(*model.ExpenseReadDetail) *dto.ExpenseResDetail
-
-	// expense images
-	TransformCreateExpenseImages([]string, uuid.UUID) []*model.ExpenseImageCreate
+	MakeResponseGetExpenseTypes([]*model.ExpenseTypeRead) []*dto.ExpenseTypeRes
+	MakeResponseGetExpenseTypeByID(*model.ExpenseTypeRead) *dto.ExpenseTypeRes
+	MakeModelCreateExpenseType(*dto.ExpenseTypeReq) *model.ExpenseTypeCreate
+	MakeModelUpdateExpenseType(*dto.ExpenseTypeReq) *model.ExpenseTypeUpdate
+	MakeModelCreateExpense(*dto.ExpenseReq) *model.ExpenseCreate
+	MakeResponseGetExpenses([]*model.ExpenseRead) []*dto.ExpenseRes
+	MakeResponseGetExpenseByID(*model.ExpenseReadDetail) *dto.ExpenseResDetail
+	MakeModelCreateExpenseImages(*dto.ExpenseReq, uuid.UUID) []*model.ExpenseImageCreate
 }

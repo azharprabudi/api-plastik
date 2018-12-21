@@ -19,27 +19,30 @@ import (
 
 // Find ...
 func (e *Expense) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := e.service.GetExpense()
+	results, err := e.service.GetExpenses()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
+
 	response.Send(w, http.StatusOK, nil, results)
+	return
 }
 
 // FindByID ...
 func (e *Expense) FindByID(w http.ResponseWriter, r *http.Request) {
-	expenseID, err := uuid.FromString(chi.URLParam(r, "id"))
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result, err := e.service.GetExpenseByID(expenseID)
+	result, err := e.service.GetExpenseByID(id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
+
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
@@ -48,8 +51,6 @@ func (e *Expense) FindByID(w http.ResponseWriter, r *http.Request) {
 func (e *Expense) Create(w http.ResponseWriter, r *http.Request) {
 	var validations = []string{}
 	req := new(dto.ExpenseReq)
-
-	// parse json
 	request.Get(r.Body, req)
 
 	// do validations
@@ -61,16 +62,13 @@ func (e *Expense) Create(w http.ResponseWriter, r *http.Request) {
 		validations = append(validations, "expense type id field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
 	id, err := e.service.CreateExpense(req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
@@ -79,7 +77,6 @@ func (e *Expense) Create(w http.ResponseWriter, r *http.Request) {
 	headers := map[string]string{
 		"location": baseurl.Get(r, "expense", id),
 	}
-
 	response.Send(w, http.StatusCreated, headers, nil)
 	return
 }

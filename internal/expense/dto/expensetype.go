@@ -3,17 +3,22 @@ package dto
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
+
+// Expense ...
+type Expense struct {
+	Name string `json:"name"`
+}
 
 // ExpenseTypeReq ...
 type ExpenseTypeReq struct {
-	Name string `json:"name"`
+	Expense
 }
 
 // ExpenseTypeRes ...
 type ExpenseTypeRes struct {
-	ExpenseTypeReq
+	Expense
 	ExpenseTypeID uuid.UUID `json:"id"`
 	CreatedAt     time.Time `json:"createdAt"`
 }

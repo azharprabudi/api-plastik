@@ -10,10 +10,9 @@ import (
 )
 
 // CreateExpenseType ...
-func (expenseCommand *ExpenseCommand) CreateExpenseType(expenseType *model.ExpenseTypeCreate) error {
-	query := expenseCommand.q.Create("expense_types", (*expenseType).ExpenseType)
-	_, err := expenseCommand.db.PgSQL.Exec(query, expenseType.ExpenseType.ExpenseTypeID, expenseType.ExpenseType.Name, expenseType.ExpenseType.CreatedAt)
-
+func (ec *ExpenseCommand) CreateExpenseType(expenseType *model.ExpenseTypeCreate) error {
+	query := ec.q.Create("expense_types", (*expenseType).ExpenseType)
+	_, err := ec.db.PgSQL.Exec(query, expenseType.ExpenseType.ExpenseTypeID, expenseType.ExpenseType.Name, expenseType.ExpenseType.CreatedAt)
 	if err != nil {
 		return err
 	}
@@ -22,50 +21,40 @@ func (expenseCommand *ExpenseCommand) CreateExpenseType(expenseType *model.Expen
 }
 
 // UpdateExpenseType ...
-func (expenseCommand *ExpenseCommand) UpdateExpenseType(id uuid.UUID, expenseType *model.ExpenseTypeUpdate) error {
-	// create condition
-	where := &qbModel.Condition{
+func (ec *ExpenseCommand) UpdateExpenseType(id uuid.UUID, expenseType *model.ExpenseTypeUpdate) error {
+	query := ec.q.UpdateWhere("expense_types", *expenseType, []*qbModel.Condition{&qbModel.Condition{
 		Key:      "id",
 		Operator: "=",
 		NextCond: "",
 		Value:    id.String(),
-	}
-
-	// create query
-	query := expenseCommand.q.UpdateWhere("expense_types", *expenseType, []*qbModel.Condition{where})
-
-	// exec query
-	_, err := expenseCommand.db.PgSQL.Exec(query, expenseType.Name)
+	}})
+	_, err := ec.db.PgSQL.Exec(query, expenseType.Name)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // DeleteExpenseType ...
-func (expenseCommand *ExpenseCommand) DeleteExpenseType(id uuid.UUID) error {
-	// create condition
-	where := &qbModel.Condition{
+func (ec *ExpenseCommand) DeleteExpenseType(id uuid.UUID) error {
+	query := ec.q.Delete("expense_types", []*qbModel.Condition{&qbModel.Condition{
 		Key:      "id",
 		Operator: "=",
 		NextCond: "",
 		Value:    id.String(),
-	}
-
-	// create query
-	query := expenseCommand.q.Delete("expense_types", []*qbModel.Condition{where})
-
-	// exec query
-	_, err := expenseCommand.db.PgSQL.Exec(query)
+	}})
+	_, err := ec.db.PgSQL.Exec(query)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // CreateExpense ...
-func (expenseCommand *ExpenseCommand) CreateExpense(tx *sqlx.Tx, expense *model.ExpenseCreate) error {
-	query := expenseCommand.q.Create("expenses", (*expense).Expense)
+func (ec *ExpenseCommand) CreateExpense(tx *sqlx.Tx, expense *model.ExpenseCreate) error {
+	query := ec.q.Create("expenses", (*expense).Expense)
 	_, err := tx.Exec(query, expense.Expense.ExpenseID, expense.Expense.ExpenseTypeID, expense.Expense.Name, expense.Expense.Amount, expense.Expense.Note, expense.Expense.CreatedAt)
 	if err != nil {
 		return err
@@ -75,8 +64,8 @@ func (expenseCommand *ExpenseCommand) CreateExpense(tx *sqlx.Tx, expense *model.
 }
 
 // CreateExpenseImage ...
-func (expenseCommand *ExpenseCommand) CreateExpenseImage(tx *sqlx.Tx, image *model.ExpenseImageCreate) error {
-	query := expenseCommand.q.Create("expense_images", (*image).ExpenseImage)
+func (ec *ExpenseCommand) CreateExpenseImage(tx *sqlx.Tx, image *model.ExpenseImageCreate) error {
+	query := ec.q.Create("expense_images", (*image).ExpenseImage)
 	_, err := tx.Exec(query, image.ExpenseImage.ExpenseImageID, image.ExpenseImage.ExpenseID, image.ExpenseImage.Image, image.ExpenseImage.CreatedAt)
 	if err != nil {
 		return err

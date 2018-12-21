@@ -5,7 +5,7 @@ import (
 
 	"github.com/azharprabudi/api-plastik/db"
 	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
-	"github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+	qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 	trx "github.com/azharprabudi/api-plastik/helper/transaction"
 	execsql "github.com/azharprabudi/api-plastik/migrations/exec-sql"
 	"github.com/azharprabudi/api-plastik/migrations/model"
@@ -121,11 +121,7 @@ func getOldVer(tx *sqlx.Tx) (int, error) {
 // function to running list of migration
 func doMigrateSQL(tx *sqlx.Tx, startVer int, untilVer int) {
 	for i := startVer; i < untilVer; i++ {
-		_, err := tx.Exec(execPgSQL[i])
-		if err != nil {
-			print("err")
-			print(err)
-		}
+		tx.Exec(execPgSQL[i])
 	}
 }
 

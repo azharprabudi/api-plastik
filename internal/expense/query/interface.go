@@ -7,11 +7,8 @@ import (
 
 // ExpenseQueryInterface ...
 type ExpenseQueryInterface interface {
-	// Expense Type
-	GetExpenseType() ([]*model.ExpenseTypeRead, error)
-	GetExpenseTypeByID(uuid.UUID) *model.ExpenseTypeRead
-
-	// Expense
-	GetExpense() ([]*model.ExpenseRead, error)
+	GetExpenseTypes() ([]*model.ExpenseTypeRead, error)
+	GetExpenseTypeByID(uuid.UUID) (*model.ExpenseTypeRead, error)
+	GetExpenses() ([]*model.ExpenseRead, error)
 	GetExpenseByID(uuid.UUID) (*model.ExpenseReadDetail, error)
 }
