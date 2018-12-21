@@ -3,15 +3,15 @@ package transform
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/internal/seller/dto"
 	"github.com/azharprabudi/api-plastik/internal/seller/model"
 )
 
-// TransformCreate ...
-func (st *SellerTransform) TransformCreate(req *dto.SellerReq) *model.SellerCreate {
-	create := &model.SellerCreate{
+// MakeModelCreateSeller ...
+func (st *SellerTransform) MakeModelCreateSeller(req *dto.SellerReq) *model.SellerCreate {
+	return &model.SellerCreate{
 		Seller: model.Seller{
 			SellerID:  uuid.NewV4(),
 			Name:      req.Name,
@@ -20,49 +20,43 @@ func (st *SellerTransform) TransformCreate(req *dto.SellerReq) *model.SellerCrea
 			CreatedAt: time.Now().UTC(),
 		},
 	}
-	return create
 }
 
-// TransformUpdate ...
-func (st *SellerTransform) TransformUpdate(req *dto.SellerReq) *model.SellerUpdate {
-	updt := &model.SellerUpdate{
+// MakeModelUpdateSeller ...
+func (st *SellerTransform) MakeModelUpdateSeller(req *dto.SellerReq) *model.SellerUpdate {
+	return &model.SellerUpdate{
 		Name:    req.Name,
 		Address: req.Address,
 		Phone:   req.Phone,
 	}
-	return updt
 }
 
-// TransformGet ...
-func (st *SellerTransform) TransformGet(s []*model.SellerRead) []*dto.SellerRes {
-	// init variable
-	var res = []*dto.SellerRes{}
-
-	// transform data as dto expected
-	for _, sel := range s {
-		res = append(res, &dto.SellerRes{
-			ID:        sel.Seller.SellerID,
-			CreatedAt: sel.Seller.CreatedAt,
-			SellerReq: dto.SellerReq{
-				Name:    sel.Seller.Name,
-				Phone:   sel.Seller.Phone,
-				Address: sel.Seller.Address,
+// MakeResponseGetSellers ...
+func (st *SellerTransform) MakeResponseGetSellers(res []*model.SellerRead) []*dto.SellerRes {
+	var results = []*dto.SellerRes{}
+	for _, s := range res {
+		results = append(results, &dto.SellerRes{
+			ID:        s.Seller.SellerID,
+			CreatedAt: s.Seller.CreatedAt,
+			Seller: dto.Seller{
+				Name:    s.Seller.Name,
+				Phone:   s.Seller.Phone,
+				Address: s.Seller.Address,
 			},
 		})
 	}
-
-	return res
+	return results
 }
 
-// TransformGetByID ...
-func (st *SellerTransform) TransformGetByID(s *model.SellerRead) *dto.SellerRes {
+// MakeResponseGetSellerByID ...
+func (st *SellerTransform) MakeResponseGetSellerByID(res *model.SellerRead) *dto.SellerRes {
 	return &dto.SellerRes{
-		ID:        s.Seller.SellerID,
-		CreatedAt: s.Seller.CreatedAt,
-		SellerReq: dto.SellerReq{
-			Name:    s.Seller.Name,
-			Phone:   s.Seller.Phone,
-			Address: s.Seller.Address,
+		ID:        res.Seller.SellerID,
+		CreatedAt: res.Seller.CreatedAt,
+		Seller: dto.Seller{
+			Name:    res.Seller.Name,
+			Phone:   res.Seller.Phone,
+			Address: res.Seller.Address,
 		},
 	}
 }

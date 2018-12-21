@@ -2,11 +2,11 @@ package query
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/seller/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // SellerQueryInterface ...
 type SellerQueryInterface interface {
-	Get() ([]*model.SellerRead, error)
-	GetByID(uuid.UUID) *model.SellerRead
+	GetSellers() ([]*model.SellerRead, error)
+	GetSellerByID(uuid.UUID) (*model.SellerRead, error)
 }

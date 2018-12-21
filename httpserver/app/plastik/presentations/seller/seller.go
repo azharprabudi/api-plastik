@@ -20,111 +20,96 @@ import (
 
 // Find ...
 func (s *Seller) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := s.service.GetSeller()
+	results, err := s.service.GetSellers()
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
+
 	response.Send(w, http.StatusOK, nil, results)
+	return
 }
 
 // FindByID ...
 func (s *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
-	// get query param id
-	sellerID := chi.URLParam(r, "id")
-
-	// parse string to uuid
-	u, err := uuid.FromString(sellerID)
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result := s.service.GetSellerByID(u)
+	result, err := s.service.GetSellerByID(id)
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	response.Send(w, http.StatusOK, nil, result)
 	return
 }
 
 // Create ...
 func (s *Seller) Create(w http.ResponseWriter, r *http.Request) {
-
+	req := new(dto.SellerReq)
 	var validations = []string{}
-	seller := new(dto.SellerReq)
-
-	// parse json
-	request.Get(r.Body, seller)
+	request.Get(r.Body, req)
 
 	// do validations
-	if seller.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if seller.Phone == "" {
+	if req.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
-	id, err := s.service.CreateSeller(seller)
+	id, err := s.service.CreateSeller(req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	// create headers
+	// create headers and return
 	headers := map[string]string{
 		"location": baseurl.Get(r, "sellers", id),
 	}
-
 	response.Send(w, http.StatusCreated, headers, nil)
 	return
 }
 
 // Update ...
 func (s *Seller) Update(w http.ResponseWriter, r *http.Request) {
-	// get query param id
-	sellerID := chi.URLParam(r, "id")
-
-	// parse string to uuid
-	u, err := uuid.FromString(sellerID)
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
+	req := new(dto.SellerReq)
 	var validations = []string{}
-	seller := new(dto.SellerReq)
-
-	// parse json
-	request.Get(r.Body, seller)
+	request.Get(r.Body, req)
 
 	// do validations
-	if seller.Name == "" {
+	if req.Name == "" {
 		validations = append(validations, "name field is required")
 	}
 
-	if seller.Phone == "" {
+	if req.Phone == "" {
 		validations = append(validations, "phone field is required")
 	}
 
-	// if validation exists there is error
 	if len(validations) > 0 {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return
 	}
 
-	err = s.service.UpdateSeller(u, seller)
+	err = s.service.UpdateSeller(id, req)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
@@ -135,20 +120,14 @@ func (s *Seller) Update(w http.ResponseWriter, r *http.Request) {
 
 // Delete ...
 func (s *Seller) Delete(w http.ResponseWriter, r *http.Request) {
-	// get query param id
-	sellerID := chi.URLParam(r, "id")
-
-	// parse string to uuid
-	u, err := uuid.FromString(sellerID)
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	err = s.service.DeleteSeller(u)
+	err = s.service.DeleteSeller(id)
 	if err != nil {
-		// response error
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
@@ -157,8 +136,8 @@ func (s *Seller) Delete(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// NewPresentationSeller ...
-func NewPresentationSeller(db *db.DB) presentations.BaseInterface {
+// NewSellerPresentation ...
+func NewSellerPresentation(db *db.DB) presentations.BaseInterface {
 	return &Seller{
 		service: service.NewSellerService(db),
 	}

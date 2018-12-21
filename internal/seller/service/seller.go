@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/seller/transform"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/db"
 	"github.com/azharprabudi/api-plastik/internal/seller/command"
@@ -11,63 +11,54 @@ import (
 )
 
 // GetSeller ...
-func (sellerService *SellerService) GetSeller() ([]*dto.SellerRes, error) {
-	// add data to db
-	sellerModel, err := sellerService.query.Get()
+func (ss *SellerService) GetSellers() ([]*dto.SellerRes, error) {
+	sellers, err := ss.query.GetSellers()
 	if err != nil {
 		return nil, err
 	}
 
-	// transform data from model
-	sellerDTO := sellerService.transform.TransformGet(sellerModel)
-	return sellerDTO, nil
+	return ss.transform.MakeResponseGetSellers(sellers), nil
 }
 
 // GetSellerByID ...
-func (sellerService *SellerService) GetSellerByID(sellerID uuid.UUID) *dto.SellerRes {
-	sellerModel := sellerService.query.GetByID(sellerID)
-	if sellerModel == nil {
-		return nil
+func (ss *SellerService) GetSellerByID(id uuid.UUID) (*dto.SellerRes, error) {
+	seller, err := ss.query.GetSellerByID(id)
+	if err != nil {
+		return nil, err
 	}
 
-	// transform data from model
-	sellerDTO := sellerService.transform.TransformGetByID(sellerModel)
-	return sellerDTO
+	return ss.transform.MakeResponseGetSellerByID(seller), nil
 }
 
 // CreateSeller ...
-func (sellerService *SellerService) CreateSeller(item *dto.SellerReq) (uuid.UUID, error) {
-	// transform dto to model
-	sellerCreate := sellerService.transform.TransformCreate(item)
-
-	// add data to db
-	err := sellerService.command.Create(sellerCreate)
+func (ss *SellerService) CreateSeller(req *dto.SellerReq) (uuid.UUID, error) {
+	seller := ss.transform.MakeModelCreateSeller(req)
+	err := ss.command.CreateSeller(seller)
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return sellerCreate.SellerID, nil
+
+	return seller.Seller.SellerID, nil
 }
 
 // UpdateSeller ...
-func (sellerService *SellerService) UpdateSeller(sellerID uuid.UUID, item *dto.SellerReq) error {
-	// transform dto to model
-	sellerUpdate := sellerService.transform.TransformUpdate(item)
-
-	// update to db
-	err := sellerService.command.Update(sellerID, sellerUpdate)
+func (ss *SellerService) UpdateSeller(id uuid.UUID, req *dto.SellerReq) error {
+	seller := ss.transform.MakeModelUpdateSeller(req)
+	err := ss.command.UpdateSeller(id, seller)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // DeleteSeller ...
-func (sellerService *SellerService) DeleteSeller(sellerID uuid.UUID) error {
-	// delete data from db
-	err := sellerService.command.Delete(sellerID)
+func (ss *SellerService) DeleteSeller(id uuid.UUID) error {
+	err := ss.command.DeleteSeller(id)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

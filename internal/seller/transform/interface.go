@@ -7,8 +7,8 @@ import (
 
 // SellerTransformInterface ...
 type SellerTransformInterface interface {
-	TransformCreate(*dto.SellerReq) *model.SellerCreate
-	TransformUpdate(*dto.SellerReq) *model.SellerUpdate
-	TransformGet([]*model.SellerRead) []*dto.SellerRes
-	TransformGetByID(*model.SellerRead) *dto.SellerRes
+	MakeModelCreateSeller(*dto.SellerReq) *model.SellerCreate
+	MakeModelUpdateSeller(*dto.SellerReq) *model.SellerUpdate
+	MakeResponseGetSellers([]*model.SellerRead) []*dto.SellerRes
+	MakeResponseGetSellerByID(*model.SellerRead) *dto.SellerRes
 }

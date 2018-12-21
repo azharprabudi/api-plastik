@@ -2,13 +2,12 @@ package command
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/seller/model"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // SellerCommandInterface ...
 type SellerCommandInterface interface {
-	// item
-	Create(*model.SellerCreate) error
-	Update(uuid.UUID, *model.SellerUpdate) error
-	Delete(uuid.UUID) error
+	CreateSeller(*model.SellerCreate) error
+	UpdateSeller(uuid.UUID, *model.SellerUpdate) error
+	DeleteSeller(uuid.UUID) error
 }
