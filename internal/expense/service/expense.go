@@ -91,8 +91,7 @@ func (es *ExpenseService) CreateExpense(req *dto.ExpenseReq) (uuid.UUID, error) 
 	newTrx := trx.NewTransaction()
 	ctx := newTrx.CreateTrx(es.db.PgSQL)
 	err := newTrx.RunTrx(ctx, func(tx *sqlx.Tx) error {
-		var err error
-		err = es.command.CreateExpense(tx, expense)
+		err := es.command.CreateExpense(tx, expense)
 		if err != nil {
 			return err
 		}
@@ -100,7 +99,7 @@ func (es *ExpenseService) CreateExpense(req *dto.ExpenseReq) (uuid.UUID, error) 
 		for _, image := range expenseImages {
 			err = es.command.CreateExpenseImage(tx, image)
 			if err != nil {
-				break
+				return err
 			}
 		}
 

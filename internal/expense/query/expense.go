@@ -91,7 +91,7 @@ func (eq *ExpenseQuery) GetExpenseByID(id uuid.UUID) (*model.ExpenseReadDetail, 
 		var imageCreated, expenseCreated time.Time
 		var imageID, imageExpenseID, expenseID, expenseTypeID uuid.UUID
 
-		err := rows.Scan(&expenseID, &expenseTypeID, &name, &amount, &note, &expenseCreated, &imageID, &imageExpenseID, &image, &imageCreated)
+		rows.Scan(&expenseID, &expenseTypeID, &name, &amount, &note, &expenseCreated, &imageID, &imageExpenseID, &image, &imageCreated)
 
 		if i == 0 {
 			result.Expense.ExpenseID = expenseID
