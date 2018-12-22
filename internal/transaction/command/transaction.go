@@ -21,8 +21,9 @@ func (tc *TransactionCommand) CreateTransaction(tx *sqlx.Tx, transaction *model.
 // CreateTransactionDetail ...
 func (tc *TransactionCommand) CreateTransactionDetail(tx *sqlx.Tx, transactionDetail *model.TransactionDetailCreate) error {
 	query := tc.qb.Create("transaction_details", (*transactionDetail).TransactionDetail)
-	_, err := tx.Exec(query, transactionDetail.TransactionDetail.ID, transactionDetail.TransactionDetail.TransactionID, transactionDetail.TransactionDetail.Amount, transactionDetail.TransactionDetail.Qty, transactionDetail.TransactionDetail.CreatedAt)
+	_, err := tx.Exec(query, transactionDetail.TransactionDetail.ID, transactionDetail.TransactionDetail.TransactionID, transactionDetail.TransactionDetail.ItemID, transactionDetail.TransactionDetail.ItemName, transactionDetail.TransactionDetail.Amount, transactionDetail.TransactionDetail.Qty, transactionDetail.TransactionDetail.CreatedAt)
 	if err != nil {
+		print(err)
 		return err
 	}
 

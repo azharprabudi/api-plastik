@@ -17,8 +17,8 @@ type Transaction struct {
 // TransactionReq ...
 type TransactionReq struct {
 	Transaction
-	Details []*TransactionDetailReq `json:"details"`
-	Images  []string                `json:"images"`
+	Details []TransactionDetailReq `json:"details"`
+	Images  []string               `json:"images"`
 }
 
 // TransactionRes ....

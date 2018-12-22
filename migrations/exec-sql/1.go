@@ -103,6 +103,7 @@ CREATE TABLE "transactions" (
 	"user_id" uuid,
 	"seller_id" uuid,
 	"supplier_id" uuid,
+	"type" varchar(20) NOT NULL,
 	"amount" numeric(20, 2) NOT NULL,
 	"created_at" timestamptz NOT NULL,
 	CONSTRAINT transactions_pk PRIMARY KEY ("id")
@@ -151,5 +152,5 @@ CREATE TABLE "transaction_images" (
 ALTER TABLE transaction_images
 	ADD CONSTRAINT fk_transaction
 	FOREIGN KEY ("transaction_id") 
-	REFERENCES "transaction_images"("id");
+	REFERENCES "transactions"("id");
 `

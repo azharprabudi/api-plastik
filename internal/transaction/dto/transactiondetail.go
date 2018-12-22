@@ -13,7 +13,9 @@ type TransactionDetail struct {
 }
 
 type TransactionDetailReq struct {
-	TransactionDetail
+	ItemID uuid.UUID `json:"itemId"`
+	Qty    int       `json:"qty"`
+	Amount float64   `json:"amount"`
 }
 
 type TransactionDetailRes struct {

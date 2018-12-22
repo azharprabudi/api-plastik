@@ -33,29 +33,28 @@ func (ts *TransactionService) CreateTransaction(req *dto.TransactionReq) (uuid.U
 	trans := trx.NewTransaction()
 	ctx := trans.CreateTrx(ts.db.PgSQL)
 	err := trans.RunTrx(ctx, func(tx *sqlx.Tx) error {
-		var err error
-		err = ts.command.CreateTransaction(tx, transaction)
+		err := ts.command.CreateTransaction(tx, transaction)
 		if err != nil {
 			return err
 		}
 
 		for _, detail := range details {
-			item, err := ts.itemService.GetItemByID(detail.ItemID)
+			item, err := ts.itemService.GetItemByID(detail.TransactionDetail.ItemID)
 			if err != nil {
-				break
+				return err
 			}
 
-			detail.ItemName = &(*item).Item.Name
+			detail.TransactionDetail.ItemName = &(*item).Item.Name
 			err = ts.command.CreateTransactionDetail(tx, detail)
 			if err != nil {
-				break
+				return err
 			}
 		}
 
 		for _, image := range images {
 			err = ts.command.CreateTransactionImage(tx, image)
 			if err != nil {
-				break
+				return err
 			}
 		}
 
@@ -68,7 +67,7 @@ func (ts *TransactionService) CreateTransaction(req *dto.TransactionReq) (uuid.U
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return transaction.ID, nil
+	return transaction.Transaction.ID, nil
 }
 
 // FindTransactionByID ...

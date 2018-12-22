@@ -12,7 +12,7 @@ import (
 func (tt *TransactionTransform) MakeModelCreateTransaction(req *dto.TransactionReq, userID uuid.UUID) *model.TransactionCreate {
 	var totalAmount float64
 	for _, detail := range req.Details {
-		totalAmount += detail.Amount
+		totalAmount += detail.Amount * float64(detail.Qty)
 	}
 
 	return &model.TransactionCreate{
