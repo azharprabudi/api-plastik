@@ -179,4 +179,5 @@ ALTER TABLE item_stock_logs
 	FOREIGN KEY ("transaction_id") 
 	REFERENCES "transactions"("id");
 
+
 `

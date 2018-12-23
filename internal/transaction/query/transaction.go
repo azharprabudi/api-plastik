@@ -15,22 +15,23 @@ import (
 func (tq *TransactionQuery) GetTransactions(limit int, start int, startAt string, endAt string, orderBy string) ([]*model.TransactionRead, error) {
 	var queryLimit string
 	var queryFilter string
-	queryOrder := "ORDER BY transactions.created_at DESC"
+	queryOrder := "order by transactions.created_at desc"
 	var results []*model.TransactionRead
 
 	if limit > 0 && start > 0 {
-		queryLimit = fmt.Sprintf("LIMIT %d OFFSET %d", limit, start)
+		queryLimit = fmt.Sprintf("limit %d offset %d", limit, start)
 	}
 
 	if startAt != "" && endAt != "" {
-		queryFilter = fmt.Sprintf("WHERE transactions.created_at BETWEEN %s AND %s", startAt, endAt)
+		queryFilter = fmt.Sprintf("where transactions.created_at::timestamp between '%s'::timestamp AND '%s'::timestamp", startAt, endAt)
 	}
 
 	if orderBy != "" {
-		queryOrder = fmt.Sprintf("ORDER BY transactions.%s", orderBy)
+		queryOrder = fmt.Sprintf("order by transactions.%s", orderBy)
 	}
 
-	rows, err := tq.db.PgSQL.Queryx(fmt.Sprintf("SELECT transactions.*, suppliers.name as supplier_name, sellers.name as seller_name FROM transactions LEFT JOIN sellers ON transactions.seller_id = sellers.id LEFT JOIN suppliers ON transactions.supplier_id = suppliers.id %s %s %s", queryLimit, queryFilter, queryOrder))
+	query := fmt.Sprintf("select * , case when transactions.type = 'TRANSACTION_IN' then 'Transaksi Masuk' when transactions.type = 'TRANSACTION_OUT' then 'Transaksi Keluar' else 'Transaksi Lainnya' end as type_name from transactions %s %s %s", queryFilter, queryOrder, queryLimit)
+	rows, err := tq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
 	}

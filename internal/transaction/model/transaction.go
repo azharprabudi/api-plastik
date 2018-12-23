@@ -20,7 +20,7 @@ type Transaction struct {
 // TransactionRead ...
 type TransactionRead struct {
 	Transaction
-	UserName *string `db:"user_name"`
+	TypeName string `db:"type_name"`
 }
 
 // TransactionCreate ...

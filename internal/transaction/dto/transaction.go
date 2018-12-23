@@ -13,14 +13,12 @@ type Transaction struct {
 
 // TransactionRes ....
 type TransactionRes struct {
-	ID     uuid.UUID `json:"id"`
-	Amount float64   `json:"amount"`
 	Transaction
-	TransactionType string    `json:"type"`
-	CreatedAt       time.Time `json:"createdAt"`
-	SellerName      *string   `json:"seller_name"`
-	SupplierName    *string   `json:"supplier_name"`
-	UserName        *string   `json:"user_name"`
+	ID                  uuid.UUID `json:"id"`
+	Amount              float64   `json:"amount"`
+	TransactionType     string    `json:"type"`
+	TransactionTypeName string    `json:"typeName"`
+	CreatedAt           time.Time `json:"createdAt"`
 }
 
 // TransactionResDetail ...

@@ -14,7 +14,7 @@ type TransactionTransformInterface interface {
 	MakeModelCreateTransactionEtc(*dto.TransactionEtcReq, string, uuid.UUID) *model.TransactionEtcCreate
 	MakeModelCreateTransactionDetails([]*dto.TransactionDetailReq, uuid.UUID) []*model.TransactionDetailCreate
 	MakeModelCreateTransactionImages([]string, uuid.UUID) []*model.TransactionImageCreate
-	MakeResponseGetTransaction([]*model.TransactionRead) []*dto.TransactionRes
+	MakeResponseGetTransactions([]*model.TransactionRead) []*dto.TransactionRes
 	MakeResponseGetTransactionByID(*model.TransactionReadDetail) *dto.TransactionResDetail
 	MakeModelCreateItemStockLog([]*dto.TransactionDetailReq, uuid.UUID, string) []*itemmodel.ItemStockLogCreate
 	MakeResponseGetTransactionEtcTypes([]*model.TransactionEtcTypeRead) []*dto.TransactionEtcTypeRes

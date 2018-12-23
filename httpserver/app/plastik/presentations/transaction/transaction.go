@@ -32,7 +32,7 @@ func (t *Transaction) Find(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Send(w, http.StatusCreated, nil, transactions)
+	response.Send(w, http.StatusOK, nil, transactions)
 	return
 }
 

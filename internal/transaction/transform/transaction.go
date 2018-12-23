@@ -73,6 +73,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionEtc(req *dto.Transacti
 				Note:      req.Transaction.Note,
 				Type:      transactionType,
 				UserID:    userID,
+				CompanyID: uuid.NewV4(),
 				Amount:    req.TransactionEtc.Amount,
 				CreatedAt: time.Now().UTC(),
 			},
@@ -121,8 +122,8 @@ func (tt *TransactionTransform) MakeModelCreateTransactionImages(req []string, i
 	return results
 }
 
-// MakeResponseGetTransaction ...
-func (tt *TransactionTransform) MakeResponseGetTransaction(req []*model.TransactionRead) []*dto.TransactionRes {
+// MakeResponseGetTransactions ...
+func (tt *TransactionTransform) MakeResponseGetTransactions(req []*model.TransactionRead) []*dto.TransactionRes {
 	var results []*dto.TransactionRes
 	for _, trx := range req {
 		results = append(results, &dto.TransactionRes{
@@ -131,7 +132,9 @@ func (tt *TransactionTransform) MakeResponseGetTransaction(req []*model.Transact
 			Transaction: dto.Transaction{
 				Note: trx.Transaction.Note,
 			},
-			CreatedAt: trx.Transaction.CreatedAt,
+			TransactionType:     trx.Transaction.Type,
+			TransactionTypeName: trx.TypeName,
+			CreatedAt:           trx.Transaction.CreatedAt,
 		})
 	}
 	return results

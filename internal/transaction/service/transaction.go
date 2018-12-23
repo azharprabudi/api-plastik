@@ -17,13 +17,13 @@ import (
 // FindTransactions ...
 func (ts *TransactionService) FindTransactions(page int, startAt string, endAt string, orderBy string) ([]*dto.TransactionRes, error) {
 	limit := 10
-	start := (page * limit) - (limit - 1)
+	start := (page * limit) - limit
 	transactions, err := ts.query.GetTransactions(limit, start, startAt, endAt, orderBy)
 	if err != nil {
 		return nil, err
 	}
 
-	return ts.transform.MakeResponseGetTransaction(transactions), nil
+	return ts.transform.MakeResponseGetTransactions(transactions), nil
 }
 
 // CreateTransactionIn ...
