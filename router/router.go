@@ -1,6 +1,8 @@
 package router
 
 import (
+	"time"
+
 	"github.com/azharprabudi/api-plastik/db"
 	"github.com/azharprabudi/api-plastik/httpserver/app/plastik/middlewares"
 	"github.com/azharprabudi/api-plastik/httpserver/app/plastik/routes"
@@ -13,8 +15,11 @@ func InitRoute(db *db.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	// apply middleware to all
+	r.Use(middlewares.AcceptContentType)
 	r.Use(middlewares.CheckContentType)
 	r.Use(middlewares.CheckClientSecret)
+	r.Use(middlewares.Throttle(1000))
+	r.Use(middlewares.Timeout(60 * time.Second))
 
 	// assign routes
 	r.Route("/api", func(r chi.Router) {

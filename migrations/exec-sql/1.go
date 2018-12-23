@@ -61,65 +61,75 @@ CREATE TABLE "sellers" (
 	CONSTRAINT sellers_pk PRIMARY KEY ("id")
 );
 
-CREATE TABLE "expense_types" (
-	"id" uuid NOT NULL,
-	"name" varchar(100) NOT NULL,
-	"created_at" timestamptz NOT NULL,
-	CONSTRAINT expense_types_pk PRIMARY KEY ("id")
-);
-
-CREATE TABLE "expenses" (
-	"id" uuid NOT NULL,
-	"expense_type_id" uuid NOT NULL,
-	"name" varchar(100) NOT NULL,
-	"amount" numeric(20, 2) NOT NULL,
-	"note" text null,
-	"created_at" timestamptz NOT NULL,
-	CONSTRAINT expenses_pk PRIMARY KEY ("id")
-);
-
-ALTER TABLE expenses
-   ADD CONSTRAINT fk_expense_type
-   FOREIGN KEY ("expense_type_id") 
-   REFERENCES "expense_types"("id");
-
-
-CREATE TABLE "expense_images" (
-	"id" uuid NOT NULL,
-	"image" varchar(100) NOT NULL,
-	"expense_id" uuid NOT NULL,
-	"created_at" timestamptz NOT NULL,
-	CONSTRAINT expense_images_pk PRIMARY KEY ("id")
-);
-
-ALTER TABLE expense_images
-   ADD CONSTRAINT fk_expense
-   FOREIGN KEY ("expense_id") 
-   REFERENCES "expenses"("id");
-
 CREATE TABLE "transactions" (
 	"id" uuid NOT NULL,
 	"note" text,
-	"user_id" uuid,
-	"seller_id" uuid,
-	"supplier_id" uuid,
+	"user_id" uuid NOT NULL,
+	"company_id" uuid NOT NULL,
 	"type" varchar(20) NOT NULL,
 	"amount" numeric(20, 2) NOT NULL,
 	"created_at" timestamptz NOT NULL,
 	CONSTRAINT transactions_pk PRIMARY KEY ("id")
 );
 
-ALTER TABLE transactions
-   ADD CONSTRAINT fk_supplier
-   FOREIGN KEY ("supplier_id") 
-   REFERENCES "suppliers"("id");
+CREATE TABLE "transactions_in" (
+	"id" uuid NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"supplier_id" uuid NOT NULL,
+	CONSTRAINT transactions_in_pk PRIMARY KEY ("id")
+);
 
+CREATE TABLE "transactions_out" (
+	"id" uuid NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"seller_id" uuid NOT NULL,
+	CONSTRAINT transactions_out_pk PRIMARY KEY ("id")
+);
 
-ALTER TABLE transactions
-	ADD CONSTRAINT fk_seller
+CREATE TABLE "transactions_etc" (
+	"id" uuid NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"transaction_etc_type" uuid NOT NULL,
+	CONSTRAINT transactions_etc_pk PRIMARY KEY ("id")
+);
+
+CREATE TABLE "transaction_etc_types" (
+	"id" uuid NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"created_at" timestamptz NOT NULL,
+	CONSTRAINT transaction_etc_types_pk PRIMARY KEY ("id")
+);
+
+ALTER TABLE transactions_in
+   ADD CONSTRAINT fk_transactions_in
+   FOREIGN KEY ("transaction_id") 
+   REFERENCES "transactions"("id");
+
+ALTER TABLE transactions_in
+	ADD CONSTRAINT fk_suppliers
+	FOREIGN KEY ("supplier_id") 
+	REFERENCES "suppliers"("id");
+
+ALTER TABLE transactions_out
+	ADD CONSTRAINT fk_transactions_out
+	FOREIGN KEY ("transaction_id") 
+	REFERENCES "transactions"("id");
+ 
+ALTER TABLE transactions_out
+	ADD CONSTRAINT fk_sellers
 	FOREIGN KEY ("seller_id") 
 	REFERENCES "sellers"("id");
 
+ALTER TABLE transactions_etc
+	ADD CONSTRAINT fk_transactions
+	FOREIGN KEY ("transaction_id") 
+	REFERENCES "transactions"("id");
+
+ALTER TABLE transactions_etc
+	ADD CONSTRAINT fk_transaction_etc_types
+	FOREIGN KEY ("transaction_etc_type") 
+	REFERENCES "transaction_etc_types"("id");
+ 
 CREATE TABLE "transaction_details" (
 	"id" uuid NOT NULL,
 	"item_id" uuid NOT NULL,
@@ -153,4 +163,20 @@ ALTER TABLE transaction_images
 	ADD CONSTRAINT fk_transaction
 	FOREIGN KEY ("transaction_id") 
 	REFERENCES "transactions"("id");
+
+CREATE TABLE "item_stock_logs" (
+	"id" uuid NOT NULL,
+	"item_name" varchar(100),
+	"qty" int NOT NULL,
+	"item_id" uuid NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"created_at" timestamptz NOT NULL,
+	CONSTRAINT item_stock_logs_pk PRIMARY KEY ("id")
+);
+
+ALTER TABLE item_stock_logs
+	ADD CONSTRAINT fk_transaction
+	FOREIGN KEY ("transaction_id") 
+	REFERENCES "transactions"("id");
+
 `

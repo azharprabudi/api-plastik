@@ -6,7 +6,7 @@ import (
 	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
 )
 
-//  TransactionCommand ...
+// TransactionCommand ...
 type TransactionCommand struct {
 	db *db.DB
 	qb qb.QueryBuilderInterface

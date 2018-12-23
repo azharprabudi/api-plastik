@@ -8,13 +8,14 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
+	qbModel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 )
 
 // GetTransactions ...
 func (tq *TransactionQuery) GetTransactions(limit int, start int, startAt string, endAt string, orderBy string) ([]*model.TransactionRead, error) {
 	var queryLimit string
 	var queryFilter string
-	var queryOrder string = "ORDER BY transactions.created_at DESC"
+	queryOrder := "ORDER BY transactions.created_at DESC"
 	var results []*model.TransactionRead
 
 	if limit > 0 && start > 0 {
@@ -50,6 +51,47 @@ func (tq *TransactionQuery) GetTransactionByID(id uuid.UUID) (*model.Transaction
 	return nil, nil
 }
 
+// GetTransactionEtcTypes ...
+func (tq *TransactionQuery) GetTransactionEtcTypes() ([]*model.TransactionEtcTypeRead, error) {
+	var results []*model.TransactionEtcTypeRead
+	query := tq.qb.Query("transaction_etc_types", 0, 0, []*qbModel.Order{
+		&qbModel.Order{
+			Key:   "created_at",
+			Value: "desc",
+		},
+	})
+	rows, err := tq.db.PgSQL.Queryx(query)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		tmp := new(model.TransactionEtcTypeRead)
+		rows.StructScan(tmp)
+		results = append(results, tmp)
+	}
+
+	return results, nil
+}
+
+// GetTransactionEtcTypeByID ...
+func (tq *TransactionQuery) GetTransactionEtcTypeByID(id uuid.UUID) (*model.TransactionEtcTypeRead, error) {
+	result := new(model.TransactionEtcTypeRead)
+	query := tq.qb.QueryWhere("transaction_etc_types", []*qbModel.Condition{&qbModel.Condition{
+		Key:      "id",
+		NextCond: "",
+		Operator: "=",
+		Value:    id.String(),
+	}}, nil)
+	err := tq.db.PgSQL.QueryRowx(query).StructScan(result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+// NewTransactionQuery ...
 func NewTransactionQuery(db *db.DB) TransactionQueryInterface {
 	q := qb.NewQueryBuilder()
 	return &TransactionQuery{

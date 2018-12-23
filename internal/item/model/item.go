@@ -30,3 +30,13 @@ type ItemUpdate struct {
 	Name           string    `db:"name"`
 	ItemCategoryID uuid.UUID `db:"category_id"`
 }
+
+// ItemStockLogCreate ...
+type ItemStockLogCreate struct {
+	ID            uuid.UUID `db:"id"`
+	ItemName      *string   `db:"item_name"`
+	ItemID        uuid.UUID `db:"item_id"`
+	TransactionID uuid.UUID `db:"transaction_id"`
+	Qty           int       `db:"qty"`
+	CreatedAt     time.Time `db:"created_at"`
+}

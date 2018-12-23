@@ -5,6 +5,7 @@ import (
 	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
 	qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 	"github.com/azharprabudi/api-plastik/internal/item/model"
+	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -87,6 +88,17 @@ func (ic *ItemCommand) DeleteItem(id uuid.UUID) error {
 		Value:    id.String(),
 	}})
 	_, err := ic.db.PgSQL.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateItemStockLog ...
+func (ic *ItemCommand) CreateItemStockLog(tx *sqlx.Tx, item *model.ItemStockLogCreate) error {
+	query := ic.q.Create("item_stock_logs", *item)
+	_, err := tx.Exec(query, item.ID, *(*item).ItemName, item.ItemID, item.TransactionID, item.Qty, item.CreatedAt)
 	if err != nil {
 		return err
 	}

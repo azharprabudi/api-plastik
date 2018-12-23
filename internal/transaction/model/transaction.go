@@ -8,22 +8,19 @@ import (
 
 // Transaction ...
 type Transaction struct {
-	ID         uuid.UUID  `db:"id"`
-	Type       string     `db:"type"`
-	Note       string     `db:"note"`
-	UserID     uuid.UUID  `db:"user_id"`
-	Amount     float64    `db:"amount"`
-	SellerID   *uuid.UUID `db:"seller_id"`
-	SupplierID *uuid.UUID `db:"supplier_id"`
-	CreatedAt  time.Time  `db:"created_at"`
+	ID        uuid.UUID `db:"id"`
+	Type      string    `db:"type"`
+	Note      string    `db:"note"`
+	CompanyID uuid.UUID `db:"company_id"`
+	UserID    uuid.UUID `db:"user_id"`
+	Amount    float64   `db:"amount"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 // TransactionRead ...
 type TransactionRead struct {
 	Transaction
-	SellerName   *string `db:"seller_name"`
-	SupplierName *string `db:"supplier_name"`
-	UserName     *string `db:"user_name"`
+	UserName *string `db:"user_name"`
 }
 
 // TransactionCreate ...
@@ -31,7 +28,7 @@ type TransactionCreate struct {
 	Transaction
 }
 
-// TransactionReadDetail
+// TransactionReadDetail ...
 type TransactionReadDetail struct {
 	TransactionRead
 	Details []*TransactionDetailRead

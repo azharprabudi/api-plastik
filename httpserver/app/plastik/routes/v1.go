@@ -2,15 +2,12 @@ package routes
 
 import (
 	"github.com/azharprabudi/api-plastik/db"
-	expenseTypePresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/expense-type"
 	itemPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item"
 
 	itemCategoryPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item-category"
 	itemUnitPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/item-unit"
 	sellerPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/seller"
 	supplierPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/supplier"
-
-	expensePresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/expense"
 
 	transactionPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/transaction"
 
@@ -25,9 +22,7 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	itemCategory := itemCategoryPresentation.NewPresentationItemCategory(db)
 	supplier := supplierPresentation.NewSupplierPresentation(db)
 	seller := sellerPresentation.NewSellerPresentation(db)
-	expenseType := expenseTypePresentation.NewExpenseTypePresentation(db)
-	expense := expensePresentation.NewExpensePresentation(db)
-	transaction := transactionPresentation.NewPresentationTransaction(db)
+	transaction := transactionPresentation.NewTransactionPresentation(db)
 
 	// route
 	(*newR).Route("/v1", func(r chi.Router) {
@@ -62,21 +57,16 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Patch("/seller/{id}", seller.Update)
 		r.Delete("/seller/{id}", seller.Delete)
 
-		/* expense type */
-		r.Get("/expense-type", expenseType.Find)
-		r.Get("/expense-type/{id}", expenseType.FindByID)
-		r.Post("/expense-type", expenseType.Create)
-		r.Patch("/expense-type/{id}", expenseType.Update)
-		r.Delete("/expense-type/{id}", expenseType.Delete)
-
-		/* expense */
-		r.Get("/expense", expense.Find)
-		r.Get("/expense/{id}", expense.FindByID)
-		r.Post("/expense", expense.Create)
-
 		/* transaction */
 		r.Get("/transaction", transaction.Find)
 		r.Get("/transaction/{id}", transaction.FindByID)
-		r.Post("/transaction", transaction.Create)
+		r.Post("/transaction/in", transaction.CreateTransactionIn)
+		r.Post("/transaction/out", transaction.CreateTransactionOut)
+		r.Post("/transaction/etc", transaction.CreateTransactionEtc)
+		r.Post("/transaction/etc/type", transaction.CreateTransactionEtcType)
+		r.Get("/transaction/etc/type", transaction.FindTransactionEtcTypes)
+		r.Get("/transaction/etc/type/{id}", transaction.FindTransactionEtcTypeByID)
+		r.Patch("/transaction/etc/type/{id}", transaction.UpdateTransactionEtcType)
+		r.Delete("/transaction/etc/type/{id}", transaction.DeleteTransactionEtcType)
 	})
 }

@@ -1,7 +1,9 @@
 package service
 
 import (
+	"github.com/azharprabudi/api-plastik/internal/item/model"
 	"github.com/azharprabudi/api-plastik/internal/item/transform"
+	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/azharprabudi/api-plastik/db"
@@ -122,6 +124,16 @@ func (is *ItemService) GetItemUnits() ([]*dto.ItemUnitRes, error) {
 	}
 
 	return is.transform.MakeResponseGetItemUnits(res), nil
+}
+
+// CreateItemStockLog ...
+func (is *ItemService) CreateItemStockLog(tx *sqlx.Tx, item *model.ItemStockLogCreate) error {
+	err := is.command.CreateItemStockLog(tx, item)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // NewItemService ...

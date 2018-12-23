@@ -2,6 +2,7 @@ package command
 
 import (
 	"github.com/azharprabudi/api-plastik/internal/item/model"
+	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -13,4 +14,5 @@ type ItemCommandInterface interface {
 	CreateItem(*model.ItemCreate) error
 	UpdateItem(uuid.UUID, *model.ItemUpdate) error
 	DeleteItem(uuid.UUID) error
+	CreateItemStockLog(*sqlx.Tx, *model.ItemStockLogCreate) error
 }
