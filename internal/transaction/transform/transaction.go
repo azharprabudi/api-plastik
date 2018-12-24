@@ -212,7 +212,47 @@ func (tt *TransactionTransform) MakeModelUpdateTransactionEtcType(req *dto.Trans
 
 // MakeResponseGetTransactionByID ...
 func (tt *TransactionTransform) MakeResponseGetTransactionByID(transaction *model.TransactionReadDetail) *dto.TransactionResDetail {
-	return nil
+	var images []*dto.TransactionImageRes
+	var details []*dto.TransactionDetailRes
+	for _, image := range transaction.Images {
+		images = append(images, &dto.TransactionImageRes{
+			ID:    image.ID,
+			Image: image.Image,
+		})
+	}
+
+	for _, detail := range transaction.Details {
+		details = append(details, &dto.TransactionDetailRes{
+			ID:       detail.ID,
+			ItemID:   detail.ItemID,
+			Qty:      detail.Qty,
+			Amount:   detail.Amount,
+			ItemName: detail.ItemName,
+		})
+	}
+
+	return &dto.TransactionResDetail{
+		TransactionRes: dto.TransactionRes{
+			Amount:    transaction.Amount,
+			CreatedAt: transaction.CreatedAt,
+			ID:        transaction.ID,
+			Transaction: dto.Transaction{
+				Note: transaction.Note,
+			},
+			TransactionType:     transaction.Type,
+			TransactionTypeName: transaction.TypeName,
+		},
+		TransactionInID:        transaction.TransactionInID,
+		SupplierID:             transaction.SupplierID,
+		SupplierName:           transaction.SupplierName,
+		TransactionOutID:       transaction.TransactionOutID,
+		SellerID:               transaction.SellerID,
+		SellerName:             transaction.SellerName,
+		TransactionEtcID:       transaction.TransactionEtcID,
+		TransactionEtcTypeName: transaction.TransactionEtcTypeName,
+		Details:                details,
+		Images:                 images,
+	}
 }
 
 // NewTransactionTransform ...

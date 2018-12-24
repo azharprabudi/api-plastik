@@ -21,5 +21,6 @@ type TransactionImageCreate struct {
 
 // TransactionImageRead ...
 type TransactionImageRead struct {
-	TransactionImage
+	ID    *uuid.UUID `db:"id"`
+	Image *string    `db:"image"`
 }

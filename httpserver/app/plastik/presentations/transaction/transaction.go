@@ -153,7 +153,7 @@ func (t *Transaction) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Send(w, http.StatusCreated, nil, transaction)
+	response.Send(w, http.StatusOK, nil, transaction)
 	return
 }
 

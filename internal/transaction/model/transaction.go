@@ -31,6 +31,14 @@ type TransactionCreate struct {
 // TransactionReadDetail ...
 type TransactionReadDetail struct {
 	TransactionRead
-	Details []*TransactionDetailRead
-	Images  []*TransactionImageRead
+	TransactionOutID       *uuid.UUID `db:"transaction_out_id"`
+	SellerID               *uuid.UUID `db:"seller_id"`
+	SellerName             *string    `db:"seller_name"`
+	TransactionInID        *uuid.UUID `db:"transaction_in_id"`
+	SupplierID             *uuid.UUID `db:"supplier_id"`
+	SupplierName           *string    `db:"supplier_name"`
+	TransactionEtcID       *uuid.UUID `db:"transaction_etc_id"`
+	TransactionEtcTypeName *string    `db:"transaction_etc_type_name"`
+	Details                []*TransactionDetailRead
+	Images                 []*TransactionImageRead
 }

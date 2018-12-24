@@ -24,5 +24,9 @@ type TransactionDetailCreate struct {
 
 // TransactionDetailRead ...
 type TransactionDetailRead struct {
-	TransactionDetail
+	ID       *uuid.UUID `db:"id"`
+	ItemID   *uuid.UUID `db:"item_id"`
+	ItemName *string    `db:"item_name"`
+	Amount   *float64   `db:"amount"`
+	Qty      *int       `db:"qty"`
 }

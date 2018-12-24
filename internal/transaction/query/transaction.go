@@ -2,6 +2,7 @@ package query
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/azharprabudi/api-plastik/db"
 	"github.com/azharprabudi/api-plastik/internal/transaction/model"
@@ -30,7 +31,17 @@ func (tq *TransactionQuery) GetTransactions(limit int, start int, startAt string
 		queryOrder = fmt.Sprintf("order by transactions.%s", orderBy)
 	}
 
-	query := fmt.Sprintf("select * , case when transactions.type = 'TRANSACTION_IN' then 'Transaksi Masuk' when transactions.type = 'TRANSACTION_OUT' then 'Transaksi Keluar' else 'Transaksi Lainnya' end as type_name from transactions %s %s %s", queryFilter, queryOrder, queryLimit)
+	query := fmt.Sprintf(`
+	select * , 
+		case 
+			when transactions.type = 'TRANSACTION_IN' 
+				then 'Transaksi Masuk' 
+			when transactions.type = 'TRANSACTION_OUT' 
+				then 'Transaksi Keluar' 
+			else 'Transaksi Lainnya' 
+		end as type_name 
+	from transactions %s %s %s`, queryFilter, queryOrder, queryLimit,
+	)
 	rows, err := tq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
@@ -47,9 +58,144 @@ func (tq *TransactionQuery) GetTransactions(limit int, start int, startAt string
 
 // GetTransactionByID ...
 func (tq *TransactionQuery) GetTransactionByID(id uuid.UUID) (*model.TransactionReadDetail, error) {
-	// tq.db.PgSQL.Queryx(fmt.Sprintf("SELECT transactions.*, suppliers.name as supplier_name, sellers.name as seller_name FROM transactions LEFT JOIN sellers ON transactions.seller_id = sellers.id LEFT JOIN suppliers ON transactions.supplier_id = suppliers.id JOIN "))
+	query := fmt.Sprintf(`
+	select 
+		transactions.*,
+		case 
+			when transactions.type = 'TRANSACTION_IN' 
+				then 'Transaksi Masuk' 
+			when transactions.type = 'TRANSACTION_OUT' 
+				then 'Transaksi Keluar' 
+			else 'Transaksi Lainnya' 
+		end as type_name ,
+		transactions_in.id as transaction_in_id,
+		transactions_in.supplier_id as supplier_id,
+		suppliers."name" as supplier_name,
+		transactions_out.id as transaction_out_id,
+		transactions_out.seller_id,
+		sellers."name" as seller_name,
+		transactions_etc.id as transaction_etc_id,
+		transaction_etc_types."name" as transaction_etc_type_name,
+		transaction_details.id as transaction_detail_id,
+		transaction_details.item_id as item_id,
+		transaction_details.item_name as item_name,
+		transaction_details.qty as qty,
+		transaction_details.amount as amount,
+		transaction_images.id as transaction_image_id,
+		transaction_images.image as image
+	from transactions
+	left join transactions_in on transactions.id = transactions_in.transaction_id
+	left join transactions_out on transactions.id = transactions_out.transaction_id
+	left join transactions_etc on transactions.id = transactions_etc.transaction_id
+	left join transaction_etc_types on transactions_etc.transaction_etc_type = transaction_etc_types.id
+	left join suppliers on transactions_in.supplier_id = suppliers.id
+	left join sellers on transactions_out.seller_id = sellers.id
+	left join transaction_details on transactions.id = transaction_details.transaction_id
+	left join transaction_images on transactions.id = transaction_images.transaction_id
+	where transactions.id = '%s' order by transaction_details.id asc, transaction_images.id asc
+	`, id.String())
 
-	return nil, nil
+	var result *model.TransactionReadDetail
+	var images []*model.TransactionImageRead
+	var details []*model.TransactionDetailRead
+	var tmpImageID, tmpDetailID uuid.UUID
+	rows, err := tq.db.PgSQL.Queryx(query)
+	if err != nil {
+		return nil, err
+	}
+
+	i := 0
+	for rows.Next() {
+		var id uuid.UUID
+		var note string
+		var userID uuid.UUID
+		var companyID uuid.UUID
+		var transactionType string
+		var typeName string
+		var amount float64
+		var createdAt time.Time
+		var transactionInID *uuid.UUID
+		var supplierID *uuid.UUID
+		var supplierName *string
+		var transactionOutID *uuid.UUID
+		var sellerID *uuid.UUID
+		var sellerName *string
+		var transactionEtcID *uuid.UUID
+		var transactionEtcTypeName *string
+		var transactionDetailID *uuid.UUID
+		var itemID *uuid.UUID
+		var itemName *string
+		var qty *int
+		var amountDetail *float64
+		var transactionImageID *uuid.UUID
+		var image *string
+
+		_err := rows.Scan(&id, &note, &userID, &companyID, &transactionType, &amount, &createdAt, &typeName, &transactionInID, &supplierID, &supplierName, &transactionOutID, &sellerID, &sellerName, &transactionEtcID, &transactionEtcTypeName, &transactionDetailID, &itemID, &itemName, &qty, &amountDetail, &transactionImageID, &image)
+		if _err != nil {
+			err = _err
+			break
+		}
+
+		if i == 0 {
+			result = &model.TransactionReadDetail{
+				TransactionRead: model.TransactionRead{
+					Transaction: model.Transaction{
+						ID:        id,
+						Note:      note,
+						UserID:    userID,
+						CompanyID: companyID,
+						Amount:    amount,
+						CreatedAt: createdAt,
+						Type:      transactionType,
+					},
+					TypeName: typeName,
+				},
+				TransactionOutID:       transactionOutID,
+				SellerID:               sellerID,
+				SellerName:             sellerName,
+				TransactionInID:        transactionInID,
+				SupplierID:             supplierID,
+				SupplierName:           supplierName,
+				TransactionEtcID:       transactionEtcID,
+				TransactionEtcTypeName: transactionEtcTypeName,
+				Images:                 []*model.TransactionImageRead{&model.TransactionImageRead{}},
+				Details:                []*model.TransactionDetailRead{&model.TransactionDetailRead{}},
+			}
+
+			if tmpImageID != *transactionImageID && transactionImageID != nil {
+				images = append(images, &model.TransactionImageRead{
+					ID:    transactionImageID,
+					Image: image,
+				})
+			}
+
+			if tmpDetailID != *transactionDetailID && transactionDetailID != nil {
+				details = append(details, &model.TransactionDetailRead{
+					ID:       transactionDetailID,
+					ItemID:   itemID,
+					ItemName: itemName,
+					Qty:      qty,
+					Amount:   amountDetail,
+				})
+			}
+
+			tmpImageID = *transactionImageID
+			tmpDetailID = *transactionDetailID
+		}
+	}
+
+	if len(images) > 0 {
+		result.Images = images
+	}
+
+	if len(details) > 0 {
+		result.Details = details
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // GetTransactionEtcTypes ...

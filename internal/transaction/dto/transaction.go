@@ -24,6 +24,14 @@ type TransactionRes struct {
 // TransactionResDetail ...
 type TransactionResDetail struct {
 	TransactionRes
-	Details []*TransactionDetailRes
-	Images  []*TransactionImageRes
+	TransactionOutID       *uuid.UUID              `json:"transactionOutId"`
+	SellerID               *uuid.UUID              `json:"sellerId"`
+	SellerName             *string                 `json:"sellerName"`
+	TransactionInID        *uuid.UUID              `json:"transactionInId"`
+	SupplierID             *uuid.UUID              `json:"supplierId"`
+	SupplierName           *string                 `json:"supplierName"`
+	TransactionEtcID       *uuid.UUID              `json:"transactionEtcId"`
+	TransactionEtcTypeName *string                 `json:"transactionEtcTypeName"`
+	Details                []*TransactionDetailRes `json:"details"`
+	Images                 []*TransactionImageRes  `json:"images"`
 }
