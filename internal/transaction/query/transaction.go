@@ -95,11 +95,12 @@ func (tq *TransactionQuery) GetTransactionByID(companyID uuid.UUID, id uuid.UUID
 	where transactions.id = '%s' and transactions.company_id = '%s' order by transaction_details.id asc, transaction_images.id asc
 	`, id.String(), companyID.String())
 
-	var result *model.TransactionReadDetail
+	result := &model.TransactionReadDetail{}
 	var images []*model.TransactionImageRead
 	var details []*model.TransactionDetailRead
 	var tmpImageID, tmpDetailID uuid.UUID
 	rows, err := tq.db.PgSQL.Queryx(query)
+
 	if err != nil {
 		return nil, err
 	}
