@@ -8,6 +8,6 @@ import (
 // SupplierCommandInterface ...
 type SupplierCommandInterface interface {
 	CreateSupplier(*model.SupplierCreate) error
-	UpdateSupplier(uuid.UUID, *model.SupplierUpdate) error
-	DeleteSupplier(uuid.UUID) error
+	UpdateSupplier(uuid.UUID, uuid.UUID, *model.SupplierUpdate) error
+	DeleteSupplier(uuid.UUID, uuid.UUID) error
 }

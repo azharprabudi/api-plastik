@@ -7,6 +7,6 @@ import (
 
 // SupplierQueryInterface ...
 type SupplierQueryInterface interface {
-	GetSuppliers() ([]*model.SupplierRead, error)
-	GetSupplierByID(uuid.UUID) (*model.SupplierRead, error)
+	GetSuppliers(uuid.UUID) ([]*model.SupplierRead, error)
+	GetSupplierByID(uuid.UUID, uuid.UUID) (*model.SupplierRead, error)
 }

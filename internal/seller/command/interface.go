@@ -8,6 +8,6 @@ import (
 // SellerCommandInterface ...
 type SellerCommandInterface interface {
 	CreateSeller(*model.SellerCreate) error
-	UpdateSeller(uuid.UUID, *model.SellerUpdate) error
-	DeleteSeller(uuid.UUID) error
+	UpdateSeller(uuid.UUID, uuid.UUID, *model.SellerUpdate) error
+	DeleteSeller(uuid.UUID, uuid.UUID) error
 }

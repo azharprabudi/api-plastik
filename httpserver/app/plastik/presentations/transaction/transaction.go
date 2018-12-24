@@ -21,12 +21,23 @@ import (
 
 // Find ...
 func (t *Transaction) Find(w http.ResponseWriter, r *http.Request) {
-	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	endAt := r.URL.Query().Get("endAt")
 	startAt := r.URL.Query().Get("startAt")
 	orderBy := r.URL.Query().Get("orderBy")
 
-	transactions, err := t.service.FindTransactions(page, startAt, endAt, orderBy)
+	transactions, err := t.service.FindTransactions(companyID, page, startAt, endAt, orderBy)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -38,6 +49,12 @@ func (t *Transaction) Find(w http.ResponseWriter, r *http.Request) {
 
 // CreateTransactionIn ...
 func (t *Transaction) CreateTransactionIn(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	req := new(dto.TransactionInReq)
 	request.Get(r.Body, req)
 
@@ -57,7 +74,7 @@ func (t *Transaction) CreateTransactionIn(w http.ResponseWriter, r *http.Request
 	}
 
 	// create a new transaction
-	id, err := t.service.CreateTransactionIn(req, value.TRANSACTION_IN)
+	id, err := t.service.CreateTransactionIn(companyID, req, value.TRANSACTION_IN)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -74,6 +91,12 @@ func (t *Transaction) CreateTransactionIn(w http.ResponseWriter, r *http.Request
 
 // CreateTransactionOut ...
 func (t *Transaction) CreateTransactionOut(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	req := new(dto.TransactionOutReq)
 	request.Get(r.Body, req)
 
@@ -93,7 +116,7 @@ func (t *Transaction) CreateTransactionOut(w http.ResponseWriter, r *http.Reques
 	}
 
 	// create a new transaction
-	id, err := t.service.CreateTransactionOut(req, value.TRANSACTION_OUT)
+	id, err := t.service.CreateTransactionOut(companyID, req, value.TRANSACTION_OUT)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -110,6 +133,12 @@ func (t *Transaction) CreateTransactionOut(w http.ResponseWriter, r *http.Reques
 
 // CreateTransactionEtc ...
 func (t *Transaction) CreateTransactionEtc(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	req := new(dto.TransactionEtcReq)
 	request.Get(r.Body, req)
 
@@ -129,7 +158,7 @@ func (t *Transaction) CreateTransactionEtc(w http.ResponseWriter, r *http.Reques
 	}
 
 	// create a new transaction
-	id, err := t.service.CreateTransactionEtc(req, value.TRANSACTION_ETC)
+	id, err := t.service.CreateTransactionEtc(companyID, req, value.TRANSACTION_ETC)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -146,8 +175,14 @@ func (t *Transaction) CreateTransactionEtc(w http.ResponseWriter, r *http.Reques
 
 // FindByID ...
 func (t *Transaction) FindByID(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, _ := uuid.FromString(chi.URLParam(r, "id"))
-	transaction, err := t.service.FindTransactionByID(id)
+	transaction, err := t.service.FindTransactionByID(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -159,7 +194,13 @@ func (t *Transaction) FindByID(w http.ResponseWriter, r *http.Request) {
 
 // FindTransactionEtcTypes ...
 func (t *Transaction) FindTransactionEtcTypes(w http.ResponseWriter, r *http.Request) {
-	results, err := t.service.FindTransactionEtcTypes()
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	results, err := t.service.FindTransactionEtcTypes(companyID)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -171,13 +212,19 @@ func (t *Transaction) FindTransactionEtcTypes(w http.ResponseWriter, r *http.Req
 
 // FindTransactionEtcTypeByID ...
 func (t *Transaction) FindTransactionEtcTypeByID(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result, err := t.service.FindTransactionEtcTypeByID(id)
+	result, err := t.service.FindTransactionEtcTypeByID(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -189,6 +236,12 @@ func (t *Transaction) FindTransactionEtcTypeByID(w http.ResponseWriter, r *http.
 
 // CreateTransactionEtcType ...
 func (t *Transaction) CreateTransactionEtcType(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	var validations = []string{}
 	req := new(dto.TransactionEtcTypeReq)
 	request.Get(r.Body, req)
@@ -203,7 +256,7 @@ func (t *Transaction) CreateTransactionEtcType(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	id, err := t.service.CreateTransactionEtcType(req)
+	id, err := t.service.CreateTransactionEtcType(companyID, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -219,6 +272,12 @@ func (t *Transaction) CreateTransactionEtcType(w http.ResponseWriter, r *http.Re
 
 // UpdateTransactionEtcType ...
 func (t *Transaction) UpdateTransactionEtcType(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -239,7 +298,7 @@ func (t *Transaction) UpdateTransactionEtcType(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	err = t.service.UpdateTransactionEtcType(id, req)
+	err = t.service.UpdateTransactionEtcType(companyID, id, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -251,13 +310,19 @@ func (t *Transaction) UpdateTransactionEtcType(w http.ResponseWriter, r *http.Re
 
 // DeleteTransactionEtcType ...
 func (t *Transaction) DeleteTransactionEtcType(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	err = t.service.DeleteTransactionEtcType(id)
+	err = t.service.DeleteTransactionEtcType(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return

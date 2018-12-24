@@ -13,8 +13,8 @@ import (
 )
 
 // GetItemCategories ...
-func (is *ItemService) GetItemCategories() ([]*dto.ItemCategoryRes, error) {
-	itemCategories, err := is.query.GetCategories()
+func (is *ItemService) GetItemCategories(companyID uuid.UUID) ([]*dto.ItemCategoryRes, error) {
+	itemCategories, err := is.query.GetCategories(companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -23,8 +23,8 @@ func (is *ItemService) GetItemCategories() ([]*dto.ItemCategoryRes, error) {
 }
 
 // GetItemCategoryByID ...
-func (is *ItemService) GetItemCategoryByID(id uuid.UUID) (*dto.ItemCategoryRes, error) {
-	itemCategory, err := is.query.GetCategoryByID(id)
+func (is *ItemService) GetItemCategoryByID(companyID uuid.UUID, id uuid.UUID) (*dto.ItemCategoryRes, error) {
+	itemCategory, err := is.query.GetCategoryByID(companyID, id)
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +33,8 @@ func (is *ItemService) GetItemCategoryByID(id uuid.UUID) (*dto.ItemCategoryRes, 
 }
 
 // CreateItemCategory ...
-func (is *ItemService) CreateItemCategory(req *dto.ItemCategoryReq) (uuid.UUID, error) {
-	itemCategory := is.transform.MakeModelCreateCategory(req)
+func (is *ItemService) CreateItemCategory(companyID uuid.UUID, req *dto.ItemCategoryReq) (uuid.UUID, error) {
+	itemCategory := is.transform.MakeModelCreateCategory(companyID, req)
 	err := is.command.CreateCategory(itemCategory)
 	if err != nil {
 		return uuid.Nil, err
@@ -44,9 +44,9 @@ func (is *ItemService) CreateItemCategory(req *dto.ItemCategoryReq) (uuid.UUID, 
 }
 
 // UpdateItemCategory ...
-func (is *ItemService) UpdateItemCategory(id uuid.UUID, req *dto.ItemCategoryReq) error {
+func (is *ItemService) UpdateItemCategory(companyID uuid.UUID, id uuid.UUID, req *dto.ItemCategoryReq) error {
 	itemCategory := is.transform.MakeModelUpdateCategory(req)
-	err := is.command.UpdateCategory(id, itemCategory)
+	err := is.command.UpdateCategory(companyID, id, itemCategory)
 	if err != nil {
 		return err
 	}
@@ -55,8 +55,8 @@ func (is *ItemService) UpdateItemCategory(id uuid.UUID, req *dto.ItemCategoryReq
 }
 
 // DeleteItemCategory ...
-func (is *ItemService) DeleteItemCategory(id uuid.UUID) error {
-	err := is.command.DeleteCategory(id)
+func (is *ItemService) DeleteItemCategory(companyID uuid.UUID, id uuid.UUID) error {
+	err := is.command.DeleteCategory(companyID, id)
 	if err != nil {
 		return err
 	}
@@ -65,8 +65,8 @@ func (is *ItemService) DeleteItemCategory(id uuid.UUID) error {
 }
 
 // GetItems ...
-func (is *ItemService) GetItems() ([]*dto.ItemRes, error) {
-	items, err := is.query.GetItems()
+func (is *ItemService) GetItems(companyID uuid.UUID) ([]*dto.ItemRes, error) {
+	items, err := is.query.GetItems(companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -75,8 +75,8 @@ func (is *ItemService) GetItems() ([]*dto.ItemRes, error) {
 }
 
 // GetItemByID ...
-func (is *ItemService) GetItemByID(id uuid.UUID) (*dto.ItemRes, error) {
-	item, err := is.query.GetItemByID(id)
+func (is *ItemService) GetItemByID(companyID uuid.UUID, id uuid.UUID) (*dto.ItemRes, error) {
+	item, err := is.query.GetItemByID(companyID, id)
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +85,8 @@ func (is *ItemService) GetItemByID(id uuid.UUID) (*dto.ItemRes, error) {
 }
 
 // CreateItem ...
-func (is *ItemService) CreateItem(req *dto.ItemReq) (uuid.UUID, error) {
-	item := is.transform.MakeModelCreateItem(req)
+func (is *ItemService) CreateItem(companyID uuid.UUID, req *dto.ItemReq) (uuid.UUID, error) {
+	item := is.transform.MakeModelCreateItem(companyID, req)
 	err := is.command.CreateItem(item)
 	if err != nil {
 		return uuid.Nil, err
@@ -96,9 +96,9 @@ func (is *ItemService) CreateItem(req *dto.ItemReq) (uuid.UUID, error) {
 }
 
 // UpdateItem ...
-func (is *ItemService) UpdateItem(id uuid.UUID, req *dto.ItemReq) error {
+func (is *ItemService) UpdateItem(companyID uuid.UUID, id uuid.UUID, req *dto.ItemReq) error {
 	item := is.transform.MakeModelUpdateItem(req)
-	err := is.command.UpdateItem(id, item)
+	err := is.command.UpdateItem(companyID, id, item)
 	if err != nil {
 		return err
 	}
@@ -107,8 +107,8 @@ func (is *ItemService) UpdateItem(id uuid.UUID, req *dto.ItemReq) error {
 }
 
 // DeleteItem ...
-func (is *ItemService) DeleteItem(id uuid.UUID) error {
-	err := is.command.DeleteItem(id)
+func (is *ItemService) DeleteItem(companyID uuid.UUID, id uuid.UUID) error {
+	err := is.command.DeleteItem(companyID, id)
 	if err != nil {
 		return err
 	}

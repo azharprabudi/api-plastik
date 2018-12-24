@@ -15,6 +15,6 @@ type TransactionCommandInterface interface {
 	CreateTransactionDetail(*sqlx.Tx, *model.TransactionDetailCreate) error
 	CreateTransactionImage(*sqlx.Tx, *model.TransactionImageCreate) error
 	CreateTransactionEtcType(*model.TransactionEtcTypeCreate) error
-	UpdateTransactionEtcType(uuid.UUID, *model.TransactionEtcTypeUpdate) error
-	DeleteTransactionEtcType(uuid.UUID) error
+	UpdateTransactionEtcType(uuid.UUID, uuid.UUID, *model.TransactionEtcTypeUpdate) error
+	DeleteTransactionEtcType(uuid.UUID, uuid.UUID) error
 }

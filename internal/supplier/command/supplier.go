@@ -11,7 +11,7 @@ import (
 // CreateSupplier ...
 func (sc *SupplierCommand) CreateSupplier(s *model.SupplierCreate) error {
 	query := sc.q.Create("suppliers", (*s).Supplier)
-	_, err := sc.db.PgSQL.Exec(query, s.Supplier.SupplierID, s.Supplier.Name, s.Supplier.Phone, s.Supplier.Address, s.Supplier.CreatedAt)
+	_, err := sc.db.PgSQL.Exec(query, s.Supplier.SupplierID, s.Supplier.Name, s.Supplier.Phone, s.Supplier.Address, s.Supplier.CreatedAt, s.Supplier.CompanyID)
 	if err != nil {
 		return err
 	}
@@ -20,12 +20,17 @@ func (sc *SupplierCommand) CreateSupplier(s *model.SupplierCreate) error {
 }
 
 // UpdateSupplier ...
-func (sc *SupplierCommand) UpdateSupplier(id uuid.UUID, supplier *model.SupplierUpdate) error {
+func (sc *SupplierCommand) UpdateSupplier(companyID uuid.UUID, id uuid.UUID, supplier *model.SupplierUpdate) error {
 	query := sc.q.UpdateWhere("suppliers", *supplier, []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 
 	_, err := sc.db.PgSQL.Exec(query, supplier.Name, supplier.Phone, supplier.Address)
@@ -37,12 +42,17 @@ func (sc *SupplierCommand) UpdateSupplier(id uuid.UUID, supplier *model.Supplier
 }
 
 // DeleteSupplier ...
-func (sc *SupplierCommand) DeleteSupplier(id uuid.UUID) error {
+func (sc *SupplierCommand) DeleteSupplier(companyID uuid.UUID, id uuid.UUID) error {
 	query := sc.q.Delete("suppliers", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 
 	_, err := sc.db.PgSQL.Exec(query)

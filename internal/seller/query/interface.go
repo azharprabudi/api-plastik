@@ -7,6 +7,6 @@ import (
 
 // SellerQueryInterface ...
 type SellerQueryInterface interface {
-	GetSellers() ([]*model.SellerRead, error)
-	GetSellerByID(uuid.UUID) (*model.SellerRead, error)
+	GetSellers(uuid.UUID) ([]*model.SellerRead, error)
+	GetSellerByID(uuid.UUID, uuid.UUID) (*model.SellerRead, error)
 }

@@ -81,7 +81,7 @@ func (tc *TransactionCommand) CreateTransactionImage(tx *sqlx.Tx, transactionIma
 // CreateTransactionEtcType ...
 func (tc *TransactionCommand) CreateTransactionEtcType(transactionEtcType *model.TransactionEtcTypeCreate) error {
 	query := tc.qb.Create("transaction_etc_types", (*transactionEtcType).TransactionEtcType)
-	_, err := tc.db.PgSQL.Exec(query, transactionEtcType.TransactionEtcType.ID, transactionEtcType.TransactionEtcType.Name, transactionEtcType.TransactionEtcType.CreatedAt)
+	_, err := tc.db.PgSQL.Exec(query, transactionEtcType.TransactionEtcType.ID, transactionEtcType.TransactionEtcType.Name, transactionEtcType.TransactionEtcType.CreatedAt, transactionEtcType.TransactionEtcType.CompanyID)
 	if err != nil {
 		return err
 	}
@@ -90,12 +90,17 @@ func (tc *TransactionCommand) CreateTransactionEtcType(transactionEtcType *model
 }
 
 // UpdateTransactionEtcType ...
-func (tc *TransactionCommand) UpdateTransactionEtcType(id uuid.UUID, transactionEtcType *model.TransactionEtcTypeUpdate) error {
+func (tc *TransactionCommand) UpdateTransactionEtcType(companyID uuid.UUID, id uuid.UUID, transactionEtcType *model.TransactionEtcTypeUpdate) error {
 	query := tc.qb.UpdateWhere("transaction_etc_types", *transactionEtcType, []*qbModel.Condition{&qbModel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbModel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 	_, err := tc.db.PgSQL.Exec(query, transactionEtcType.Name)
 	if err != nil {
@@ -106,12 +111,17 @@ func (tc *TransactionCommand) UpdateTransactionEtcType(id uuid.UUID, transaction
 }
 
 // DeleteTransactionEtcType ...
-func (tc *TransactionCommand) DeleteTransactionEtcType(id uuid.UUID) error {
+func (tc *TransactionCommand) DeleteTransactionEtcType(companyID uuid.UUID, id uuid.UUID) error {
 	query := tc.qb.Delete("transaction_etc_types", []*qbModel.Condition{&qbModel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbModel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 	_, err := tc.db.PgSQL.Exec(query)
 	if err != nil {

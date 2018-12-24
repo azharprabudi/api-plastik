@@ -10,15 +10,16 @@ import (
 	"github.com/azharprabudi/api-plastik/internal/transaction/model"
 	"github.com/azharprabudi/api-plastik/internal/transaction/query"
 	"github.com/azharprabudi/api-plastik/internal/transaction/transform"
+	"github.com/azharprabudi/api-plastik/internal/user/value"
 	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 )
 
 // FindTransactions ...
-func (ts *TransactionService) FindTransactions(page int, startAt string, endAt string, orderBy string) ([]*dto.TransactionRes, error) {
+func (ts *TransactionService) FindTransactions(companyID uuid.UUID, page int, startAt string, endAt string, orderBy string) ([]*dto.TransactionRes, error) {
 	limit := 10
 	start := (page * limit) - limit
-	transactions, err := ts.query.GetTransactions(limit, start, startAt, endAt, orderBy)
+	transactions, err := ts.query.GetTransactions(companyID, limit, start, startAt, endAt, orderBy)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +28,8 @@ func (ts *TransactionService) FindTransactions(page int, startAt string, endAt s
 }
 
 // CreateTransactionIn ...
-func (ts *TransactionService) CreateTransactionIn(req *dto.TransactionInReq, transactionType string) (uuid.UUID, error) {
-	transaction := ts.transform.MakeModelCreateTransactionIn(req, transactionType, uuid.NewV4())
+func (ts *TransactionService) CreateTransactionIn(companyID uuid.UUID, req *dto.TransactionInReq, transactionType string) (uuid.UUID, error) {
+	transaction := ts.transform.MakeModelCreateTransactionIn(companyID, req, transactionType, value.USER_ID)
 	details := ts.transform.MakeModelCreateTransactionDetails(req.Details, transaction.Transaction.ID)
 	detailsStock := ts.transform.MakeModelCreateItemStockLog(req.Details, transaction.Transaction.ID, transactionType)
 	images := ts.transform.MakeModelCreateTransactionImages(req.Images, transaction.Transaction.ID)
@@ -46,7 +47,7 @@ func (ts *TransactionService) CreateTransactionIn(req *dto.TransactionInReq, tra
 			return err
 		}
 
-		err = ts.createTransacionDetails(tx, details)
+		err = ts.createTransacionDetails(tx, details, companyID)
 		if err != nil {
 			return err
 		}
@@ -56,7 +57,7 @@ func (ts *TransactionService) CreateTransactionIn(req *dto.TransactionInReq, tra
 			return err
 		}
 
-		err = ts.event.TriggerAfterCreateTransaction(tx, detailsStock)
+		err = ts.event.TriggerAfterCreateTransaction(tx, detailsStock, companyID)
 		if err != nil {
 			return err
 		}
@@ -71,8 +72,8 @@ func (ts *TransactionService) CreateTransactionIn(req *dto.TransactionInReq, tra
 }
 
 // CreateTransactionOut ...
-func (ts *TransactionService) CreateTransactionOut(req *dto.TransactionOutReq, transactionType string) (uuid.UUID, error) {
-	transaction := ts.transform.MakeModelCreateTransactionOut(req, transactionType, uuid.NewV4())
+func (ts *TransactionService) CreateTransactionOut(companyID uuid.UUID, req *dto.TransactionOutReq, transactionType string) (uuid.UUID, error) {
+	transaction := ts.transform.MakeModelCreateTransactionOut(companyID, req, transactionType, value.USER_ID)
 	details := ts.transform.MakeModelCreateTransactionDetails(req.Details, transaction.Transaction.ID)
 	detailsStock := ts.transform.MakeModelCreateItemStockLog(req.Details, transaction.Transaction.ID, transactionType)
 	images := ts.transform.MakeModelCreateTransactionImages(req.Images, transaction.Transaction.ID)
@@ -90,7 +91,7 @@ func (ts *TransactionService) CreateTransactionOut(req *dto.TransactionOutReq, t
 			return err
 		}
 
-		err = ts.createTransacionDetails(tx, details)
+		err = ts.createTransacionDetails(tx, details, companyID)
 		if err != nil {
 			return err
 		}
@@ -100,7 +101,7 @@ func (ts *TransactionService) CreateTransactionOut(req *dto.TransactionOutReq, t
 			return err
 		}
 
-		err = ts.event.TriggerAfterCreateTransaction(tx, detailsStock)
+		err = ts.event.TriggerAfterCreateTransaction(tx, detailsStock, companyID)
 		if err != nil {
 			return err
 		}
@@ -115,8 +116,8 @@ func (ts *TransactionService) CreateTransactionOut(req *dto.TransactionOutReq, t
 }
 
 // CreateTransactionEtc ...
-func (ts *TransactionService) CreateTransactionEtc(req *dto.TransactionEtcReq, transactionType string) (uuid.UUID, error) {
-	transaction := ts.transform.MakeModelCreateTransactionEtc(req, transactionType, uuid.NewV4())
+func (ts *TransactionService) CreateTransactionEtc(companyID uuid.UUID, req *dto.TransactionEtcReq, transactionType string) (uuid.UUID, error) {
+	transaction := ts.transform.MakeModelCreateTransactionEtc(companyID, req, transactionType, value.USER_ID)
 	images := ts.transform.MakeModelCreateTransactionImages(req.Images, transaction.Transaction.ID)
 
 	trans := trx.NewTransaction()
@@ -147,10 +148,10 @@ func (ts *TransactionService) CreateTransactionEtc(req *dto.TransactionEtcReq, t
 }
 
 // createTransacionDetails ...
-func (ts *TransactionService) createTransacionDetails(tx *sqlx.Tx, details []*model.TransactionDetailCreate) error {
+func (ts *TransactionService) createTransacionDetails(tx *sqlx.Tx, details []*model.TransactionDetailCreate, companyID uuid.UUID) error {
 	var err error
 	for _, detail := range details {
-		item, _err := ts.itemService.GetItemByID(detail.TransactionDetail.ItemID)
+		item, _err := ts.itemService.GetItemByID(companyID, detail.TransactionDetail.ItemID)
 		if _err != nil {
 			err = _err
 			break
@@ -188,8 +189,8 @@ func (ts *TransactionService) createTransacionImages(tx *sqlx.Tx, images []*mode
 }
 
 // FindTransactionByID ...
-func (ts *TransactionService) FindTransactionByID(id uuid.UUID) (*dto.TransactionResDetail, error) {
-	transaction, err := ts.query.GetTransactionByID(id)
+func (ts *TransactionService) FindTransactionByID(companyID uuid.UUID, id uuid.UUID) (*dto.TransactionResDetail, error) {
+	transaction, err := ts.query.GetTransactionByID(companyID, id)
 	if err != nil {
 		return nil, err
 	}
@@ -198,8 +199,8 @@ func (ts *TransactionService) FindTransactionByID(id uuid.UUID) (*dto.Transactio
 }
 
 // FindTransactionEtcTypes ...
-func (ts *TransactionService) FindTransactionEtcTypes() ([]*dto.TransactionEtcTypeRes, error) {
-	transactionEtcTypes, err := ts.query.GetTransactionEtcTypes()
+func (ts *TransactionService) FindTransactionEtcTypes(companyID uuid.UUID) ([]*dto.TransactionEtcTypeRes, error) {
+	transactionEtcTypes, err := ts.query.GetTransactionEtcTypes(companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -208,8 +209,8 @@ func (ts *TransactionService) FindTransactionEtcTypes() ([]*dto.TransactionEtcTy
 }
 
 // FindTransactionEtcTypeByID ...
-func (ts *TransactionService) FindTransactionEtcTypeByID(id uuid.UUID) (*dto.TransactionEtcTypeRes, error) {
-	transactionEtcType, err := ts.query.GetTransactionEtcTypeByID(id)
+func (ts *TransactionService) FindTransactionEtcTypeByID(companyID uuid.UUID, id uuid.UUID) (*dto.TransactionEtcTypeRes, error) {
+	transactionEtcType, err := ts.query.GetTransactionEtcTypeByID(companyID, id)
 	if err != nil {
 		return nil, err
 	}
@@ -218,8 +219,8 @@ func (ts *TransactionService) FindTransactionEtcTypeByID(id uuid.UUID) (*dto.Tra
 }
 
 // CreateTransactionEtcType ...
-func (ts *TransactionService) CreateTransactionEtcType(req *dto.TransactionEtcTypeReq) (uuid.UUID, error) {
-	transactionEtcType := ts.transform.MakeModelCreateTransactionEtcType(req)
+func (ts *TransactionService) CreateTransactionEtcType(companyID uuid.UUID, req *dto.TransactionEtcTypeReq) (uuid.UUID, error) {
+	transactionEtcType := ts.transform.MakeModelCreateTransactionEtcType(companyID, req)
 	err := ts.command.CreateTransactionEtcType(transactionEtcType)
 	if err != nil {
 		return uuid.Nil, err
@@ -229,9 +230,9 @@ func (ts *TransactionService) CreateTransactionEtcType(req *dto.TransactionEtcTy
 }
 
 // UpdateTransactionEtcType ...
-func (ts *TransactionService) UpdateTransactionEtcType(id uuid.UUID, req *dto.TransactionEtcTypeReq) error {
+func (ts *TransactionService) UpdateTransactionEtcType(companyID uuid.UUID, id uuid.UUID, req *dto.TransactionEtcTypeReq) error {
 	transactionEtcType := ts.transform.MakeModelUpdateTransactionEtcType(req)
-	err := ts.command.UpdateTransactionEtcType(id, transactionEtcType)
+	err := ts.command.UpdateTransactionEtcType(companyID, id, transactionEtcType)
 	if err != nil {
 		return err
 	}
@@ -240,8 +241,8 @@ func (ts *TransactionService) UpdateTransactionEtcType(id uuid.UUID, req *dto.Tr
 }
 
 // DeleteTransactionEtcType ...
-func (ts *TransactionService) DeleteTransactionEtcType(id uuid.UUID) error {
-	err := ts.command.DeleteTransactionEtcType(id)
+func (ts *TransactionService) DeleteTransactionEtcType(companyID uuid.UUID, id uuid.UUID) error {
+	err := ts.command.DeleteTransactionEtcType(companyID, id)
 	if err != nil {
 		return err
 	}

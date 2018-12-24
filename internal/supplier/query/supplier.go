@@ -9,9 +9,16 @@ import (
 )
 
 // GetSuppliers ...
-func (iq *SupplierQuery) GetSuppliers() ([]*model.SupplierRead, error) {
-	var results = []*model.SupplierRead{}
-	query := iq.qb.Query("suppliers", 0, 0, []*qbmodel.Order{
+func (iq *SupplierQuery) GetSuppliers(companyID uuid.UUID) ([]*model.SupplierRead, error) {
+	results := []*model.SupplierRead{}
+	query := iq.qb.Query("suppliers", 0, 0, []*qbmodel.Condition{
+		&qbmodel.Condition{
+			Key:      "company_id",
+			NextCond: "",
+			Operator: "=",
+			Value:    companyID.String(),
+		},
+	}, []*qbmodel.Order{
 		&qbmodel.Order{
 			Key:   "created_at",
 			Value: "DESC",
@@ -35,13 +42,18 @@ func (iq *SupplierQuery) GetSuppliers() ([]*model.SupplierRead, error) {
 }
 
 // GetSupplierByID ...
-func (iq *SupplierQuery) GetSupplierByID(id uuid.UUID) (*model.SupplierRead, error) {
+func (iq *SupplierQuery) GetSupplierByID(companyID uuid.UUID, id uuid.UUID) (*model.SupplierRead, error) {
 	result := new(model.SupplierRead)
 	query := iq.qb.QueryWhere("suppliers", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		NextCond: "",
+		Operator: "=",
+		Value:    companyID.String(),
 	}}, nil)
 
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)

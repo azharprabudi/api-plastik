@@ -7,8 +7,8 @@ import (
 
 // TransactionQueryInterface ...
 type TransactionQueryInterface interface {
-	GetTransactions(int, int, string, string, string) ([]*model.TransactionRead, error)
-	GetTransactionByID(uuid.UUID) (*model.TransactionReadDetail, error)
-	GetTransactionEtcTypes() ([]*model.TransactionEtcTypeRead, error)
-	GetTransactionEtcTypeByID(uuid.UUID) (*model.TransactionEtcTypeRead, error)
+	GetTransactions(uuid.UUID, int, int, string, string, string) ([]*model.TransactionRead, error)
+	GetTransactionByID(uuid.UUID, uuid.UUID) (*model.TransactionReadDetail, error)
+	GetTransactionEtcTypes(uuid.UUID) ([]*model.TransactionEtcTypeRead, error)
+	GetTransactionEtcTypeByID(uuid.UUID, uuid.UUID) (*model.TransactionEtcTypeRead, error)
 }

@@ -1,7 +1,6 @@
 package transform
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/azharprabudi/api-plastik/internal/transaction/value"
@@ -13,7 +12,7 @@ import (
 )
 
 // MakeModelCreateTransactionIn ...
-func (tt *TransactionTransform) MakeModelCreateTransactionIn(req *dto.TransactionInReq, transactionType string, userID uuid.UUID) *model.TransactionInCreate {
+func (tt *TransactionTransform) MakeModelCreateTransactionIn(companyID uuid.UUID, req *dto.TransactionInReq, transactionType string, userID uuid.UUID) *model.TransactionInCreate {
 	var totalAmount float64
 	for _, detail := range req.Details {
 		totalAmount += detail.Amount * float64(detail.Qty)
@@ -28,7 +27,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionIn(req *dto.Transactio
 				UserID:    userID,
 				Amount:    totalAmount,
 				CreatedAt: time.Now().UTC(),
-				CompanyID: uuid.NewV4(),
+				CompanyID: companyID,
 			},
 		},
 		TransactionIn: model.TransactionIn{
@@ -39,7 +38,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionIn(req *dto.Transactio
 }
 
 // MakeModelCreateTransactionOut ...
-func (tt *TransactionTransform) MakeModelCreateTransactionOut(req *dto.TransactionOutReq, transactionType string, userID uuid.UUID) *model.TransactionOutCreate {
+func (tt *TransactionTransform) MakeModelCreateTransactionOut(companyID uuid.UUID, req *dto.TransactionOutReq, transactionType string, userID uuid.UUID) *model.TransactionOutCreate {
 	var totalAmount float64
 	for _, detail := range req.Details {
 		totalAmount += detail.Amount * float64(detail.Qty)
@@ -54,7 +53,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionOut(req *dto.Transacti
 				UserID:    userID,
 				Amount:    totalAmount,
 				CreatedAt: time.Now().UTC(),
-				CompanyID: uuid.NewV4(),
+				CompanyID: companyID,
 			},
 		},
 		TransactionOut: model.TransactionOut{
@@ -65,7 +64,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionOut(req *dto.Transacti
 }
 
 // MakeModelCreateTransactionEtc ...
-func (tt *TransactionTransform) MakeModelCreateTransactionEtc(req *dto.TransactionEtcReq, transactionType string, userID uuid.UUID) *model.TransactionEtcCreate {
+func (tt *TransactionTransform) MakeModelCreateTransactionEtc(companyID uuid.UUID, req *dto.TransactionEtcReq, transactionType string, userID uuid.UUID) *model.TransactionEtcCreate {
 	return &model.TransactionEtcCreate{
 		TransactionCreate: model.TransactionCreate{
 			Transaction: model.Transaction{
@@ -73,7 +72,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionEtc(req *dto.Transacti
 				Note:      req.Transaction.Note,
 				Type:      transactionType,
 				UserID:    userID,
-				CompanyID: uuid.NewV4(),
+				CompanyID: companyID,
 				Amount:    req.TransactionEtc.Amount,
 				CreatedAt: time.Now().UTC(),
 			},
@@ -145,7 +144,6 @@ func (tt *TransactionTransform) MakeModelCreateItemStockLog(req []*dto.Transacti
 	var results []*itemModel.ItemStockLogCreate
 	for _, transaction := range req {
 		var qty int
-		fmt.Println(transactionType)
 		if transactionType == value.TRANSACTION_IN {
 			qty = transaction.Qty
 		} else {
@@ -193,12 +191,13 @@ func (tt *TransactionTransform) MakeResponseGetTransactionEtcTypeByID(res *model
 }
 
 // MakeModelCreateTransactionEtcType ...
-func (tt *TransactionTransform) MakeModelCreateTransactionEtcType(req *dto.TransactionEtcTypeReq) *model.TransactionEtcTypeCreate {
+func (tt *TransactionTransform) MakeModelCreateTransactionEtcType(companyID uuid.UUID, req *dto.TransactionEtcTypeReq) *model.TransactionEtcTypeCreate {
 	return &model.TransactionEtcTypeCreate{
 		TransactionEtcType: model.TransactionEtcType{
 			ID:        uuid.NewV4(),
 			Name:      req.TransactionEtcType.Name,
 			CreatedAt: time.Now().UTC(),
+			CompanyID: companyID,
 		},
 	}
 }

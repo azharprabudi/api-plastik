@@ -11,8 +11,8 @@ import (
 )
 
 // GetSupplier ...
-func (ss *SupplierService) GetSupplier() ([]*dto.SupplierRes, error) {
-	suppliers, err := ss.query.GetSuppliers()
+func (ss *SupplierService) GetSupplier(companyID uuid.UUID) ([]*dto.SupplierRes, error) {
+	suppliers, err := ss.query.GetSuppliers(companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -21,8 +21,8 @@ func (ss *SupplierService) GetSupplier() ([]*dto.SupplierRes, error) {
 }
 
 // GetSupplierByID ...
-func (ss *SupplierService) GetSupplierByID(id uuid.UUID) (*dto.SupplierRes, error) {
-	supplier, err := ss.query.GetSupplierByID(id)
+func (ss *SupplierService) GetSupplierByID(companyID uuid.UUID, id uuid.UUID) (*dto.SupplierRes, error) {
+	supplier, err := ss.query.GetSupplierByID(companyID, id)
 	if err != nil {
 		return nil, err
 	}
@@ -31,8 +31,8 @@ func (ss *SupplierService) GetSupplierByID(id uuid.UUID) (*dto.SupplierRes, erro
 }
 
 // CreateSupplier ...
-func (ss *SupplierService) CreateSupplier(req *dto.SupplierReq) (uuid.UUID, error) {
-	supplier := ss.transform.MakeModelCreateSupplier(req)
+func (ss *SupplierService) CreateSupplier(companyID uuid.UUID, req *dto.SupplierReq) (uuid.UUID, error) {
+	supplier := ss.transform.MakeModelCreateSupplier(companyID, req)
 	err := ss.command.CreateSupplier(supplier)
 	if err != nil {
 		return uuid.Nil, err
@@ -42,9 +42,9 @@ func (ss *SupplierService) CreateSupplier(req *dto.SupplierReq) (uuid.UUID, erro
 }
 
 // UpdateSupplier ...
-func (ss *SupplierService) UpdateSupplier(id uuid.UUID, req *dto.SupplierReq) error {
+func (ss *SupplierService) UpdateSupplier(companyID uuid.UUID, id uuid.UUID, req *dto.SupplierReq) error {
 	supplier := ss.transform.MakeModelUpdateSupplier(req)
-	err := ss.command.UpdateSupplier(id, supplier)
+	err := ss.command.UpdateSupplier(companyID, id, supplier)
 	if err != nil {
 		return err
 	}
@@ -53,8 +53,8 @@ func (ss *SupplierService) UpdateSupplier(id uuid.UUID, req *dto.SupplierReq) er
 }
 
 // DeleteSupplier ...
-func (ss *SupplierService) DeleteSupplier(id uuid.UUID) error {
-	err := ss.command.DeleteSupplier(id)
+func (ss *SupplierService) DeleteSupplier(companyID uuid.UUID, id uuid.UUID) error {
+	err := ss.command.DeleteSupplier(companyID, id)
 	if err != nil {
 		return err
 	}

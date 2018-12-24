@@ -11,6 +11,7 @@ type ItemCategory struct {
 	ItemCategoryID uuid.UUID `db:"id"`
 	Name           string    `db:"name"`
 	CreatedAt      time.Time `db:"created_at"`
+	CompanyID      uuid.UUID `db:"company_id"`
 }
 
 // ItemCategoryRead ...

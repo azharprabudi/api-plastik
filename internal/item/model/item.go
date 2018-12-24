@@ -13,6 +13,7 @@ type Item struct {
 	Name           string    `db:"name"`
 	UnitID         uuid.UUID `db:"unit_id"`
 	CreatedAt      time.Time `db:"created_at"`
+	CompanyID      uuid.UUID `db:"company_id"`
 }
 
 // ItemRead ...

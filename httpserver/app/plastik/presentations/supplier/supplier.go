@@ -20,7 +20,13 @@ import (
 
 // Find ...
 func (s *SupplierPresentation) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := s.service.GetSupplier()
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	results, err := s.service.GetSupplier(companyID)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -30,8 +36,14 @@ func (s *SupplierPresentation) Find(w http.ResponseWriter, r *http.Request) {
 
 // FindByID ...
 func (s *SupplierPresentation) FindByID(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, _ := uuid.FromString(chi.URLParam(r, "id"))
-	supplier, err := s.service.GetSupplierByID(id)
+	supplier, err := s.service.GetSupplierByID(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -43,6 +55,12 @@ func (s *SupplierPresentation) FindByID(w http.ResponseWriter, r *http.Request) 
 
 // Create ...
 func (s *SupplierPresentation) Create(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	req := new(dto.SupplierReq)
 	var validations = []string{}
 	request.Get(r.Body, req)
@@ -62,7 +80,7 @@ func (s *SupplierPresentation) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create supplier
-	id, err := s.service.CreateSupplier(req)
+	id, err := s.service.CreateSupplier(companyID, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -79,6 +97,12 @@ func (s *SupplierPresentation) Create(w http.ResponseWriter, r *http.Request) {
 
 // Update ...
 func (s *SupplierPresentation) Update(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, _ := uuid.FromString(chi.URLParam(r, "id"))
 	var validations = []string{}
 	req := new(dto.SupplierReq)
@@ -98,7 +122,7 @@ func (s *SupplierPresentation) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := s.service.UpdateSupplier(id, req)
+	err = s.service.UpdateSupplier(companyID, id, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -110,9 +134,14 @@ func (s *SupplierPresentation) Update(w http.ResponseWriter, r *http.Request) {
 
 // Delete ...
 func (s *SupplierPresentation) Delete(w http.ResponseWriter, r *http.Request) {
-	id, _ := uuid.FromString(chi.URLParam(r, "id"))
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
 
-	err := s.service.DeleteSupplier(id)
+	id, _ := uuid.FromString(chi.URLParam(r, "id"))
+	err = s.service.DeleteSupplier(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return

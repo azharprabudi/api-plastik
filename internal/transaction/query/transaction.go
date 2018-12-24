@@ -13,18 +13,18 @@ import (
 )
 
 // GetTransactions ...
-func (tq *TransactionQuery) GetTransactions(limit int, start int, startAt string, endAt string, orderBy string) ([]*model.TransactionRead, error) {
+func (tq *TransactionQuery) GetTransactions(companyID uuid.UUID, limit int, start int, startAt string, endAt string, orderBy string) ([]*model.TransactionRead, error) {
 	var queryLimit string
-	var queryFilter string
+	queryFilter := fmt.Sprintf("where company_id='%s'", companyID.String())
 	queryOrder := "order by transactions.created_at desc"
-	var results []*model.TransactionRead
+	results := []*model.TransactionRead{}
 
 	if limit > 0 && start > 0 {
 		queryLimit = fmt.Sprintf("limit %d offset %d", limit, start)
 	}
 
 	if startAt != "" && endAt != "" {
-		queryFilter = fmt.Sprintf("where transactions.created_at::timestamp between '%s'::timestamp AND '%s'::timestamp", startAt, endAt)
+		queryFilter = fmt.Sprintf("where transactions.created_at::timestamp between '%s'::timestamp AND '%s'::timestamp AND company_id='%s'", startAt, endAt, companyID.String())
 	}
 
 	if orderBy != "" {
@@ -57,7 +57,7 @@ func (tq *TransactionQuery) GetTransactions(limit int, start int, startAt string
 }
 
 // GetTransactionByID ...
-func (tq *TransactionQuery) GetTransactionByID(id uuid.UUID) (*model.TransactionReadDetail, error) {
+func (tq *TransactionQuery) GetTransactionByID(companyID uuid.UUID, id uuid.UUID) (*model.TransactionReadDetail, error) {
 	query := fmt.Sprintf(`
 	select 
 		transactions.*,
@@ -92,8 +92,8 @@ func (tq *TransactionQuery) GetTransactionByID(id uuid.UUID) (*model.Transaction
 	left join sellers on transactions_out.seller_id = sellers.id
 	left join transaction_details on transactions.id = transaction_details.transaction_id
 	left join transaction_images on transactions.id = transaction_images.transaction_id
-	where transactions.id = '%s' order by transaction_details.id asc, transaction_images.id asc
-	`, id.String())
+	where transactions.id = '%s' and transactions.company_id = '%s' order by transaction_details.id asc, transaction_images.id asc
+	`, id.String(), companyID.String())
 
 	var result *model.TransactionReadDetail
 	var images []*model.TransactionImageRead
@@ -143,10 +143,10 @@ func (tq *TransactionQuery) GetTransactionByID(id uuid.UUID) (*model.Transaction
 						ID:        id,
 						Note:      note,
 						UserID:    userID,
-						CompanyID: companyID,
 						Amount:    amount,
 						CreatedAt: createdAt,
 						Type:      transactionType,
+						CompanyID: companyID,
 					},
 					TypeName: typeName,
 				},
@@ -199,9 +199,16 @@ func (tq *TransactionQuery) GetTransactionByID(id uuid.UUID) (*model.Transaction
 }
 
 // GetTransactionEtcTypes ...
-func (tq *TransactionQuery) GetTransactionEtcTypes() ([]*model.TransactionEtcTypeRead, error) {
-	var results []*model.TransactionEtcTypeRead
-	query := tq.qb.Query("transaction_etc_types", 0, 0, []*qbModel.Order{
+func (tq *TransactionQuery) GetTransactionEtcTypes(companyID uuid.UUID) ([]*model.TransactionEtcTypeRead, error) {
+	results := []*model.TransactionEtcTypeRead{}
+	query := tq.qb.Query("transaction_etc_types", 0, 0, []*qbModel.Condition{
+		&qbModel.Condition{
+			Key:      "company_id",
+			NextCond: "",
+			Operator: "=",
+			Value:    companyID.String(),
+		},
+	}, []*qbModel.Order{
 		&qbModel.Order{
 			Key:   "created_at",
 			Value: "desc",
@@ -222,13 +229,18 @@ func (tq *TransactionQuery) GetTransactionEtcTypes() ([]*model.TransactionEtcTyp
 }
 
 // GetTransactionEtcTypeByID ...
-func (tq *TransactionQuery) GetTransactionEtcTypeByID(id uuid.UUID) (*model.TransactionEtcTypeRead, error) {
+func (tq *TransactionQuery) GetTransactionEtcTypeByID(companyID uuid.UUID, id uuid.UUID) (*model.TransactionEtcTypeRead, error) {
 	result := new(model.TransactionEtcTypeRead)
 	query := tq.qb.QueryWhere("transaction_etc_types", []*qbModel.Condition{&qbModel.Condition{
 		Key:      "id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    id.String(),
+	}, &qbModel.Condition{
+		Key:      "company_id",
+		NextCond: "",
+		Operator: "=",
+		Value:    companyID.String(),
 	}}, nil)
 	err := tq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {

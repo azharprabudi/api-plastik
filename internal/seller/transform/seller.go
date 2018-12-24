@@ -10,7 +10,7 @@ import (
 )
 
 // MakeModelCreateSeller ...
-func (st *SellerTransform) MakeModelCreateSeller(req *dto.SellerReq) *model.SellerCreate {
+func (st *SellerTransform) MakeModelCreateSeller(companyID uuid.UUID, req *dto.SellerReq) *model.SellerCreate {
 	return &model.SellerCreate{
 		Seller: model.Seller{
 			SellerID:  uuid.NewV4(),
@@ -18,6 +18,7 @@ func (st *SellerTransform) MakeModelCreateSeller(req *dto.SellerReq) *model.Sell
 			Address:   req.Address,
 			Phone:     req.Phone,
 			CreatedAt: time.Now().UTC(),
+			CompanyID: companyID,
 		},
 	}
 }

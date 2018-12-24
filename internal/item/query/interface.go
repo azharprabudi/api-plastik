@@ -7,9 +7,9 @@ import (
 
 // ItemQueryInterface ...
 type ItemQueryInterface interface {
-	GetCategories() ([]*model.ItemCategoryRead, error)
-	GetCategoryByID(uuid.UUID) (*model.ItemCategoryRead, error)
-	GetItems() ([]*model.ItemRead, error)
-	GetItemByID(uuid.UUID) (*model.ItemRead, error)
+	GetCategories(uuid.UUID) ([]*model.ItemCategoryRead, error)
+	GetCategoryByID(uuid.UUID, uuid.UUID) (*model.ItemCategoryRead, error)
+	GetItems(uuid.UUID) ([]*model.ItemRead, error)
+	GetItemByID(uuid.UUID, uuid.UUID) (*model.ItemRead, error)
 	GetItemUnits() ([]*model.ItemUnitRead, error)
 }

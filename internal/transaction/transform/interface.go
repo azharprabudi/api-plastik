@@ -9,9 +9,9 @@ import (
 
 // TransactionTransformInterface ...
 type TransactionTransformInterface interface {
-	MakeModelCreateTransactionIn(*dto.TransactionInReq, string, uuid.UUID) *model.TransactionInCreate
-	MakeModelCreateTransactionOut(*dto.TransactionOutReq, string, uuid.UUID) *model.TransactionOutCreate
-	MakeModelCreateTransactionEtc(*dto.TransactionEtcReq, string, uuid.UUID) *model.TransactionEtcCreate
+	MakeModelCreateTransactionIn(uuid.UUID, *dto.TransactionInReq, string, uuid.UUID) *model.TransactionInCreate
+	MakeModelCreateTransactionOut(uuid.UUID, *dto.TransactionOutReq, string, uuid.UUID) *model.TransactionOutCreate
+	MakeModelCreateTransactionEtc(uuid.UUID, *dto.TransactionEtcReq, string, uuid.UUID) *model.TransactionEtcCreate
 	MakeModelCreateTransactionDetails([]*dto.TransactionDetailReq, uuid.UUID) []*model.TransactionDetailCreate
 	MakeModelCreateTransactionImages([]string, uuid.UUID) []*model.TransactionImageCreate
 	MakeResponseGetTransactions([]*model.TransactionRead) []*dto.TransactionRes
@@ -19,6 +19,6 @@ type TransactionTransformInterface interface {
 	MakeModelCreateItemStockLog([]*dto.TransactionDetailReq, uuid.UUID, string) []*itemmodel.ItemStockLogCreate
 	MakeResponseGetTransactionEtcTypes([]*model.TransactionEtcTypeRead) []*dto.TransactionEtcTypeRes
 	MakeResponseGetTransactionEtcTypeByID(*model.TransactionEtcTypeRead) *dto.TransactionEtcTypeRes
-	MakeModelCreateTransactionEtcType(*dto.TransactionEtcTypeReq) *model.TransactionEtcTypeCreate
+	MakeModelCreateTransactionEtcType(uuid.UUID, *dto.TransactionEtcTypeReq) *model.TransactionEtcTypeCreate
 	MakeModelUpdateTransactionEtcType(*dto.TransactionEtcTypeReq) *model.TransactionEtcTypeUpdate
 }

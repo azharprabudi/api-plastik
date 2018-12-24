@@ -9,9 +9,16 @@ import (
 )
 
 // GetCategories ...
-func (iq *ItemQuery) GetCategories() ([]*model.ItemCategoryRead, error) {
-	var results []*model.ItemCategoryRead
-	query := iq.qb.Query("item_categories", 0, 0, []*qbmodel.Order{
+func (iq *ItemQuery) GetCategories(companyID uuid.UUID) ([]*model.ItemCategoryRead, error) {
+	results := []*model.ItemCategoryRead{}
+	query := iq.qb.Query("item_categories", 0, 0, []*qbmodel.Condition{
+		&qbmodel.Condition{
+			Key:      "company_id",
+			NextCond: "",
+			Operator: "=",
+			Value:    companyID.String(),
+		},
+	}, []*qbmodel.Order{
 		&qbmodel.Order{
 			Key:   "created_at",
 			Value: "desc",
@@ -33,14 +40,20 @@ func (iq *ItemQuery) GetCategories() ([]*model.ItemCategoryRead, error) {
 }
 
 // GetCategoryByID ...
-func (iq *ItemQuery) GetCategoryByID(id uuid.UUID) (*model.ItemCategoryRead, error) {
+func (iq *ItemQuery) GetCategoryByID(companyID uuid.UUID, id uuid.UUID) (*model.ItemCategoryRead, error) {
 	result := new(model.ItemCategoryRead)
 	query := iq.qb.QueryWhere("item_categories", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    id.String(),
-	}}, nil)
+	},
+		&qbmodel.Condition{
+			Key:      "company_id",
+			NextCond: "",
+			Operator: "=",
+			Value:    companyID.String(),
+		}}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
 		return nil, err
@@ -49,10 +62,17 @@ func (iq *ItemQuery) GetCategoryByID(id uuid.UUID) (*model.ItemCategoryRead, err
 	return result, nil
 }
 
-// GetItem ...
-func (iq *ItemQuery) GetItems() ([]*model.ItemRead, error) {
-	var results []*model.ItemRead
-	query := iq.qb.Query("items", 0, 0, []*qbmodel.Order{
+// GetItems ...
+func (iq *ItemQuery) GetItems(companyID uuid.UUID) ([]*model.ItemRead, error) {
+	results := []*model.ItemRead{}
+	query := iq.qb.Query("items", 0, 0, []*qbmodel.Condition{
+		&qbmodel.Condition{
+			Key:      "company_id",
+			NextCond: "",
+			Operator: "=",
+			Value:    companyID.String(),
+		},
+	}, []*qbmodel.Order{
 		&qbmodel.Order{
 			Key:   "created_at",
 			Value: "desc",
@@ -76,13 +96,18 @@ func (iq *ItemQuery) GetItems() ([]*model.ItemRead, error) {
 }
 
 // GetItemByID ...
-func (iq *ItemQuery) GetItemByID(itemID uuid.UUID) (*model.ItemRead, error) {
+func (iq *ItemQuery) GetItemByID(companyID uuid.UUID, itemID uuid.UUID) (*model.ItemRead, error) {
 	result := new(model.ItemRead)
 	query := iq.qb.QueryWhere("items", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    itemID.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		NextCond: "",
+		Operator: "=",
+		Value:    companyID.String(),
 	}}, nil)
 
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
@@ -95,13 +120,13 @@ func (iq *ItemQuery) GetItemByID(itemID uuid.UUID) (*model.ItemRead, error) {
 
 // GetItemUnits ...
 func (iq *ItemQuery) GetItemUnits() ([]*model.ItemUnitRead, error) {
-	query := iq.qb.Query("item_units", 0, 0, nil)
+	query := iq.qb.Query("item_units", 0, 0, nil, nil)
 	res, err := iq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*model.ItemUnitRead
+	result := []*model.ItemUnitRead{}
 	for res.Next() {
 		tmp := new(model.ItemUnitRead)
 		res.StructScan(tmp)

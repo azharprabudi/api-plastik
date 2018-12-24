@@ -20,7 +20,13 @@ import (
 
 // Find ...
 func (s *Seller) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := s.service.GetSellers()
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	results, err := s.service.GetSellers(companyID)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -32,13 +38,19 @@ func (s *Seller) Find(w http.ResponseWriter, r *http.Request) {
 
 // FindByID ...
 func (s *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	result, err := s.service.GetSellerByID(id)
+	result, err := s.service.GetSellerByID(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -50,6 +62,12 @@ func (s *Seller) FindByID(w http.ResponseWriter, r *http.Request) {
 
 // Create ...
 func (s *Seller) Create(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	req := new(dto.SellerReq)
 	var validations = []string{}
 	request.Get(r.Body, req)
@@ -68,7 +86,7 @@ func (s *Seller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := s.service.CreateSeller(req)
+	id, err := s.service.CreateSeller(companyID, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -84,6 +102,12 @@ func (s *Seller) Create(w http.ResponseWriter, r *http.Request) {
 
 // Update ...
 func (s *Seller) Update(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
@@ -108,7 +132,7 @@ func (s *Seller) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.service.UpdateSeller(id, req)
+	err = s.service.UpdateSeller(companyID, id, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -120,13 +144,19 @@ func (s *Seller) Update(w http.ResponseWriter, r *http.Request) {
 
 // Delete ...
 func (s *Seller) Delete(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
 	}
 
-	err = s.service.DeleteSeller(id)
+	err = s.service.DeleteSeller(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return

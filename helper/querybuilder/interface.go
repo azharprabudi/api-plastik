@@ -1,10 +1,10 @@
 package qb
 
-import "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
+import qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
 
 // QueryBuilderInterface ...
 type QueryBuilderInterface interface {
-	Query(string, int, int, []*qbmodel.Order) string
+	Query(string, int, int, []*qbmodel.Condition, []*qbmodel.Order) string
 	QueryWhere(string, []*qbmodel.Condition, []*qbmodel.Order) string
 	QueryWith(string, []*qbmodel.Join, []*qbmodel.Order) string
 	QueryWhereWith(string, []*qbmodel.Join, []*qbmodel.Condition, []*qbmodel.Order) string

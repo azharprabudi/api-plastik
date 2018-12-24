@@ -24,49 +24,49 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	seller := sellerPresentation.NewSellerPresentation(db)
 	transaction := transactionPresentation.NewTransactionPresentation(db)
 
-	// route
-	(*newR).Route("/v1", func(r chi.Router) {
-		/* item */
-		r.Get("/item", item.Find)
-		r.Get("/item/{id}", item.FindByID)
-		r.Post("/item", item.Create)
-		r.Patch("/item/{id}", item.Update)
-		r.Delete("/item/{id}", item.Delete)
+	/* item unit */
+	(*newR).Get("/v1/item-unit", itemUnit.Find)
 
-		/* item unit */
-		r.Get("/item-unit", itemUnit.Find)
+	// route
+	(*newR).Route("/v1/company", func(r chi.Router) {
+		/* item */
+		r.Get("/{companyId}/item", item.Find)
+		r.Get("/{companyId}/item/{id}", item.FindByID)
+		r.Post("/{companyId}/item", item.Create)
+		r.Patch("/{companyId}/item/{id}", item.Update)
+		r.Delete("/{companyId}/item/{id}", item.Delete)
 
 		/* itemCategory */
-		r.Get("/item-category", itemCategory.Find)
-		r.Get("/item-category/{id}", itemCategory.FindByID)
-		r.Post("/item-category", itemCategory.Create)
-		r.Patch("/item-category/{id}", itemCategory.Update)
-		r.Delete("/item-category/{id}", itemCategory.Delete)
+		r.Get("/{companyId}/item-category", itemCategory.Find)
+		r.Get("/{companyId}/item-category/{id}", itemCategory.FindByID)
+		r.Post("/{companyId}/item-category", itemCategory.Create)
+		r.Patch("/{companyId}/item-category/{id}", itemCategory.Update)
+		r.Delete("/{companyId}/item-category/{id}", itemCategory.Delete)
 
 		/* supplier */
-		r.Get("/supplier", supplier.Find)
-		r.Get("/supplier/{id}", supplier.FindByID)
-		r.Post("/supplier", supplier.Create)
-		r.Patch("/supplier/{id}", supplier.Update)
-		r.Delete("/supplier/{id}", supplier.Delete)
+		r.Get("/{companyId}/supplier", supplier.Find)
+		r.Get("/{companyId}/supplier/{id}", supplier.FindByID)
+		r.Post("/{companyId}/supplier", supplier.Create)
+		r.Patch("/{companyId}/supplier/{id}", supplier.Update)
+		r.Delete("/{companyId}/supplier/{id}", supplier.Delete)
 
 		/* seller */
-		r.Get("/seller", seller.Find)
-		r.Get("/seller/{id}", seller.FindByID)
-		r.Post("/seller", seller.Create)
-		r.Patch("/seller/{id}", seller.Update)
-		r.Delete("/seller/{id}", seller.Delete)
+		r.Get("/{companyId}/seller", seller.Find)
+		r.Get("/{companyId}/seller/{id}", seller.FindByID)
+		r.Post("/{companyId}/seller", seller.Create)
+		r.Patch("/{companyId}/seller/{id}", seller.Update)
+		r.Delete("/{companyId}/seller/{id}", seller.Delete)
 
 		/* transaction */
-		r.Get("/transaction", transaction.Find)
-		r.Get("/transaction/{id}", transaction.FindByID)
-		r.Post("/transaction/in", transaction.CreateTransactionIn)
-		r.Post("/transaction/out", transaction.CreateTransactionOut)
-		r.Post("/transaction/etc", transaction.CreateTransactionEtc)
-		r.Post("/transaction/etc/type", transaction.CreateTransactionEtcType)
-		r.Get("/transaction/etc/type", transaction.FindTransactionEtcTypes)
-		r.Get("/transaction/etc/type/{id}", transaction.FindTransactionEtcTypeByID)
-		r.Patch("/transaction/etc/type/{id}", transaction.UpdateTransactionEtcType)
-		r.Delete("/transaction/etc/type/{id}", transaction.DeleteTransactionEtcType)
+		r.Get("/{companyId}/transaction", transaction.Find)
+		r.Get("/{companyId}/transaction/{id}", transaction.FindByID)
+		r.Post("/{companyId}/transaction/in", transaction.CreateTransactionIn)
+		r.Post("/{companyId}/transaction/out", transaction.CreateTransactionOut)
+		r.Post("/{companyId}/transaction/etc", transaction.CreateTransactionEtc)
+		r.Post("/{companyId}/transaction/etc/type", transaction.CreateTransactionEtcType)
+		r.Get("/{companyId}/transaction/etc/type", transaction.FindTransactionEtcTypes)
+		r.Get("/{companyId}/transaction/etc/type/{id}", transaction.FindTransactionEtcTypeByID)
+		r.Patch("/{companyId}/transaction/etc/type/{id}", transaction.UpdateTransactionEtcType)
+		r.Delete("/{companyId}/transaction/etc/type/{id}", transaction.DeleteTransactionEtcType)
 	})
 }

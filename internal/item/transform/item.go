@@ -10,12 +10,13 @@ import (
 )
 
 // MakeModelCreateCategory ...
-func (it *ItemTransform) MakeModelCreateCategory(req *dto.ItemCategoryReq) *model.ItemCategoryCreate {
+func (it *ItemTransform) MakeModelCreateCategory(companyID uuid.UUID, req *dto.ItemCategoryReq) *model.ItemCategoryCreate {
 	return &model.ItemCategoryCreate{
 		ItemCategory: model.ItemCategory{
 			ItemCategoryID: uuid.NewV4(),
 			Name:           req.Name,
 			CreatedAt:      time.Now().UTC(),
+			CompanyID:      companyID,
 		},
 	}
 }
@@ -27,7 +28,7 @@ func (it *ItemTransform) MakeModelUpdateCategory(req *dto.ItemCategoryReq) *mode
 	}
 }
 
-// TransformGetCategory ...
+// MakeResponseGetCategories ...
 func (it *ItemTransform) MakeResponseGetCategories(res []*model.ItemCategoryRead) []*dto.ItemCategoryRes {
 	var results []*dto.ItemCategoryRes
 	for _, category := range res {
@@ -55,7 +56,7 @@ func (it *ItemTransform) MakeResponseGetCategoryByID(res *model.ItemCategoryRead
 }
 
 // MakeModelCreateItem ...
-func (it *ItemTransform) MakeModelCreateItem(req *dto.ItemReq) *model.ItemCreate {
+func (it *ItemTransform) MakeModelCreateItem(companyID uuid.UUID, req *dto.ItemReq) *model.ItemCreate {
 	return &model.ItemCreate{
 		Item: model.Item{
 			ItemID:         uuid.NewV4(),
@@ -63,6 +64,7 @@ func (it *ItemTransform) MakeModelCreateItem(req *dto.ItemReq) *model.ItemCreate
 			ItemCategoryID: req.ItemCategoryID,
 			CreatedAt:      time.Now().UTC(),
 			UnitID:         req.UnitID,
+			CompanyID:      companyID,
 		},
 	}
 }

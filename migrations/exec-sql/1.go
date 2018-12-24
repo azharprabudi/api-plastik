@@ -12,9 +12,7 @@ CREATE TABLE "companies" (
 	CONSTRAINT companies_pk PRIMARY KEY ("id")
 );
 
-INSERT INTO "companies"(id, name, type, created_at)
-		VALUES ('` + value.COMPANY_ID + `', 'PT. Berkah Jaya Plastik', '` + value.RETAIL + `', CURRENT_TIMESTAMP)
-		ON CONFLICT DO NOTHING;
+INSERT INTO "companies"(id, name, type, created_at) VALUES ('` + value.COMPANY_ID.String() + `', 'PT. Berkah Jaya Plastik', '` + value.RETAIL + `', CURRENT_TIMESTAMP) ON CONFLICT DO NOTHING;
 
 CREATE TABLE "user_groups" (
 	"id" uuid NOT NULL,
@@ -24,7 +22,7 @@ CREATE TABLE "user_groups" (
 );
 
 INSERT INTO "user_groups"(id, name, created_at)
-		VALUES ('` + value.GROUP_ID + `', 'admin', CURRENT_TIMESTAMP)
+		VALUES ('` + value.GROUP_ID.String() + `', 'admin', CURRENT_TIMESTAMP)
 		ON CONFLICT DO NOTHING;
 
 CREATE TABLE "users" (
@@ -40,7 +38,7 @@ ADD CONSTRAINT users_unique_name
 UNIQUE (username);
 
 INSERT INTO "users"(id, username, name, created_at)
-		VALUES ('` + value.USER_ID + `', 'admin_plastik', 'admin', CURRENT_TIMESTAMP)
+		VALUES ('` + value.USER_ID.String() + `', 'admin_plastik', 'admin', CURRENT_TIMESTAMP)
 		ON CONFLICT DO NOTHING;
 
 CREATE TABLE "users_company" (
@@ -63,7 +61,7 @@ ALTER TABLE users_company
    REFERENCES "companies"("id");
 
 INSERT INTO "users_company"(user_id, company_id, active, created_at)
-   VALUES ('` + value.USER_ID + `', '` + value.COMPANY_ID + `', true, CURRENT_TIMESTAMP)
+   VALUES ('` + value.USER_ID.String() + `', '` + value.COMPANY_ID.String() + `', true, CURRENT_TIMESTAMP)
    ON CONFLICT DO NOTHING;
 
 CREATE TABLE "user_roles" (
@@ -99,7 +97,7 @@ CREATE TABLE "item_categories" (
 );
 
 ALTER TABLE item_categories
-	ADD CONSTRAINT fk_company
+	ADD CONSTRAINT fk_companies
 	FOREIGN KEY ("company_id") 
 	REFERENCES "companies"("id");
 
@@ -139,7 +137,7 @@ ALTER TABLE items
    REFERENCES "item_units"("id");
 
 ALTER TABLE items
-	ADD CONSTRAINT fk_company
+	ADD CONSTRAINT fk_companies
 	FOREIGN KEY ("company_id") 
 	REFERENCES "companies"("id");
 
@@ -154,7 +152,7 @@ CREATE TABLE "suppliers" (
 );
 
 ALTER TABLE suppliers
-	ADD CONSTRAINT fk_company
+	ADD CONSTRAINT fk_companies
 	FOREIGN KEY ("company_id") 
 	REFERENCES "companies"("id");
 
@@ -169,7 +167,7 @@ CREATE TABLE "sellers" (
 );
 
 ALTER TABLE sellers
-	ADD CONSTRAINT fk_company
+	ADD CONSTRAINT fk_companies
 	FOREIGN KEY ("company_id") 
 	REFERENCES "companies"("id");
 
@@ -185,7 +183,7 @@ CREATE TABLE "transactions" (
 );
 
 ALTER TABLE transactions
-	ADD CONSTRAINT fk_company
+	ADD CONSTRAINT fk_companies
 	FOREIGN KEY ("company_id") 
 	REFERENCES "companies"("id");
 
@@ -217,6 +215,7 @@ CREATE TABLE "transactions_etc" (
 
 CREATE TABLE "transaction_etc_types" (
 	"id" uuid NOT NULL,
+	"company_id" uuid NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"created_at" timestamptz NOT NULL,
 	CONSTRAINT transaction_etc_types_pk PRIMARY KEY ("id")
@@ -251,6 +250,11 @@ ALTER TABLE transactions_etc
 	ADD CONSTRAINT fk_transaction_etc_types
 	FOREIGN KEY ("transaction_etc_type") 
 	REFERENCES "transaction_etc_types"("id");
+
+ALTER TABLE transaction_etc_types
+	ADD CONSTRAINT fk_companies
+	FOREIGN KEY ("company_id") 
+	REFERENCES "companies"("id");
  
 CREATE TABLE "transaction_details" (
 	"id" uuid NOT NULL,

@@ -7,9 +7,9 @@ import (
 
 // SellerServiceInterface ...
 type SellerServiceInterface interface {
-	CreateSeller(*dto.SellerReq) (uuid.UUID, error)
-	UpdateSeller(uuid.UUID, *dto.SellerReq) error
-	DeleteSeller(uuid.UUID) error
-	GetSellers() ([]*dto.SellerRes, error)
-	GetSellerByID(uuid.UUID) (*dto.SellerRes, error)
+	CreateSeller(uuid.UUID, *dto.SellerReq) (uuid.UUID, error)
+	UpdateSeller(uuid.UUID, uuid.UUID, *dto.SellerReq) error
+	DeleteSeller(uuid.UUID, uuid.UUID) error
+	GetSellers(uuid.UUID) ([]*dto.SellerRes, error)
+	GetSellerByID(uuid.UUID, uuid.UUID) (*dto.SellerRes, error)
 }

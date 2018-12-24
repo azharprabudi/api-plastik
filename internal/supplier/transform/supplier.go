@@ -9,8 +9,8 @@ import (
 	"github.com/azharprabudi/api-plastik/internal/supplier/model"
 )
 
-// TransformCreate ...
-func (st *SupplierTransform) MakeModelCreateSupplier(req *dto.SupplierReq) *model.SupplierCreate {
+// MakeModelCreateSupplier ...
+func (st *SupplierTransform) MakeModelCreateSupplier(companyID uuid.UUID, req *dto.SupplierReq) *model.SupplierCreate {
 	return &model.SupplierCreate{
 		Supplier: model.Supplier{
 			SupplierID: uuid.NewV4(),
@@ -18,11 +18,12 @@ func (st *SupplierTransform) MakeModelCreateSupplier(req *dto.SupplierReq) *mode
 			Address:    req.Supplier.Address,
 			Phone:      req.Supplier.Phone,
 			CreatedAt:  time.Now().UTC(),
+			CompanyID:  companyID,
 		},
 	}
 }
 
-// TransformUpdate ...
+// MakeModelUpdateSupplier ...
 func (st *SupplierTransform) MakeModelUpdateSupplier(req *dto.SupplierReq) *model.SupplierUpdate {
 	return &model.SupplierUpdate{
 		Name:    req.Supplier.Name,

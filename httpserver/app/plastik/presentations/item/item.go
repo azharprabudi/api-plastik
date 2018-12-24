@@ -20,7 +20,13 @@ import (
 
 // Find ...
 func (i *Item) Find(w http.ResponseWriter, r *http.Request) {
-	results, err := i.service.GetItems()
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	results, err := i.service.GetItems(companyID)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -36,7 +42,13 @@ func (i *Item) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := i.service.GetItemByID(id)
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	result, err := i.service.GetItemByID(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -48,6 +60,12 @@ func (i *Item) FindByID(w http.ResponseWriter, r *http.Request) {
 
 // Create ...
 func (i *Item) Create(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
 	var validations = []string{}
 	req := new(dto.ItemReq)
 	request.Get(r.Body, req)
@@ -70,7 +88,7 @@ func (i *Item) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := i.service.CreateItem(req)
+	id, err := i.service.CreateItem(companyID, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -88,6 +106,12 @@ func (i *Item) Create(w http.ResponseWriter, r *http.Request) {
 // Update ...
 func (i *Item) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
 	if err != nil {
 		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -111,7 +135,7 @@ func (i *Item) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = i.service.UpdateItem(id, req)
+	err = i.service.UpdateItem(companyID, id, req)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return
@@ -129,7 +153,13 @@ func (i *Item) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = i.service.DeleteItem(id)
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	err = i.service.DeleteItem(companyID, id)
 	if err != nil {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
 		return

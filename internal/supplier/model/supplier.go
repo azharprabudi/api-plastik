@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Supplier ...
@@ -13,6 +13,7 @@ type Supplier struct {
 	Phone      string    `db:"phone"`
 	Address    string    `db:"address"`
 	CreatedAt  time.Time `db:"created_at"`
+	CompanyID  uuid.UUID `db:"company_id"`
 }
 
 // SupplierRead ...

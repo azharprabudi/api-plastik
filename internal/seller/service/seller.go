@@ -10,9 +10,9 @@ import (
 	"github.com/azharprabudi/api-plastik/internal/seller/query"
 )
 
-// GetSeller ...
-func (ss *SellerService) GetSellers() ([]*dto.SellerRes, error) {
-	sellers, err := ss.query.GetSellers()
+// GetSellers ...
+func (ss *SellerService) GetSellers(companyID uuid.UUID) ([]*dto.SellerRes, error) {
+	sellers, err := ss.query.GetSellers(companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -21,8 +21,8 @@ func (ss *SellerService) GetSellers() ([]*dto.SellerRes, error) {
 }
 
 // GetSellerByID ...
-func (ss *SellerService) GetSellerByID(id uuid.UUID) (*dto.SellerRes, error) {
-	seller, err := ss.query.GetSellerByID(id)
+func (ss *SellerService) GetSellerByID(companyID uuid.UUID, id uuid.UUID) (*dto.SellerRes, error) {
+	seller, err := ss.query.GetSellerByID(companyID, id)
 	if err != nil {
 		return nil, err
 	}
@@ -31,8 +31,8 @@ func (ss *SellerService) GetSellerByID(id uuid.UUID) (*dto.SellerRes, error) {
 }
 
 // CreateSeller ...
-func (ss *SellerService) CreateSeller(req *dto.SellerReq) (uuid.UUID, error) {
-	seller := ss.transform.MakeModelCreateSeller(req)
+func (ss *SellerService) CreateSeller(companyID uuid.UUID, req *dto.SellerReq) (uuid.UUID, error) {
+	seller := ss.transform.MakeModelCreateSeller(companyID, req)
 	err := ss.command.CreateSeller(seller)
 	if err != nil {
 		return uuid.Nil, err
@@ -42,9 +42,9 @@ func (ss *SellerService) CreateSeller(req *dto.SellerReq) (uuid.UUID, error) {
 }
 
 // UpdateSeller ...
-func (ss *SellerService) UpdateSeller(id uuid.UUID, req *dto.SellerReq) error {
+func (ss *SellerService) UpdateSeller(companyID uuid.UUID, id uuid.UUID, req *dto.SellerReq) error {
 	seller := ss.transform.MakeModelUpdateSeller(req)
-	err := ss.command.UpdateSeller(id, seller)
+	err := ss.command.UpdateSeller(companyID, id, seller)
 	if err != nil {
 		return err
 	}
@@ -53,8 +53,8 @@ func (ss *SellerService) UpdateSeller(id uuid.UUID, req *dto.SellerReq) error {
 }
 
 // DeleteSeller ...
-func (ss *SellerService) DeleteSeller(id uuid.UUID) error {
-	err := ss.command.DeleteSeller(id)
+func (ss *SellerService) DeleteSeller(companyID uuid.UUID, id uuid.UUID) error {
+	err := ss.command.DeleteSeller(companyID, id)
 	if err != nil {
 		return err
 	}

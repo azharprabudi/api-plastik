@@ -12,7 +12,7 @@ import (
 // CreateCategory ...
 func (ic *ItemCommand) CreateCategory(itemCategory *model.ItemCategoryCreate) error {
 	query := ic.q.Create("item_categories", (*itemCategory).ItemCategory)
-	_, err := ic.db.PgSQL.Exec(query, itemCategory.ItemCategory.ItemCategoryID, itemCategory.ItemCategory.Name, itemCategory.ItemCategory.CreatedAt)
+	_, err := ic.db.PgSQL.Exec(query, itemCategory.ItemCategory.ItemCategoryID, itemCategory.ItemCategory.Name, itemCategory.ItemCategory.CreatedAt, itemCategory.ItemCategory.CompanyID)
 	if err != nil {
 		return err
 	}
@@ -21,12 +21,17 @@ func (ic *ItemCommand) CreateCategory(itemCategory *model.ItemCategoryCreate) er
 }
 
 // UpdateCategory ...
-func (ic *ItemCommand) UpdateCategory(id uuid.UUID, itemCategory *model.ItemCategoryUpdate) error {
+func (ic *ItemCommand) UpdateCategory(companyID uuid.UUID, id uuid.UUID, itemCategory *model.ItemCategoryUpdate) error {
 	query := ic.q.UpdateWhere("item_categories", *itemCategory, []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 	_, err := ic.db.PgSQL.Exec(query, itemCategory.Name)
 	if err != nil {
@@ -37,12 +42,17 @@ func (ic *ItemCommand) UpdateCategory(id uuid.UUID, itemCategory *model.ItemCate
 }
 
 // DeleteCategory ...
-func (ic *ItemCommand) DeleteCategory(id uuid.UUID) error {
+func (ic *ItemCommand) DeleteCategory(companyID uuid.UUID, id uuid.UUID) error {
 	query := ic.q.Delete("item_categories", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 	_, err := ic.db.PgSQL.Exec(query)
 	if err != nil {
@@ -55,7 +65,7 @@ func (ic *ItemCommand) DeleteCategory(id uuid.UUID) error {
 // CreateItem ...
 func (ic *ItemCommand) CreateItem(item *model.ItemCreate) error {
 	query := ic.q.Create("items", (*item).Item)
-	_, err := ic.db.PgSQL.Exec(query, item.Item.ItemID, item.Item.ItemCategoryID, item.Item.Name, item.Item.UnitID, item.CreatedAt)
+	_, err := ic.db.PgSQL.Exec(query, item.Item.ItemID, item.Item.ItemCategoryID, item.Item.Name, item.Item.UnitID, item.Item.CreatedAt, item.CompanyID)
 	if err != nil {
 		return err
 	}
@@ -64,12 +74,17 @@ func (ic *ItemCommand) CreateItem(item *model.ItemCreate) error {
 }
 
 // UpdateItem ...
-func (ic *ItemCommand) UpdateItem(id uuid.UUID, item *model.ItemUpdate) error {
+func (ic *ItemCommand) UpdateItem(companyID uuid.UUID, id uuid.UUID, item *model.ItemUpdate) error {
 	query := ic.q.UpdateWhere("items", *item, []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 	_, err := ic.db.PgSQL.Exec(query, item.Name, item.ItemCategoryID)
 	if err != nil {
@@ -80,12 +95,17 @@ func (ic *ItemCommand) UpdateItem(id uuid.UUID, item *model.ItemUpdate) error {
 }
 
 // DeleteItem ...
-func (ic *ItemCommand) DeleteItem(id uuid.UUID) error {
+func (ic *ItemCommand) DeleteItem(companyID uuid.UUID, id uuid.UUID) error {
 	query := ic.q.Delete("items", []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
-		NextCond: "",
+		NextCond: "AND",
 		Value:    id.String(),
+	}, &qbmodel.Condition{
+		Key:      "company_id",
+		Operator: "=",
+		NextCond: "",
+		Value:    companyID.String(),
 	}})
 	_, err := ic.db.PgSQL.Exec(query)
 	if err != nil {

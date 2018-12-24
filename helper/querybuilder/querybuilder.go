@@ -14,7 +14,7 @@ import (
  */
 
 // Query ...
-func (qb *QueryBuilder) Query(tableName string, limit int, offset int, orders []*qbmodel.Order) string {
+func (qb *QueryBuilder) Query(tableName string, limit int, offset int, conditions []*qbmodel.Condition, orders []*qbmodel.Order) string {
 	query := fmt.Sprintf("select * from \"%s\"", tableName)
 	if limit != 0 && offset == 0 {
 		query = fmt.Sprintf("%s limit=%d", query, limit)
@@ -23,8 +23,9 @@ func (qb *QueryBuilder) Query(tableName string, limit int, offset int, orders []
 	} else if limit != 0 && offset != 0 {
 		query = fmt.Sprintf("%s limit=%d offset=%d", query, limit, offset)
 	}
+	where := qbqueries.CreateQueriesWhere(conditions)
 	order := qbqueries.CreateQueriesOrder(orders)
-	query = fmt.Sprintf("%s %s", query, order)
+	query = fmt.Sprintf("%s %s %s", query, where, order)
 	return query
 }
 

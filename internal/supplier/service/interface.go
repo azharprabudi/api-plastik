@@ -7,9 +7,9 @@ import (
 
 // SupplierServiceInterface ...
 type SupplierServiceInterface interface {
-	CreateSupplier(*dto.SupplierReq) (uuid.UUID, error)
-	UpdateSupplier(uuid.UUID, *dto.SupplierReq) error
-	DeleteSupplier(uuid.UUID) error
-	GetSupplier() ([]*dto.SupplierRes, error)
-	GetSupplierByID(uuid.UUID) (*dto.SupplierRes, error)
+	CreateSupplier(uuid.UUID, *dto.SupplierReq) (uuid.UUID, error)
+	UpdateSupplier(uuid.UUID, uuid.UUID, *dto.SupplierReq) error
+	DeleteSupplier(uuid.UUID, uuid.UUID) error
+	GetSupplier(uuid.UUID) ([]*dto.SupplierRes, error)
+	GetSupplierByID(uuid.UUID, uuid.UUID) (*dto.SupplierRes, error)
 }
