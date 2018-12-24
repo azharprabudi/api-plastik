@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -15,7 +16,8 @@ func StartServer(r *chi.Mux) {
 	if !ok {
 		port = config.Port
 	}
-	err := http.ListenAndServe(port, r)
+
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 	if err != nil {
 		panic(err)
 	}

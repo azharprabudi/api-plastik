@@ -11,7 +11,7 @@ var (
 	*/
 
 	// Port ...
-	Port = ":3000"
+	Port = "8080"
 
 	/*
 		list of db configuration
@@ -34,7 +34,8 @@ var (
 				"PASS": "DB_PG_PASS",
 			},
 			"dbSource": {
-				"value": "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta",
+				"development": "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta",
+				"production":  "host=%s port=%s user=%s password=%s dbname=%s TimeZone=Asia/Jakart",
 			},
 		},
 	}
