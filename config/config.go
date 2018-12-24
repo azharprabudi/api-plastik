@@ -11,7 +11,7 @@ var (
 	*/
 
 	// Port ...
-	Port = "8080"
+	Port = "3000"
 
 	/*
 		list of db configuration

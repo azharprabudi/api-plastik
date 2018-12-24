@@ -44,4 +44,6 @@
 # Configuration Heroku
 [metadata.heroku]
   root-package = "github.com/azharprabudi/api-plastik"
-  install = [ "./..." ]
+  go-version = "go1.11.2"
+  install = [ "." ]
+  ensure = "false"
