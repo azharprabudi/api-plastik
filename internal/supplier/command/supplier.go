@@ -43,7 +43,13 @@ func (sc *SupplierCommand) UpdateSupplier(companyID uuid.UUID, id uuid.UUID, sup
 
 // DeleteSupplier ...
 func (sc *SupplierCommand) DeleteSupplier(companyID uuid.UUID, id uuid.UUID) error {
-	query := sc.q.Delete("suppliers", []*qbmodel.Condition{&qbmodel.Condition{
+	status := struct {
+		Active bool `db:"active"`
+	}{
+		Active: false,
+	}
+
+	query := sc.q.UpdateWhere("suppliers", status, []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
 		NextCond: "AND",
@@ -55,7 +61,7 @@ func (sc *SupplierCommand) DeleteSupplier(companyID uuid.UUID, id uuid.UUID) err
 		Value:    companyID.String(),
 	}})
 
-	_, err := sc.db.PgSQL.Exec(query)
+	_, err := sc.db.PgSQL.Exec(query, status.Active)
 	if err != nil {
 		return err
 	}

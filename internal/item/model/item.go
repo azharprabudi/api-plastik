@@ -19,6 +19,7 @@ type Item struct {
 // ItemRead ...
 type ItemRead struct {
 	Item
+	Active bool `db:"active"`
 }
 
 // ItemCreate ...

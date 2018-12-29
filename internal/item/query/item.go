@@ -14,9 +14,15 @@ func (iq *ItemQuery) GetCategories(companyID uuid.UUID) ([]*model.ItemCategoryRe
 	query := iq.qb.Query("item_categories", 0, 0, []*qbmodel.Condition{
 		&qbmodel.Condition{
 			Key:      "company_id",
-			NextCond: "",
+			NextCond: "AND",
 			Operator: "=",
 			Value:    companyID.String(),
+		},
+		&qbmodel.Condition{
+			Key:      "active",
+			NextCond: "",
+			Operator: "=",
+			Value:    true,
 		},
 	}, []*qbmodel.Order{
 		&qbmodel.Order{
@@ -50,9 +56,14 @@ func (iq *ItemQuery) GetCategoryByID(companyID uuid.UUID, id uuid.UUID) (*model.
 	},
 		&qbmodel.Condition{
 			Key:      "company_id",
-			NextCond: "",
+			NextCond: "AND",
 			Operator: "=",
 			Value:    companyID.String(),
+		}, &qbmodel.Condition{
+			Key:      "active",
+			NextCond: "",
+			Operator: "=",
+			Value:    true,
 		}}, nil)
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)
 	if err != nil {
@@ -68,9 +79,15 @@ func (iq *ItemQuery) GetItems(companyID uuid.UUID) ([]*model.ItemRead, error) {
 	query := iq.qb.Query("items", 0, 0, []*qbmodel.Condition{
 		&qbmodel.Condition{
 			Key:      "company_id",
-			NextCond: "",
+			NextCond: "AND",
 			Operator: "=",
 			Value:    companyID.String(),
+		},
+		&qbmodel.Condition{
+			Key:      "active",
+			NextCond: "",
+			Operator: "=",
+			Value:    true,
 		},
 	}, []*qbmodel.Order{
 		&qbmodel.Order{
@@ -105,9 +122,14 @@ func (iq *ItemQuery) GetItemByID(companyID uuid.UUID, itemID uuid.UUID) (*model.
 		Value:    itemID.String(),
 	}, &qbmodel.Condition{
 		Key:      "company_id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    companyID.String(),
+	}, &qbmodel.Condition{
+		Key:      "active",
+		NextCond: "",
+		Operator: "=",
+		Value:    true,
 	}}, nil)
 
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)

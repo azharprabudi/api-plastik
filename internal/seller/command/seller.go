@@ -42,7 +42,13 @@ func (sc *SellerCommand) UpdateSeller(companyID uuid.UUID, id uuid.UUID, s *mode
 
 // DeleteSeller ...
 func (sc *SellerCommand) DeleteSeller(companyID uuid.UUID, id uuid.UUID) error {
-	query := sc.q.Delete("sellers", []*qbModel.Condition{&qbModel.Condition{
+	status := struct {
+		Active bool `db:"active"`
+	}{
+		Active: false,
+	}
+
+	query := sc.q.UpdateWhere("sellers", status, []*qbModel.Condition{&qbModel.Condition{
 		Key:      "id",
 		Operator: "=",
 		NextCond: "AND",
@@ -53,7 +59,7 @@ func (sc *SellerCommand) DeleteSeller(companyID uuid.UUID, id uuid.UUID) error {
 		NextCond: "",
 		Value:    companyID.String(),
 	}})
-	_, err := sc.db.PgSQL.Exec(query)
+	_, err := sc.db.PgSQL.Exec(query, status.Active)
 	if err != nil {
 		return err
 	}

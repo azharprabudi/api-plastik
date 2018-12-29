@@ -14,9 +14,15 @@ func (iq *SupplierQuery) GetSuppliers(companyID uuid.UUID) ([]*model.SupplierRea
 	query := iq.qb.Query("suppliers", 0, 0, []*qbmodel.Condition{
 		&qbmodel.Condition{
 			Key:      "company_id",
-			NextCond: "",
+			NextCond: "AND",
 			Operator: "=",
 			Value:    companyID.String(),
+		},
+		&qbmodel.Condition{
+			Key:      "active",
+			NextCond: "",
+			Operator: "=",
+			Value:    true,
 		},
 	}, []*qbmodel.Order{
 		&qbmodel.Order{
@@ -51,9 +57,14 @@ func (iq *SupplierQuery) GetSupplierByID(companyID uuid.UUID, id uuid.UUID) (*mo
 		Value:    id.String(),
 	}, &qbmodel.Condition{
 		Key:      "company_id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    companyID.String(),
+	}, &qbmodel.Condition{
+		Key:      "active",
+		NextCond: "",
+		Operator: "=",
+		Value:    true,
 	}}, nil)
 
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)

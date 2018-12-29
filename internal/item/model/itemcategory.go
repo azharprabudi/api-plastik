@@ -17,6 +17,7 @@ type ItemCategory struct {
 // ItemCategoryRead ...
 type ItemCategoryRead struct {
 	ItemCategory
+	Active bool `db:"active"`
 }
 
 // ItemCategoryCreate ...

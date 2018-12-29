@@ -121,7 +121,10 @@ func getOldVer(tx *sqlx.Tx) (int, error) {
 // function to running list of migration
 func doMigrateSQL(tx *sqlx.Tx, startVer int, untilVer int) {
 	for i := startVer; i < untilVer; i++ {
-		tx.Exec(execPgSQL[i])
+		_, err := tx.Exec(execPgSQL[i])
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 

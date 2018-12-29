@@ -14,9 +14,15 @@ func (iq *SellerQuery) GetSellers(companyID uuid.UUID) ([]*model.SellerRead, err
 	query := iq.qb.Query("sellers", 0, 0, []*qbmodel.Condition{
 		&qbmodel.Condition{
 			Key:      "company_id",
-			NextCond: "",
+			NextCond: "AND",
 			Operator: "=",
 			Value:    companyID.String(),
+		},
+		&qbmodel.Condition{
+			Key:      "active",
+			NextCond: "",
+			Operator: "=",
+			Value:    true,
 		},
 	}, []*qbmodel.Order{
 		&qbmodel.Order{
@@ -48,9 +54,14 @@ func (iq *SellerQuery) GetSellerByID(companyID uuid.UUID, id uuid.UUID) (*model.
 		Value:    id.String(),
 	}, &qbmodel.Condition{
 		Key:      "company_id",
-		NextCond: "",
+		NextCond: "AND",
 		Operator: "=",
 		Value:    companyID.String(),
+	}, &qbmodel.Condition{
+		Key:      "active",
+		NextCond: "",
+		Operator: "=",
+		Value:    true,
 	}}, nil)
 
 	err := iq.db.PgSQL.QueryRowx(query).StructScan(result)

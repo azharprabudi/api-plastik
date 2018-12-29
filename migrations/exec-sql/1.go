@@ -9,6 +9,7 @@ CREATE TABLE "companies" (
 	"name" varchar(100) NOT NULL,
 	"type" varchar(50) NOT NULL,
 	"created_at" timestamptz NOT NULL,
+	"active" BOOLEAN DEFAULT true,
 	CONSTRAINT companies_pk PRIMARY KEY ("id")
 );
 
@@ -30,6 +31,7 @@ CREATE TABLE "users" (
 	"username" varchar(100) NOT NULL, 
 	"name" varchar(100) NOT NULL,
 	"created_at" timestamptz NOT NULL,
+	"active" BOOLEAN DEFAULT true,
 	CONSTRAINT users_pk PRIMARY KEY ("id")
 );
 
@@ -44,7 +46,6 @@ INSERT INTO "users"(id, username, name, created_at)
 CREATE TABLE "users_company" (
 	"user_id" uuid NOT NULL,
 	"company_id" uuid NOT NULL,
-	"active" bool DEFAULT true,
 	"created_at" timestamptz NOT NULL
 );
 
@@ -60,8 +61,8 @@ ALTER TABLE users_company
    FOREIGN KEY ("company_id") 
    REFERENCES "companies"("id");
 
-INSERT INTO "users_company"(user_id, company_id, active, created_at)
-   VALUES ('` + value.USER_ID.String() + `', '` + value.COMPANY_ID.String() + `', true, CURRENT_TIMESTAMP)
+INSERT INTO "users_company"(user_id, company_id, created_at)
+   VALUES ('` + value.USER_ID.String() + `', '` + value.COMPANY_ID.String() + `', CURRENT_TIMESTAMP)
    ON CONFLICT DO NOTHING;
 
 CREATE TABLE "user_roles" (
@@ -93,6 +94,7 @@ CREATE TABLE "item_categories" (
 	"company_id" uuid NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"created_at" timestamptz NOT NULL,
+	"active" BOOLEAN DEFAULT true,
 	CONSTRAINT item_categories_pk PRIMARY KEY ("id")
 );
 
@@ -108,6 +110,7 @@ CREATE TABLE "items" (
 	"category_id" uuid NOT NULL,
 	"unit_id" uuid NOT NULL,
 	"created_at" timestamptz NOT NULL,
+	"active" BOOLEAN DEFAULT true,
 	CONSTRAINT items_pk PRIMARY KEY ("id")
 );
 
@@ -148,6 +151,7 @@ CREATE TABLE "suppliers" (
 	"phone" varchar(15) NULL,
 	"address" text NULL,
 	"created_at" timestamptz NOT NULL,
+	"active" BOOLEAN DEFAULT true,
 	CONSTRAINT suppliers_pk PRIMARY KEY ("id")
 );
 
@@ -163,6 +167,7 @@ CREATE TABLE "sellers" (
 	"phone" varchar(15) NULL,
 	"address" text NULL,
 	"created_at" timestamptz NOT NULL,
+	"active" BOOLEAN DEFAULT true,
 	CONSTRAINT sellers_pk PRIMARY KEY ("id")
 );
 

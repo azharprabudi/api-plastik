@@ -43,7 +43,13 @@ func (ic *ItemCommand) UpdateCategory(companyID uuid.UUID, id uuid.UUID, itemCat
 
 // DeleteCategory ...
 func (ic *ItemCommand) DeleteCategory(companyID uuid.UUID, id uuid.UUID) error {
-	query := ic.q.Delete("item_categories", []*qbmodel.Condition{&qbmodel.Condition{
+	status := struct {
+		Active bool `db:"active"`
+	}{
+		Active: false,
+	}
+
+	query := ic.q.UpdateWhere("item_categories", status, []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
 		NextCond: "AND",
@@ -54,7 +60,7 @@ func (ic *ItemCommand) DeleteCategory(companyID uuid.UUID, id uuid.UUID) error {
 		NextCond: "",
 		Value:    companyID.String(),
 	}})
-	_, err := ic.db.PgSQL.Exec(query)
+	_, err := ic.db.PgSQL.Exec(query, status.Active)
 	if err != nil {
 		return err
 	}
@@ -96,7 +102,13 @@ func (ic *ItemCommand) UpdateItem(companyID uuid.UUID, id uuid.UUID, item *model
 
 // DeleteItem ...
 func (ic *ItemCommand) DeleteItem(companyID uuid.UUID, id uuid.UUID) error {
-	query := ic.q.Delete("items", []*qbmodel.Condition{&qbmodel.Condition{
+	status := struct {
+		Active bool `db:"active"`
+	}{
+		Active: false,
+	}
+
+	query := ic.q.UpdateWhere("items", status, []*qbmodel.Condition{&qbmodel.Condition{
 		Key:      "id",
 		Operator: "=",
 		NextCond: "AND",
@@ -107,7 +119,7 @@ func (ic *ItemCommand) DeleteItem(companyID uuid.UUID, id uuid.UUID) error {
 		NextCond: "",
 		Value:    companyID.String(),
 	}})
-	_, err := ic.db.PgSQL.Exec(query)
+	_, err := ic.db.PgSQL.Exec(query, status.Active)
 	if err != nil {
 		return err
 	}

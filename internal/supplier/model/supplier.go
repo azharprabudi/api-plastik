@@ -19,6 +19,7 @@ type Supplier struct {
 // SupplierRead ...
 type SupplierRead struct {
 	Supplier
+	Active bool `db:"active"`
 }
 
 // SupplierCreate ...
