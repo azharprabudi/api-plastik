@@ -30,7 +30,7 @@ func (it *ItemTransform) MakeModelUpdateCategory(req *dto.ItemCategoryReq) *mode
 
 // MakeResponseGetCategories ...
 func (it *ItemTransform) MakeResponseGetCategories(res []*model.ItemCategoryRead) []*dto.ItemCategoryRes {
-	var results []*dto.ItemCategoryRes
+	results := []*dto.ItemCategoryRes{}
 	for _, category := range res {
 		results = append(results, &dto.ItemCategoryRes{
 			ItemCategoryID: category.ItemCategory.ItemCategoryID,
@@ -79,7 +79,7 @@ func (it *ItemTransform) MakeModelUpdateItem(item *dto.ItemReq) *model.ItemUpdat
 
 // MakeResponseGetItems ...
 func (it *ItemTransform) MakeResponseGetItems(res []*model.ItemRead) []*dto.ItemRes {
-	var results = []*dto.ItemRes{}
+	results := []*dto.ItemRes{}
 	for _, item := range res {
 		results = append(results, &dto.ItemRes{
 			ItemID:    item.Item.ItemID,
@@ -110,7 +110,7 @@ func (it *ItemTransform) MakeResponseGetItemByID(res *model.ItemRead) *dto.ItemR
 
 // MakeResponseGetItemUnits ...
 func (it *ItemTransform) MakeResponseGetItemUnits(res []*model.ItemUnitRead) []*dto.ItemUnitRes {
-	var results []*dto.ItemUnitRes
+	results := []*dto.ItemUnitRes{}
 	for _, unit := range res {
 		results = append(results, &dto.ItemUnitRes{
 			ItemUnit: dto.ItemUnit{

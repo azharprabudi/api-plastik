@@ -123,7 +123,7 @@ func (tt *TransactionTransform) MakeModelCreateTransactionImages(req []string, i
 
 // MakeResponseGetTransactions ...
 func (tt *TransactionTransform) MakeResponseGetTransactions(req []*model.TransactionRead) []*dto.TransactionRes {
-	var results []*dto.TransactionRes
+	var results = []*dto.TransactionRes{}
 	for _, trx := range req {
 		results = append(results, &dto.TransactionRes{
 			ID:     trx.Transaction.ID,
@@ -165,7 +165,7 @@ func (tt *TransactionTransform) MakeModelCreateItemStockLog(req []*dto.Transacti
 
 // MakeResponseGetTransactionEtcTypes ...
 func (tt *TransactionTransform) MakeResponseGetTransactionEtcTypes(res []*model.TransactionEtcTypeRead) []*dto.TransactionEtcTypeRes {
-	var results []*dto.TransactionEtcTypeRes
+	results := []*dto.TransactionEtcTypeRes{}
 	for _, t := range res {
 		results = append(results, &dto.TransactionEtcTypeRes{
 			ID: t.TransactionEtcType.ID,
@@ -211,8 +211,8 @@ func (tt *TransactionTransform) MakeModelUpdateTransactionEtcType(req *dto.Trans
 
 // MakeResponseGetTransactionByID ...
 func (tt *TransactionTransform) MakeResponseGetTransactionByID(transaction *model.TransactionReadDetail) *dto.TransactionResDetail {
-	var images []*dto.TransactionImageRes
-	var details []*dto.TransactionDetailRes
+	images := []*dto.TransactionImageRes{}
+	details := []*dto.TransactionDetailRes{}
 	for _, image := range transaction.Images {
 		images = append(images, &dto.TransactionImageRes{
 			ID:    image.ID,
