@@ -251,6 +251,45 @@ func (tq *TransactionQuery) GetTransactionEtcTypeByID(companyID uuid.UUID, id uu
 	return result, nil
 }
 
+// GetCountTransactions ...
+func (tq *TransactionQuery) GetCountTransactions(companyID uuid.UUID, startAt string, endAt string) (int, error) {
+	query := fmt.Sprintf("select count(id) as count from transactions where transactions.company_id = '%s' AND transactions.created_at::timestamp between '%s'::timestamp AND '%s'::timestamp group by transactions.type", companyID.String(), startAt, endAt)
+
+	var count int
+	err := tq.db.PgSQL.QueryRowx(query).Scan(&count)
+	if err != nil {
+		return 0, nil
+	}
+
+	return count, nil
+}
+
+// GetSummaryTransactions ...
+func (tq *TransactionQuery) GetSummaryTransactions(companyID uuid.UUID, startAt string, endAt string) (float64, error) {
+	query := fmt.Sprintf("select sum(amount) from transactions where transactions.company_id = '%s' AND transactions.created_at::timestamp BETWEEN '%s'::timestamp AND '%s'::timestamp group by transactions.type", companyID.String(), startAt, endAt)
+
+	var amount float64
+	err := tq.db.PgSQL.QueryRowx(query).Scan(&amount)
+	if err != nil {
+		return 0.0, nil
+	}
+
+	return amount, nil
+}
+
+// GetSummaryTransactionsByType ...
+func (tq *TransactionQuery) GetSummaryTransactionsByType(companyID uuid.UUID, trxType string, startAt string, endAt string) (float64, error) {
+	query := fmt.Sprintf("select sum(amount) from transactions where transactions.company_id = '%s' AND transactions.created_at::timestamp BETWEEN '%s'::timestamp AND '%s'::timestamp AND transactions.\"type\" = '%s' group by transactions.type", companyID.String(), startAt, endAt, trxType)
+
+	var amount float64
+	err := tq.db.PgSQL.QueryRowx(query).Scan(&amount)
+	if err != nil {
+		return 0.0, nil
+	}
+
+	return amount, nil
+}
+
 // NewTransactionQuery ...
 func NewTransactionQuery(db *db.DB) TransactionQueryInterface {
 	q := qb.NewQueryBuilder()

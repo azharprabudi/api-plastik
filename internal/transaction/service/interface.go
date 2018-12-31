@@ -17,4 +17,9 @@ type TransactionServiceInterface interface {
 	CreateTransactionEtcType(uuid.UUID, *dto.TransactionEtcTypeReq) (uuid.UUID, error)
 	UpdateTransactionEtcType(uuid.UUID, uuid.UUID, *dto.TransactionEtcTypeReq) error
 	DeleteTransactionEtcType(uuid.UUID, uuid.UUID) error
+	GetCountTransactions(uuid.UUID, string, string) (int, error)
+	GetSummaryTransactions(uuid.UUID, string, string) (float64, error)
+	GetSummaryTransactionsIn(uuid.UUID, string, string) (float64, error)
+	GetSummaryTransactionsOut(uuid.UUID, string, string) (float64, error)
+	GetSummaryTransactionsEtc(uuid.UUID, string, string) (float64, error)
 }

@@ -11,4 +11,7 @@ type TransactionQueryInterface interface {
 	GetTransactionByID(uuid.UUID, uuid.UUID) (*model.TransactionReadDetail, error)
 	GetTransactionEtcTypes(uuid.UUID) ([]*model.TransactionEtcTypeRead, error)
 	GetTransactionEtcTypeByID(uuid.UUID, uuid.UUID) (*model.TransactionEtcTypeRead, error)
+	GetCountTransactions(uuid.UUID, string, string) (int, error)
+	GetSummaryTransactions(uuid.UUID, string, string) (float64, error)
+	GetSummaryTransactionsByType(uuid.UUID, string, string, string) (float64, error)
 }

@@ -9,6 +9,7 @@ import (
 	sellerPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/seller"
 	supplierPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/supplier"
 
+	reportPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/report"
 	transactionPresentation "github.com/azharprabudi/api-plastik/httpserver/app/plastik/presentations/transaction"
 
 	"github.com/go-chi/chi"
@@ -23,6 +24,7 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 	supplier := supplierPresentation.NewSupplierPresentation(db)
 	seller := sellerPresentation.NewSellerPresentation(db)
 	transaction := transactionPresentation.NewTransactionPresentation(db)
+	report := reportPresentation.NewReportPresentation(db)
 
 	/* item unit */
 	(*newR).Get("/v1/item-unit", itemUnit.Find)
@@ -68,5 +70,12 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Get("/{companyId}/transaction/etc/type/{id}", transaction.FindTransactionEtcTypeByID)
 		r.Patch("/{companyId}/transaction/etc/type/{id}", transaction.UpdateTransactionEtcType)
 		r.Delete("/{companyId}/transaction/etc/type/{id}", transaction.DeleteTransactionEtcType)
+
+		/* report */
+		r.Get("/{companyId}/report/get-count-transactions", report.GetCountTransactions)
+		r.Get("/{companyId}/report/get-summary-transactions", report.GetSummaryTransactions)
+		r.Get("/{companyId}/report/get-summary-transactions-in", report.GetSummaryTransactionsIn)
+		r.Get("/{companyId}/report/get-summary-transactions-out", report.GetSummaryTransactionsOut)
+		r.Get("/{companyId}/report/get-summary-transactions-etc", report.GetSummaryTransactionsEtc)
 	})
 }

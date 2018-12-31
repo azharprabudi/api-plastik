@@ -10,6 +10,7 @@ import (
 	"github.com/azharprabudi/api-plastik/internal/transaction/model"
 	"github.com/azharprabudi/api-plastik/internal/transaction/query"
 	"github.com/azharprabudi/api-plastik/internal/transaction/transform"
+	trxvalue "github.com/azharprabudi/api-plastik/internal/transaction/value"
 	"github.com/azharprabudi/api-plastik/internal/user/value"
 	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
@@ -247,6 +248,51 @@ func (ts *TransactionService) DeleteTransactionEtcType(companyID uuid.UUID, id u
 		return err
 	}
 	return nil
+}
+
+// GetCountTransactions ...
+func (ts *TransactionService) GetCountTransactions(companyID uuid.UUID, startAt string, endAt string) (int, error) {
+	count, err := ts.query.GetCountTransactions(companyID, startAt, endAt)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+// GetSummaryTransactions ...
+func (ts *TransactionService) GetSummaryTransactions(companyID uuid.UUID, startAt string, endAt string) (float64, error) {
+	amount, err := ts.query.GetSummaryTransactions(companyID, startAt, endAt)
+	if err != nil {
+		return 0.0, err
+	}
+	return amount, nil
+}
+
+// GetSummaryTransactionsIn ...
+func (ts *TransactionService) GetSummaryTransactionsIn(companyID uuid.UUID, startAt string, endAt string) (float64, error) {
+	amount, err := ts.query.GetSummaryTransactionsByType(companyID, trxvalue.TRANSACTION_IN, startAt, endAt)
+	if err != nil {
+		return 0.0, err
+	}
+	return amount, nil
+}
+
+// GetSummaryTransactionsOut ...
+func (ts *TransactionService) GetSummaryTransactionsOut(companyID uuid.UUID, startAt string, endAt string) (float64, error) {
+	amount, err := ts.query.GetSummaryTransactionsByType(companyID, trxvalue.TRANSACTION_OUT, startAt, endAt)
+	if err != nil {
+		return 0.0, err
+	}
+	return amount, nil
+}
+
+// GetSummaryTransactionsEtc ...
+func (ts *TransactionService) GetSummaryTransactionsEtc(companyID uuid.UUID, startAt string, endAt string) (float64, error) {
+	amount, err := ts.query.GetSummaryTransactionsByType(companyID, trxvalue.TRANSACTION_ETC, startAt, endAt)
+	if err != nil {
+		return 0.0, err
+	}
+	return amount, nil
 }
 
 // NewTransactionService ...
