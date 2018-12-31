@@ -12,4 +12,5 @@ type ItemQueryInterface interface {
 	GetItems(uuid.UUID) ([]*model.ItemRead, error)
 	GetItemByID(uuid.UUID, uuid.UUID) (*model.ItemRead, error)
 	GetItemUnits() ([]*model.ItemUnitRead, error)
+	GetItemStockLogs(uuid.UUID) ([]*model.ItemStockLogRead, error)
 }

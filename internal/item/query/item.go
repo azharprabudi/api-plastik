@@ -1,6 +1,8 @@
 package query
 
 import (
+	"fmt"
+
 	"github.com/azharprabudi/api-plastik/db"
 	qb "github.com/azharprabudi/api-plastik/helper/querybuilder"
 	qbmodel "github.com/azharprabudi/api-plastik/helper/querybuilder/model"
@@ -156,6 +158,26 @@ func (iq *ItemQuery) GetItemUnits() ([]*model.ItemUnitRead, error) {
 	}
 
 	return result, nil
+}
+
+// GetItemStockLogs ...
+func (iq *ItemQuery) GetItemStockLogs(companyID uuid.UUID) ([]*model.ItemStockLogRead, error) {
+	results := []*model.ItemStockLogRead{}
+
+	query := fmt.Sprintf("select item_stock_logs.item_id, item_stock_logs.item_name, sum(item_stock_logs.qty) as qty, item_units.name as unit_name from item_stock_logs join items on item_stock_logs.item_id = items.id join item_units on items.unit_id = item_units.id where items.company_id = '%s' and items.active = true group by item_stock_logs.item_id, item_stock_logs.item_name, item_units.name", companyID.String())
+
+	rows, err := iq.db.PgSQL.Queryx(query)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		tmp := new(model.ItemStockLogRead)
+		rows.StructScan(&tmp)
+		results = append(results, tmp)
+	}
+
+	return results, nil
 }
 
 // NewItemQuery ...

@@ -77,5 +77,6 @@ func NewRoutesV1Plastik(newR *chi.Router, db *db.DB) {
 		r.Get("/{companyId}/report/get-summary-transactions-in", report.GetSummaryTransactionsIn)
 		r.Get("/{companyId}/report/get-summary-transactions-out", report.GetSummaryTransactionsOut)
 		r.Get("/{companyId}/report/get-summary-transactions-etc", report.GetSummaryTransactionsEtc)
+		r.Get("/{companyId}/report/get-item-stock-logs", report.GetItemStockLogs)
 	})
 }

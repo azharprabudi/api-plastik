@@ -42,3 +42,11 @@ type ItemStockLogCreate struct {
 	Qty           int       `db:"qty"`
 	CreatedAt     time.Time `db:"created_at"`
 }
+
+// ItemStockLogRead ...
+type ItemStockLogRead struct {
+	ItemID   uuid.UUID `db:"item_id"`
+	ItemName string    `db:"item_name"`
+	Qty      int       `db:"qty"`
+	UnitName string    `db:"unit_name"`
+}

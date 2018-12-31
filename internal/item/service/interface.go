@@ -21,4 +21,5 @@ type ItemServiceInterface interface {
 	GetItemByID(uuid.UUID, uuid.UUID) (*dto.ItemRes, error)
 	GetItemUnits() ([]*dto.ItemUnitRes, error)
 	CreateItemStockLog(*sqlx.Tx, *model.ItemStockLogCreate) error
+	GetItemStockLogs(uuid.UUID) ([]*dto.ItemStockLogRes, error)
 }

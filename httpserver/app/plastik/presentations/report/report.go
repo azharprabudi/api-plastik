@@ -7,6 +7,8 @@ import (
 	newError "github.com/azharprabudi/api-plastik/httpserver/error"
 	"github.com/azharprabudi/api-plastik/httpserver/response"
 	"github.com/azharprabudi/api-plastik/internal/transaction/service"
+
+	itemService "github.com/azharprabudi/api-plastik/internal/item/service"
 	"github.com/go-chi/chi"
 	uuid "github.com/satori/go.uuid"
 )
@@ -134,9 +136,27 @@ func (report *Report) GetSummaryTransactionsEtc(w http.ResponseWriter, r *http.R
 	})
 }
 
+// GetItemStockLogs ...
+func (report *Report) GetItemStockLogs(w http.ResponseWriter, r *http.Request) {
+	companyID, err := uuid.FromString(chi.URLParam(r, "companyId"))
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	res, err := report.itemService.GetItemStockLogs(companyID)
+	if err != nil {
+		response.Send(w, http.StatusInternalServerError, nil, newError.NewErrorReponse(newError.InternalServerError, err.Error(), "", nil))
+		return
+	}
+
+	response.Send(w, http.StatusOK, nil, res)
+}
+
 // NewReportPresentation ...
 func NewReportPresentation(db *db.DB) ReportInterface {
 	return &Report{
+		itemService:        itemService.NewItemService(db),
 		transactionService: service.NewTransactionService(db),
 	}
 }

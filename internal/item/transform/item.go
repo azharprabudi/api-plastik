@@ -124,6 +124,21 @@ func (it *ItemTransform) MakeResponseGetItemUnits(res []*model.ItemUnitRead) []*
 	return results
 }
 
+// MakeResponseGetItemStockLogs ...
+func (it *ItemTransform) MakeResponseGetItemStockLogs(res []*model.ItemStockLogRead) []*dto.ItemStockLogRes {
+	results := []*dto.ItemStockLogRes{}
+	for _, item := range res {
+		results = append(results, &dto.ItemStockLogRes{
+			ItemID:   item.ItemID,
+			ItemName: item.ItemName,
+			Qty:      item.Qty,
+			UnitName: item.UnitName,
+		})
+	}
+
+	return results
+}
+
 // NewItemTransform ...
 func NewItemTransform() ItemTransformInterface {
 	return ItemTransformSingleton

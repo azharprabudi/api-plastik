@@ -136,6 +136,16 @@ func (is *ItemService) CreateItemStockLog(tx *sqlx.Tx, item *model.ItemStockLogC
 	return nil
 }
 
+// GetItemStockLogs ...
+func (is *ItemService) GetItemStockLogs(companyID uuid.UUID) ([]*dto.ItemStockLogRes, error) {
+	res, err := is.query.GetItemStockLogs(companyID)
+	if err != nil {
+		return nil, err
+	}
+
+	return is.transform.MakeResponseGetItemStockLogs(res), nil
+}
+
 // NewItemService ...
 func NewItemService(db *db.DB) ItemServiceInterface {
 	return &ItemService{

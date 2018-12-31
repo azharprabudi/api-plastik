@@ -23,3 +23,11 @@ type ItemRes struct {
 	CreatedAt time.Time `json:"createdAt"`
 	Item
 }
+
+// ItemStockLogRes ...
+type ItemStockLogRes struct {
+	ItemID   uuid.UUID `json:"id"`
+	ItemName string    `json:"name"`
+	Qty      int       `json:"qty"`
+	UnitName string    `json:"unitName"`
+}

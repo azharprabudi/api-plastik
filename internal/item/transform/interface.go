@@ -17,4 +17,5 @@ type ItemTransformInterface interface {
 	MakeResponseGetItems([]*model.ItemRead) []*dto.ItemRes
 	MakeResponseGetItemByID(*model.ItemRead) *dto.ItemRes
 	MakeResponseGetItemUnits([]*model.ItemUnitRead) []*dto.ItemUnitRes
+	MakeResponseGetItemStockLogs([]*model.ItemStockLogRead) []*dto.ItemStockLogRes
 }
