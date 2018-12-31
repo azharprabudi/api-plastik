@@ -3,6 +3,7 @@ package middlewares
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	newError "github.com/azharprabudi/api-plastik/httpserver/error"
 )
@@ -10,7 +11,7 @@ import (
 // CheckContentType ...
 func CheckContentType(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if len(r.Header["Content-Type"]) > 0 && r.Header["Content-Type"][0] == "application/json" {
+		if len(r.Header["Content-Type"]) > 0 && strings.Contains(r.Header["Content-Type"][0], "application/json") {
 			next.ServeHTTP(w, r)
 			return
 		}
