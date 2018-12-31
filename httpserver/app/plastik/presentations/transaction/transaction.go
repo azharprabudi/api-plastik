@@ -13,7 +13,6 @@ import (
 
 	"github.com/azharprabudi/api-plastik/db"
 	newError "github.com/azharprabudi/api-plastik/httpserver/error"
-	itemService "github.com/azharprabudi/api-plastik/internal/item/service"
 	"github.com/azharprabudi/api-plastik/internal/transaction/dto"
 	transactionService "github.com/azharprabudi/api-plastik/internal/transaction/service"
 	"github.com/azharprabudi/api-plastik/internal/transaction/value"
@@ -334,8 +333,7 @@ func (t *Transaction) DeleteTransactionEtcType(w http.ResponseWriter, r *http.Re
 
 // NewTransactionPresentation ...
 func NewTransactionPresentation(db *db.DB) TransactionInterface {
-	itemService := itemService.NewItemService(db)
 	return &Transaction{
-		service: transactionService.NewTransactionService(db, itemService),
+		service: transactionService.NewTransactionService(db),
 	}
 }

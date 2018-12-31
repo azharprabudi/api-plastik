@@ -250,7 +250,8 @@ func (ts *TransactionService) DeleteTransactionEtcType(companyID uuid.UUID, id u
 }
 
 // NewTransactionService ...
-func NewTransactionService(db *db.DB, itemService service.ItemServiceInterface) TransactionServiceInterface {
+func NewTransactionService(db *db.DB) TransactionServiceInterface {
+	itemService := service.NewItemService(db)
 	return &TransactionService{
 		db:          db,
 		query:       query.NewTransactionQuery(db),
