@@ -261,7 +261,7 @@ func (ts *TransactionService) GetCountTransactions(companyID uuid.UUID, startAt 
 
 // GetSummaryTransactions ...
 func (ts *TransactionService) GetSummaryTransactions(companyID uuid.UUID, startAt string, endAt string) (float64, error) {
-	amount, err := ts.query.GetSummaryTransactions(companyID, startAt, endAt)
+	amount, err := ts.query.GetSummaryTransactions(companyID, trxvalue.TRANSACTION_OUT, startAt, endAt)
 	if err != nil {
 		return 0.0, err
 	}
