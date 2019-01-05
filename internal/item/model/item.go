@@ -31,6 +31,7 @@ type ItemCreate struct {
 type ItemUpdate struct {
 	Name           string    `db:"name"`
 	ItemCategoryID uuid.UUID `db:"category_id"`
+	UnitID         uuid.UUID `db:"unit_id"`
 }
 
 // ItemStockLogCreate ...

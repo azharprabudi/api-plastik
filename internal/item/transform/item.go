@@ -74,6 +74,7 @@ func (it *ItemTransform) MakeModelUpdateItem(item *dto.ItemReq) *model.ItemUpdat
 	return &model.ItemUpdate{
 		Name:           item.Name,
 		ItemCategoryID: item.ItemCategoryID,
+		UnitID:         item.UnitID,
 	}
 }
 

@@ -130,6 +130,10 @@ func (i *Item) Update(w http.ResponseWriter, r *http.Request) {
 		validations = append(validations, "itemCategoryId field is required")
 	}
 
+	if req.UnitID == uuid.Nil {
+		validations = append(validations, "unit id field is required")
+	}
+
 	if len(validations) > 0 {
 		response.Send(w, http.StatusBadRequest, nil, newError.NewErrorReponse(newError.InternalServerError, "", "", validations))
 		return

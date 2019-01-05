@@ -92,7 +92,7 @@ func (ic *ItemCommand) UpdateItem(companyID uuid.UUID, id uuid.UUID, item *model
 		NextCond: "",
 		Value:    companyID.String(),
 	}})
-	_, err := ic.db.PgSQL.Exec(query, item.Name, item.ItemCategoryID)
+	_, err := ic.db.PgSQL.Exec(query, item.Name, item.ItemCategoryID, item.UnitID)
 	if err != nil {
 		return err
 	}
