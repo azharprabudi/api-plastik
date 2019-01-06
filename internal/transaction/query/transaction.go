@@ -256,9 +256,15 @@ func (tq *TransactionQuery) GetCountTransactions(companyID uuid.UUID, startAt st
 	query := fmt.Sprintf("select count(id) as count from transactions where transactions.company_id = '%s' AND transactions.created_at::timestamp between '%s'::timestamp AND '%s'::timestamp group by transactions.type", companyID.String(), startAt, endAt)
 
 	var count int
-	err := tq.db.PgSQL.QueryRowx(query).Scan(&count)
+	rows, err := tq.db.PgSQL.Queryx(query)
 	if err != nil {
 		return 0, nil
+	}
+
+	for rows.Next() {
+		var tmpCount int
+		rows.Scan(&tmpCount)
+		count += tmpCount
 	}
 
 	return count, nil
@@ -266,8 +272,6 @@ func (tq *TransactionQuery) GetCountTransactions(companyID uuid.UUID, startAt st
 
 // GetSummaryTransactions ...
 func (tq *TransactionQuery) GetSummaryTransactions(companyID uuid.UUID, trxtype string, startAt string, endAt string) (float64, error) {
-
-	print("kondel")
 	query := fmt.Sprintf("select sum(amount), transactions.type from transactions where transactions.company_id = '%s' AND transactions.created_at::timestamp BETWEEN '%s'::timestamp AND '%s'::timestamp group by transactions.type order by transactions.type = '%s' desc", companyID.String(), startAt, endAt, trxtype)
 
 	var amount float64
