@@ -1,0 +1,27 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - /app/data/postgres/:/var/lib/postgresql
+    environment:
+      - POSTGRES_PASSWORD=root
+    container_name: pg_plastik
+
+  api:
+    build: ./
+    ports:
+     - "3000:3000"
+    depends_on:
+     - postgres
+    environment:
+     - PORT=3000
+     - DB_PG_HOST=localhost
+     - DB_PG_PORT=5432
+     - DB_PG_NAME=plastik
+     - DB_PG_USER=postgres
+     - DB_PG_PASS=root
+     - mode=development
+    container_name: plastik:0.1
