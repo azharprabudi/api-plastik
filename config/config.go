@@ -13,6 +13,9 @@ var (
 	// Port ...
 	Port = "3000"
 
+	// Mode ...
+	Mode = "development"
+
 	/*
 		list of db configuration
 	*/

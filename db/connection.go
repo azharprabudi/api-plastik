@@ -11,9 +11,9 @@ import (
 
 // OpenConnectionDB ...
 func OpenConnectionDB() *DB {
-	mode, ok := os.LookupEnv("model")
+	mode, ok := os.LookupEnv("MODE")
 	if !ok {
-		mode = "development"
+		mode = config.Mode
 	}
 
 	db := new(DB)
