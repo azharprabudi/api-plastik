@@ -2,8 +2,9 @@ version: "3"
 services:
   postgres:
     image: postgres
+    network: host
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - /app/data/postgres/:/var/lib/postgresql
     environment:
@@ -14,6 +15,7 @@ services:
     build: ./
     ports:
      - "3000:3000"
+    network: host
     depends_on:
      - postgres
     environment:
@@ -23,5 +25,5 @@ services:
      - DB_PG_NAME=plastik
      - DB_PG_USER=postgres
      - DB_PG_PASS=root
-     - mode=development
-    container_name: plastik:0.1
+     - MODE=development
+    container_name: api_plastik
