@@ -100,7 +100,6 @@ func (tq *TransactionQuery) GetTransactionByID(companyID uuid.UUID, id uuid.UUID
 	var details []*model.TransactionDetailRead
 	var tmpImageID, tmpDetailID uuid.UUID
 	rows, err := tq.db.PgSQL.Queryx(query)
-
 	if err != nil {
 		return nil, err
 	}
@@ -159,29 +158,34 @@ func (tq *TransactionQuery) GetTransactionByID(companyID uuid.UUID, id uuid.UUID
 				SupplierName:           supplierName,
 				TransactionEtcID:       transactionEtcID,
 				TransactionEtcTypeName: transactionEtcTypeName,
-				Images:                 []*model.TransactionImageRead{&model.TransactionImageRead{}},
-				Details:                []*model.TransactionDetailRead{&model.TransactionDetailRead{}},
+				Images:                 []*model.TransactionImageRead{},
+				Details:                []*model.TransactionDetailRead{},
 			}
 
-			if tmpImageID != *transactionImageID && transactionImageID != nil {
-				images = append(images, &model.TransactionImageRead{
-					ID:    transactionImageID,
-					Image: image,
-				})
+			if transactionImageID != nil {
+				if tmpImageID != *transactionImageID {
+					images = append(images, &model.TransactionImageRead{
+						ID:    transactionImageID,
+						Image: image,
+					})
+				}
+				tmpImageID = *transactionImageID
+
 			}
 
-			if tmpDetailID != *transactionDetailID && transactionDetailID != nil {
-				details = append(details, &model.TransactionDetailRead{
-					ID:       transactionDetailID,
-					ItemID:   itemID,
-					ItemName: itemName,
-					Qty:      qty,
-					Amount:   amountDetail,
-				})
+			if transactionDetailID != nil {
+				if tmpDetailID != *transactionDetailID {
+					details = append(details, &model.TransactionDetailRead{
+						ID:       transactionDetailID,
+						ItemID:   itemID,
+						ItemName: itemName,
+						Qty:      qty,
+						Amount:   amountDetail,
+					})
+				}
+				tmpDetailID = *transactionDetailID
 			}
 
-			tmpImageID = *transactionImageID
-			tmpDetailID = *transactionDetailID
 		}
 	}
 
@@ -196,6 +200,7 @@ func (tq *TransactionQuery) GetTransactionByID(companyID uuid.UUID, id uuid.UUID
 	if err != nil {
 		return nil, err
 	}
+
 	return result, nil
 }
 

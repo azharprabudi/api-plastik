@@ -213,6 +213,7 @@ func (tt *TransactionTransform) MakeModelUpdateTransactionEtcType(req *dto.Trans
 func (tt *TransactionTransform) MakeResponseGetTransactionByID(transaction *model.TransactionReadDetail) *dto.TransactionResDetail {
 	images := []*dto.TransactionImageRes{}
 	details := []*dto.TransactionDetailRes{}
+
 	for _, image := range transaction.Images {
 		images = append(images, &dto.TransactionImageRes{
 			ID:    image.ID,
